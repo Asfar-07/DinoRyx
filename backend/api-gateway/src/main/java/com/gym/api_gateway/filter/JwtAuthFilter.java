@@ -13,10 +13,18 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-         String path = exchange.getRequest().getPath().toString();
-//    System.out.println("Gateway path: " + path);
 
-    return chain.filter(exchange);
+        String path = exchange.getRequest().getPath().toString();
+        System.out.println("Gateway path: " + path);
+
+        if (path.startsWith("/auth")) {
+            return chain.filter(exchange);
+        }
+
+        if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {
+            return chain.filter(exchange);
+        }
+        return chain.filter(exchange);
     }
 
     @Override
