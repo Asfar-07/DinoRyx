@@ -28,6 +28,9 @@ public class UserDataModel {
     private String auth_provider;
     @Setter
     @Getter
+    private String picture;
+    @Setter
+    @Getter
     private long first_date;
     @Setter
     @Getter
