@@ -1,14 +1,27 @@
 import "./login.css";
 import { GoogleLogin } from "@react-oauth/google";
 import React, { useState } from "react";
-import { FaGoogle, FaFacebookF } from "react-icons/fa";
+import { FaFacebookF } from "react-icons/fa";
+import { signupService,logoutService,loginService,googleAuth_Service } from "../../features/auth/authService";
 
 export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
-  const handleSuccess = async (credentialResponse) => {
+  const [userdata,setuserData] = useState({
+    name:"",
+    email:"",
+    password:""
+  })
+  const handleGoogleAuth = async (credentialResponse) => {
     const googleToken = credentialResponse.credential;
-    console.log(googleToken);
+    googleAuth_Service(googleToken)
   };
+  function handleSubmit() {
+    if (isSignup) {
+      signupService(userdata)
+    }else{
+      loginService(userdata)
+    }
+  }
   return (
     <div className="auth-container">
       <div className={`auth-card ${isSignup ? "signup" : "login"}`}>
@@ -17,11 +30,23 @@ export default function Login() {
           {isSignup ? "Sign up to get started" : "Login to your account"}
         </p>
 
-        {isSignup && <input type="text" placeholder="Full Name" />}
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
+        {isSignup && <input type="text" placeholder="Full Name" value={userdata.name} onChange={
+          (e)=>{
+            setuserData({...userdata,name:e.target.value})
+          }
+        }/>}
+        <input type="email" placeholder="Email" value={userdata.email} onChange={
+          (e)=>{
+            setuserData({...userdata,email:e.target.value})
+          }
+        }/>
+        <input type="password" placeholder="Password" value={userdata.password} onChange={
+          (e)=>{
+            setuserData({...userdata,password:e.target.value})
+          }
+        }/>
 
-        <button className="primary-btn">
+        <button className="primary-btn" onClick={handleSubmit}>
           {isSignup ? "Sign Up" : "Login"}
         </button>
 
@@ -31,8 +56,9 @@ export default function Login() {
           <button className="facebook-btn">
             <FaFacebookF /> Continue with Facebook
           </button>
+          <button onClick={logoutService }>Logout</button>
           <GoogleLogin
-            onSuccess={handleSuccess}
+            onSuccess={handleGoogleAuth}
             onError={() => console.log("Login Failed")}
           />
         </div>
