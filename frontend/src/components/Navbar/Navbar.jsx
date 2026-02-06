@@ -3,24 +3,27 @@ import "./navbar.css";
 import NavProfile from "./NavProfile";
 import NotifyIcon from "../UI/NotifyIcon";
 import ThemeMode from "../UI/ThemeMode";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Navbar() {
+  const isAuth = useSelector((state)=>state.userauth.isAuthenticated);
   return (
     <div className="Navbar">
       <nav>
         <div className="sitelogo">Logo</div>
         <ul className="secdash">
           <li>
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="/user/manage/dashboard">Dashboard</a>
+            <Link to="/user/manage/dashboard">Dashboard</Link>
           </li>
           <li>
-            <a href="/">Contact</a>
+            <Link to="/">Contact</Link>
           </li>
           <li>
-            <a href="/">About</a>
+            <Link to="/">About</Link>
           </li>
           {/* <li>
             <a href="/">
@@ -28,7 +31,7 @@ export default function Navbar() {
             </a>
           </li> */}
           <li style={{display:"flex", alignItems:'center'}}>
-            <NotifyIcon />
+            {isAuth && <NotifyIcon />}
              < NavProfile />
             <ThemeMode />
           </li>

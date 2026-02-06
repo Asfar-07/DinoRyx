@@ -28,6 +28,8 @@
 }
 
 .header-user-profile img {
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
 }
 .header-s-account{
@@ -61,6 +63,20 @@
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
+}
+.header-s-account ul li button{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.header-s-account ul li button:hover{
+  background-color: var(--primary-bg-color);
 }
 .header-s-account ul li a:hover{
   background-color: var(--primary-bg-color);

@@ -1,18 +1,19 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import "./styles/theme.css";
 import "./styles/global.css";
 import AppRoutes from "./routes/AppRoutes";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setThemeFromLocal } from "./features/theme/themeSlice";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme.mode);
-  useEffect(()=>{
-    dispatch(setThemeFromLocal())
-  },[dispatch])
-    useEffect(() => {
+  useEffect(() => {
+    dispatch(setThemeFromLocal());
+  }, [dispatch]);
+  useEffect(() => {
     const root = document.documentElement;
 
     if (theme === "dark") {
@@ -32,6 +33,7 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <AppRoutes />
     </div>
   );

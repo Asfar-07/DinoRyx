@@ -2,24 +2,55 @@ import "./login.css";
 import { GoogleLogin } from "@react-oauth/google";
 import React, { useState } from "react";
 import { FaFacebookF } from "react-icons/fa";
-import { signupService,logoutService,loginService,googleAuth_Service } from "../../features/auth/authService";
+import { authHandle } from "../../features/auth/authService";
+import { Link, useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { updateAuth } from "../../features/auth/authSlice";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
-  const [userdata,setuserData] = useState({
-    name:"",
-    email:"",
-    password:""
-  })
+  const [userdata, setuserData] = useState({name: "",email: "",password: "",});
+
+  let navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleGoogleAuth = async (credentialResponse) => {
     const googleToken = credentialResponse.credential;
-    googleAuth_Service(googleToken)
+    authHandle.googleService(googleToken);
   };
   function handleSubmit() {
     if (isSignup) {
-      signupService(userdata)
-    }else{
-      loginService(userdata)
+      authHandle
+        .signupService(userdata)
+        .then((data) => {
+          if (data === "success") {
+            dispatch(updateAuth(true));
+            setuserData({name: "",email: "",password: "",});
+            navigate("/");
+          } else {
+            navigate("/login");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      authHandle
+        .loginService(userdata)
+        .then((data) => {
+          console.log(data);
+          if (data === "success") {
+            dispatch(updateAuth(true));
+            setuserData({name: "",email: "",password: "",});
+            navigate("/");
+          } else {
+            navigate("/login");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
   return (
@@ -30,21 +61,32 @@ export default function Login() {
           {isSignup ? "Sign up to get started" : "Login to your account"}
         </p>
 
-        {isSignup && <input type="text" placeholder="Full Name" value={userdata.name} onChange={
-          (e)=>{
-            setuserData({...userdata,name:e.target.value})
-          }
-        }/>}
-        <input type="email" placeholder="Email" value={userdata.email} onChange={
-          (e)=>{
-            setuserData({...userdata,email:e.target.value})
-          }
-        }/>
-        <input type="password" placeholder="Password" value={userdata.password} onChange={
-          (e)=>{
-            setuserData({...userdata,password:e.target.value})
-          }
-        }/>
+        {isSignup && (
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={userdata.name}
+            onChange={(e) => {
+              setuserData({ ...userdata, name: e.target.value });
+            }}
+          />
+        )}
+        <input
+          type="email"
+          placeholder="Email"
+          value={userdata.email}
+          onChange={(e) => {
+            setuserData({ ...userdata, email: e.target.value });
+          }}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={userdata.password}
+          onChange={(e) => {
+            setuserData({ ...userdata, password: e.target.value });
+          }}
+        />
 
         <button className="primary-btn" onClick={handleSubmit}>
           {isSignup ? "Sign Up" : "Login"}
@@ -56,7 +98,6 @@ export default function Login() {
           <button className="facebook-btn">
             <FaFacebookF /> Continue with Facebook
           </button>
-          <button onClick={logoutService }>Logout</button>
           <GoogleLogin
             onSuccess={handleGoogleAuth}
             onError={() => console.log("Login Failed")}
@@ -69,6 +110,9 @@ export default function Login() {
             {isSignup ? " Login" : " Sign Up"}
           </span>
         </p>
+        {!isSignup && (
+         <Link to="/forgot-password">forgot-password</Link>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { statusHandle } from "../../utils/statusHandle";
 
 const headerForm = {
   headers: {
@@ -6,56 +7,92 @@ const headerForm = {
   },
   withCredentials: true,
 };
-
-function signupService(data) {
-  console.log(data);
-  axios
-    .post("http://localhost:8081/auth/signup", data, { withCredentials: true })
-    .then((Response) => {
-      console.log(Response);
-    })
-    .catch((e) => {
+export const authHandle = {
+  signupService: async (data) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8081/auth/signup",
+        data,
+        headerForm,
+      );
+      statusHandle.statusInfo(res.status);
+      return res.data;
+    } catch (e) {
       console.error(e);
-    });
-}
-
-function loginService(data) {
-  axios
-    .post("http://localhost:8081/auth/login", data, headerForm)
-    .then((Response) => {
-      console.log(Response);
-    })
-    .catch((e) => {
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
+  loginService: async (data) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8081/auth/login",
+        data,
+        headerForm,
+      );
+      statusHandle.statusInfo(res.status);
+      return res.data;
+    } catch (e) {
       console.error(e);
-    });
-}
-function googleAuth_Service(googleToken) {
-  console.log(googleToken);
-  axios
-    .post(
-      "http://localhost:8081/auth/google/provider",
-      { token: googleToken },
-      { withCredentials: true },
-    )
-    .then((Response) => {
-      console.log(Response);
-    })
-    .catch((e) => {
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
+  googleService: async (data) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8081/auth/google/provider",
+        { token: data },
+        { withCredentials: true },
+      );
+      statusHandle.statusInfo(res.status);
+      return res.data;
+    } catch (e) {
       console.error(e);
-    });
-}
-// function authWith_Facebook(token) {
-
-// }
-function logoutService() {
-  axios
-    .post("http://localhost:8081/auth/logout", {}, headerForm)
-    .then((Response) => {
-      console.log(Response);
-    })
-    .catch((e) => {
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
+  facebookService: (data) => {},
+  logoutService: async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8081/auth/logout",
+        {},
+        headerForm,
+      );
+      statusHandle.statusInfo(res.status);
+      return res.data;
+    } catch (e) {
       console.error(e);
-    });
-}
-
-export { signupService, logoutService, loginService, googleAuth_Service };
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
+  forgotPasswordService: async (email, token) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8081/auth/forgot/password",
+        { emailId: email, captchaToken: token },
+        headerForm,
+      );
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  },
+  ResetPasswordService: async (paramToken, newPassword) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8081/auth/reset/password",
+        { token: paramToken, new_password: newPassword },
+        headerForm,
+      );
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  },
+};
