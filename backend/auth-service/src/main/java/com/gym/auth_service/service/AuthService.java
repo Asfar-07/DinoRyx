@@ -1,20 +1,24 @@
 package com.gym.auth_service.service;
 
+import com.gym.auth_service.model.PasswordResetForm;
 import com.gym.auth_service.model.UserDataModel;
+import com.gym.auth_service.repository.PasswordResetRepo;
 import com.gym.auth_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class UserService {
+public class AuthService {
 
     @Autowired
     private UserRepository repository;
+    @Autowired
+    PasswordResetRepo resetRepo;
     private final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
     public Object[] signupService(UserDataModel userdata){
@@ -27,17 +31,15 @@ public class UserService {
             userdata.setFirst_date(date.getTime());
 
             userdata.setAuth_provider("local");
+            userdata.setAvailable(false);
+            userdata.setTrainer(false);
 
             String hashedPassword = passwordEncoder.encode(userdata.getPassword());
             userdata.setPassword(hashedPassword);
 
             repository.save(userdata);
-            Map<String,String> data = new HashMap<>();
-            data.put("id", String.valueOf(userdata.getId()));
-            data.put("email", userdata.getEmail());
-            data.put("name", userdata.getName());
-            data.put("picture",userdata.getPicture());
-            return new Object[]{true,"New User Added",data};
+
+            return new Object[]{true,"New User Added"};
         }else {
             return new Object[]{false,"Email Existed"};
         }
@@ -47,12 +49,7 @@ public class UserService {
             final String realPassword = repository.findByEmail(userdata.getEmail()).get().getPassword();
             if (passwordEncoder.matches(userdata.getPassword(), realPassword)){
                 userdata=repository.findByEmail(userdata.getEmail()).orElse(null);
-                Map<String,String> data = new HashMap<>();
-                data.put("id", String.valueOf(userdata.getId()));
-                data.put("email", userdata.getEmail());
-                data.put("name", userdata.getName());
-                data.put("picture",userdata.getPicture());
-                return new Object[]{true, "Password Matching",data};
+                return new Object[]{true, "Password Matching"};
             }
             else {
                 return new Object[]{false, "Password Not Match"};
@@ -85,5 +82,25 @@ public class UserService {
         }else {
             return new Object[] {true};
         }
+    }
+    public boolean ResetPassword(String newPassword, String tokenId){
+        List<PasswordResetForm> tokens = resetRepo.findAllValidation(LocalDateTime.now()); // collect data
+        for (PasswordResetForm table : tokens) {                                           // make loop for find match token
+            if (passwordEncoder.matches(tokenId, table.getToken())) {
+                UserDataModel thisUserData=repository.findByEmail(table.getEmail()).orElse(null);
+                if (thisUserData != null){
+                    thisUserData.setPassword(passwordEncoder.encode(newPassword));
+                    table.setUsed(true);                 // for avoid multiple change with using same token
+
+                    repository.save(thisUserData);
+                    resetRepo.save(table);
+
+                    return true; //success all
+                }
+                return false; //user not exited
+            }
+            return false; // token not matching
+        }
+        return false; // expired or not exited
     }
 }

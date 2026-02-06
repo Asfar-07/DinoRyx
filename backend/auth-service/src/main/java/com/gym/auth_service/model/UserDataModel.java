@@ -6,34 +6,25 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "userdata1")
 public class UserDataModel {
 
     @Id
-    @Setter
-    @Getter
     private Long id;
-    @Setter
-    @Getter
     private String name;
-    @Setter
-    @Getter
     private String email;
-    @Setter
-    @Getter
     private String password;
-    @Setter
-    @Getter
     private String auth_provider;
-    @Setter
-    @Getter
     private String picture;
-    @Setter
-    @Getter
     private long first_date;
-    @Setter
-    @Getter
     private long update_date;
+    private  String address;
+    private String phone_on;
+    private  boolean available;
+    private  String gender;
+    private boolean trainer;
 
 }

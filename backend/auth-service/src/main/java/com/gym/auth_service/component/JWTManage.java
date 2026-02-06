@@ -1,4 +1,4 @@
-package com.gym.auth_service.utils;
+package com.gym.auth_service.component;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

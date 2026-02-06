@@ -2,17 +2,16 @@ package com.gym.auth_service.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.gym.auth_service.model.UserDataModel;
-import com.gym.auth_service.service.UserService;
-import com.gym.auth_service.utils.CookieManage;
-import com.gym.auth_service.utils.GoogleTokenVerifier;
-import com.gym.auth_service.utils.JWTManage;
+import com.gym.auth_service.service.AuthService;
+import com.gym.auth_service.component.CookieManage;
+import com.gym.auth_service.component.GoogleTokenVerifier;
+import com.gym.auth_service.component.JWTManage;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +21,7 @@ public class ApiController {
     @Autowired
     JWTManage jwtManage;
     @Autowired
-    UserService service;
+    AuthService service;
     @Autowired
     GoogleTokenVerifier googleTokenVerifier;
 
@@ -42,7 +41,7 @@ public class ApiController {
             CookieManage cookie=new CookieManage(response);
             cookie.createCookie(Token);
 
-            return ResponseEntity.ok(data.getEmail());
+            return ResponseEntity.ok("success");
         } else if (status[0].equals(false) && status[1].equals("Password Not Match")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -62,14 +61,14 @@ public class ApiController {
             CookieManage cookie=new CookieManage(response);
             cookie.createCookie(Token);
 
-            return ResponseEntity.ok(userData.getEmail());
+            return ResponseEntity.ok("success");
         }
         else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
     @PostMapping(value="/google/provider")
-    public ResponseEntity<Map> googleProvider(@RequestBody Map<String, String> body,HttpServletResponse response) throws Exception {
+    public ResponseEntity<String> googleProvider(@RequestBody Map<String, String> body,HttpServletResponse response) throws Exception {
         String token = body.get("token");
         Map<String,String> userdate = new HashMap<>();
         GoogleIdToken idToken = googleTokenVerifier.verify(token);
@@ -92,7 +91,7 @@ public class ApiController {
 
             CookieManage cookie=new CookieManage(response);
             cookie.createCookie(Token);
-            return ResponseEntity.ok(userdate);
+            return ResponseEntity.ok("success");
         }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -109,6 +108,6 @@ public class ApiController {
     public ResponseEntity<String> Logout(HttpServletResponse response){
         CookieManage cookie=new CookieManage(response);
         cookie.removeCookie();
-        return ResponseEntity.ok("200");
+        return ResponseEntity.ok("success");
     }
 }
