@@ -8,10 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -35,7 +32,12 @@ public class UserService {
             userdata.setPassword(hashedPassword);
 
             repository.save(userdata);
-            return new Object[]{true,"New User Added"};
+            Map<String,String> data = new HashMap<>();
+            data.put("id", String.valueOf(userdata.getId()));
+            data.put("email", userdata.getEmail());
+            data.put("name", userdata.getName());
+            data.put("picture",userdata.getPicture());
+            return new Object[]{true,"New User Added",data};
         }else {
             return new Object[]{false,"Email Existed"};
         }
@@ -44,7 +46,13 @@ public class UserService {
         if (repository.findByEmail(userdata.getEmail()).orElse(null) != null) {
             final String realPassword = repository.findByEmail(userdata.getEmail()).get().getPassword();
             if (passwordEncoder.matches(userdata.getPassword(), realPassword)){
-                return new Object[]{true, "Password Matching"};
+                userdata=repository.findByEmail(userdata.getEmail()).orElse(null);
+                Map<String,String> data = new HashMap<>();
+                data.put("id", String.valueOf(userdata.getId()));
+                data.put("email", userdata.getEmail());
+                data.put("name", userdata.getName());
+                data.put("picture",userdata.getPicture());
+                return new Object[]{true, "Password Matching",data};
             }
             else {
                 return new Object[]{false, "Password Not Match"};

@@ -3,13 +3,15 @@ package com.gym.auth_service.utils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JWTManage {
-    private final String SECRET = "my-super-secret-key-which-is-at-least-32-characters";
+    @Value("${secret.key.jwt}")
+    private String SECRET;
     public String generateToken(String email){
         long expireTime = 1000 * 60 * 15;
         String token = Jwts.builder()

@@ -10,7 +10,7 @@ public class CookieManage {
         this.response=response;
     }
     public void createCookie(String Token){
-        ResponseCookie cookie= ResponseCookie.from("JWT",Token).httpOnly(true)
+        ResponseCookie cookie= ResponseCookie.from("SecuredJWT",Token).httpOnly(true)
                 .secure(false)
                 .path("/")
                 .sameSite("Lax")
@@ -19,7 +19,7 @@ public class CookieManage {
         this.response.addHeader(HttpHeaders.SET_COOKIE,cookie.toString());
     }
     public void removeCookie(){
-        ResponseCookie cookie= ResponseCookie.from("JWT",null).httpOnly(true)
+        ResponseCookie cookie= ResponseCookie.from("SecuredJWT",null).httpOnly(true)
                 .secure(false)
                 .path("/")
                 .sameSite("Lax")
