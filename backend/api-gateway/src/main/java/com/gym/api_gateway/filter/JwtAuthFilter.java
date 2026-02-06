@@ -24,29 +24,34 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        String path = exchange.getRequest().getPath().toString();
+        String path = exchange.getRequest().getPath().toString(); //get request path
 
-        if (path.startsWith("/auth")) {
+        if (path.startsWith("/auth")) {  //pass request with no condition
             return chain.filter(exchange);
         }
 
         if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {
             return chain.filter(exchange);
         }
+
+        // get the cookie from http
         HttpCookie userCookie = exchange.getRequest()
                 .getCookies()
                 .getFirst("SecuredJWT");
         System.out.println(userCookie);
+
+        //if cookie, avoiding pass data to another server
         if (userCookie == null) {
             return unauthorized(exchange, "Missing JWT");
         }
+
         try {
             String token = userCookie.getValue();
-            Claims claims=jwtUtil.validateToken(token);
-            String email = claims.get("sub", String.class);
+            Claims claims=jwtUtil.validateToken(token); // check cookie validation (expire time, genuine)
+            String email = claims.get("sub", String.class); // extract header from jwt
             ServerHttpRequest mutatedRequest = exchange.getRequest()
                     .mutate()
-                    .header("Main-Email-ID", email)
+                    .header("Main-Email-ID", email) //gateway include header in http
                     .build();
             ServerWebExchange mutatedExchange = exchange.mutate()
                     .request(mutatedRequest)
