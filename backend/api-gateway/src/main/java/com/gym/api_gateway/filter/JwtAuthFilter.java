@@ -1,23 +1,30 @@
 package com.gym.api_gateway.filter;
 
+import com.gym.api_gateway.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
 public class JwtAuthFilter implements GlobalFilter, Ordered {
+    private final JwtUtil jwtUtil;
+
+    public JwtAuthFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         String path = exchange.getRequest().getPath().toString();
-        System.out.println("Gateway path: " + path);
 
         if (path.startsWith("/auth")) {
             return chain.filter(exchange);
@@ -26,19 +33,38 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {
             return chain.filter(exchange);
         }
-        HttpCookie cookie = exchange.getRequest()
+        HttpCookie userCookie = exchange.getRequest()
                 .getCookies()
-                .getFirst("JWT");
-
-        if (cookie == null) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+                .getFirst("SecuredJWT");
+        System.out.println(userCookie);
+        if (userCookie == null) {
+            return unauthorized(exchange, "Missing JWT");
         }
-        return chain.filter(exchange);
+        try {
+            String token = userCookie.getValue();
+            Claims claims=jwtUtil.validateToken(token);
+            String email = claims.get("sub", String.class);
+            ServerHttpRequest mutatedRequest = exchange.getRequest()
+                    .mutate()
+                    .header("Main-Email-ID", email)
+                    .build();
+            ServerWebExchange mutatedExchange = exchange.mutate()
+                    .request(mutatedRequest)
+                    .build();
+            return chain.filter(mutatedExchange);
+        } catch (Exception e) {
+            return unauthorized(exchange, "Invalid or expired JWT");
+        }
+    }
+
+    private Mono<Void> unauthorized(ServerWebExchange exchange, String msg) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        System.out.println("Unauthorized: " + msg);
+        return exchange.getResponse().setComplete();
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return -1;
     }
 }
