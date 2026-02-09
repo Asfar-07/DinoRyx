@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import NavProfile from "../../components/Navbar/NavProfile";
-import NotifyIcon from "../../components/UI/NotifyIcon";
+import React, { useEffect, useState,useRef } from "react";
+import NavProfile from "@/components/Navbar/NavProfile";
+import NotifyIcon from "@/components/SmallUI/NotifyIcon";
 import { CiSettings } from "react-icons/ci";
 import {
   MdOutlineDashboard,
-  MdOutlineAnalytics,
   MdAttachMoney,
 } from "react-icons/md";
 import { FiUsers } from "react-icons/fi";
@@ -13,15 +12,15 @@ import { CgGym } from "react-icons/cg";
 import { IoIosLogOut } from "react-icons/io";
 import { IoAnalytics } from "react-icons/io5";
 import { SiSimpleanalytics } from "react-icons/si";
-// import { LuPencil } from "react-icons/lu";
 import DashboardPrograms from "./Dashboard-Programs";
 import AnnualIncome from "./AnnualIncome";
 import DashboardSettings from "./Dashboard-Settings";
-import ThemeMode from "../../components/UI/ThemeMode";
+import ThemeMode from "@/components/SmallUI/ThemeMode";
 import StudentView from "./Student-View";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setStudent } from "../../features/dashboard/dashboardSlice";
 import "./dashboard.css";
+import { handleDashboard } from "../../features/dashboard/dashboardService";
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -65,10 +64,22 @@ export default function Dashboard() {
     date: "",
     status: "",
   });
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     dispatch(setStudent(students));
   }, [students, dispatch]);
+
+  useEffect(()=>{
+    if (hasFetched.current) return;
+
+    hasFetched.current = true;
+    handleDashboard.createDashboard().then((res)=>{
+
+    }).catch((e)=>{
+
+    })
+  },[])
 
   function changeSection(e) {
     const selectactive = document.querySelectorAll(".dash-section-active");

@@ -9,7 +9,7 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  const google_captcha_key=process.env.REACT_APP_GOOGLE_RECAPTCHA_CLIENT_KEY;
+  const google_captcha_key=import.meta.env.VITE_GOOGLE_RECAPTCHA_CLIENT_KEY;
 
   const handleSubmit = (e) => {
     e.preventDefault();

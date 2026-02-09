@@ -1,8 +1,8 @@
 import React from "react";
 import "./navbar.css";
 import NavProfile from "./NavProfile";
-import NotifyIcon from "../UI/NotifyIcon";
-import ThemeMode from "../UI/ThemeMode";
+import NotifyIcon from "@/components/SmallUI/NotifyIcon";
+import ThemeMode from "@/components/SmallUI/ThemeMode";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 

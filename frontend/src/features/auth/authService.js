@@ -11,7 +11,7 @@ export const authHandle = {
   signupService: async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:8081/auth/signup",
+        "http://localhost:8080/auth/signup",
         data,
         headerForm,
       );
@@ -26,7 +26,7 @@ export const authHandle = {
   loginService: async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:8081/auth/login",
+        "http://localhost:8080/auth/login",
         data,
         headerForm,
       );
@@ -41,7 +41,7 @@ export const authHandle = {
   googleService: async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:8081/auth/google/provider",
+        "http://localhost:8080/auth/google/provider",
         { token: data },
         { withCredentials: true },
       );
@@ -57,7 +57,7 @@ export const authHandle = {
   logoutService: async () => {
     try {
       const res = await axios.post(
-        "http://localhost:8081/auth/logout",
+        "http://localhost:8080/auth/logout",
         {},
         headerForm,
       );
@@ -72,7 +72,7 @@ export const authHandle = {
   forgotPasswordService: async (email, token) => {
     try {
       const res = await axios.post(
-        "http://localhost:8081/auth/forgot/password",
+        "http://localhost:8080/auth/forgot/password",
         { emailId: email, captchaToken: token },
         headerForm,
       );
@@ -85,7 +85,7 @@ export const authHandle = {
   ResetPasswordService: async (paramToken, newPassword) => {
     try {
       const res = await axios.post(
-        "http://localhost:8081/auth/reset/password",
+        "http://localhost:8080/auth/reset/password",
         { token: paramToken, new_password: newPassword },
         headerForm,
       );

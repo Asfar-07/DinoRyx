@@ -12,7 +12,7 @@ export const handleUser = {
   fetchuser: async ()=>{
       try {
       const res = await axios.get(
-        "http://localhost:8081/user/data/checkme",
+        "http://localhost:8080/user/data/checkme",
         headerForm,
       );
       return res.data;
@@ -25,7 +25,7 @@ export const handleUser = {
   updateUser: async (data) => {
     try {
       const res = await axios.put(
-        "http://localhost:8081/user/data/update",
+        "http://localhost:8080/user/data/update",
         UserDataForm(data), //Structured data and only sending edited data
         headerForm,
       );
@@ -40,7 +40,7 @@ export const handleUser = {
   removeUser: async() => {
      try {
       const res = await axios.delete(
-        "http://localhost:8081/user/data/delete/account",
+        "http://localhost:8080/user/data/delete/account",
         headerForm,
       );
       statusHandle.statusInfo(res.status)
