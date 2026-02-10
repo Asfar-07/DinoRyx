@@ -1,0 +1,21 @@
+.MapHelper {
+  width: 100%;
+  min-height: 60px;
+  background-color: var(--secondary-bg-color);
+  border-radius: 10px;
+}
+
+.MapHelper> div button {
+  width: 35px;
+  height: 35px;
+  background-color: var(--symbol-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+@media (max-width: 640px) {
+  .MapHelper {
+    padding: 10px;
+  }
+}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 const UserDataForm = (data) => {
 
   const collectdata = {}; //duplicate sending data and only sending edited data
@@ -35,5 +36,6 @@ const UserDataForm = (data) => {
   console.log(collectdata);
   return collectdata;
 };
+const DashboardDataForm = ()=>{}
 
 export { UserDataForm };
