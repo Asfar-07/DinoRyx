@@ -14,6 +14,6 @@ public class CompanyLocationModel {
     private long _id;
     private String companyName;
     private String address;
-    private float lat;
-    private float lng;
+    private float latitude;
+    private float longitude;
 }
