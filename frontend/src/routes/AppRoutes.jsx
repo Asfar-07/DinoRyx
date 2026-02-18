@@ -6,6 +6,7 @@ import Profile from "../pages/Profile/Profile";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import CreateCompany from "@/pages/CreateDashboard/CreateCompany.tsx";
+import MainLocation from "@/components/MapUI/MainLocation";
 
 export default function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ export default function AppRoutes() {
            <Route path="/forgot-password" Component={ForgotPassword}></Route>
            <Route path="/reset-password" Component={ResetPassword}></Route>
            <Route path="/create-company" Component={CreateCompany}></Route>
+           <Route path="/nearbylocation" Component={MainLocation}></Route>
        </Routes>
       </BrowserRouter>
     </div>

@@ -1,29 +1,32 @@
-import React, { useEffect, useState,useRef } from "react";
+//@ts-nocheck
+import React, { useEffect, useState, useRef } from "react";
 import NavProfile from "@/components/Navbar/NavProfile";
 import NotifyIcon from "@/components/SmallUI/NotifyIcon";
 import { CiSettings } from "react-icons/ci";
-import {
-  MdOutlineDashboard,
-  MdAttachMoney,
-} from "react-icons/md";
+import { MdOutlineDashboard, MdAttachMoney } from "react-icons/md";
 import { FiUsers } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { CgGym } from "react-icons/cg";
-import { IoIosLogOut } from "react-icons/io";
+import { IoIosLogOut,IoMdInformationCircleOutline  } from "react-icons/io";
 import { IoAnalytics } from "react-icons/io5";
 import { SiSimpleanalytics } from "react-icons/si";
 import DashboardPrograms from "./Dashboard-Programs";
 import AnnualIncome from "./AnnualIncome";
 import DashboardSettings from "./Dashboard-Settings";
+import DashboardAbout from "./Dashboard-About";
 import ThemeMode from "@/components/SmallUI/ThemeMode";
 import StudentView from "./Student-View";
-import { useDispatch } from "react-redux";
-import { setStudent } from "../../features/dashboard/dashboardSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setStudent,
+  setDashboardInfo,
+  setLocationDate
+} from "../../features/dashboard/dashboardSlice";
 import "./dashboard.css";
 import { handleDashboard } from "../../features/dashboard/dashboardService";
+import { calculateAge } from "@/utils/dateHandle";
 
 export default function Dashboard() {
-  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [activesection, setActiveSection] = useState("student");
   const [students, setStudents] = useState([
@@ -57,6 +60,9 @@ export default function Dashboard() {
     },
   ]);
   const [filteredStudents, setFilteredStudents] = useState(students);
+  const [dashboard_Data, setDashboard_Data] = useState({});
+  const [location,setLocation] = useState({});
+  const [orgAge,setOrgAge]= useState("");
   const [newstudentdata, setNewStudentData] = useState({
     name: "",
     age: 0,
@@ -64,22 +70,45 @@ export default function Dashboard() {
     date: "",
     status: "",
   });
-  const hasFetched = useRef(false);
 
+  const hasFetched = useRef(false);
+  const dispatch = useDispatch();
+  const redux_dash_data = useSelector(
+    (state) => state.dashController.dashboardInfo,
+  );
+  const redux_location_data = useSelector(
+    (state) => state.dashController.locationData,
+  );
+ 
   useEffect(() => {
-    dispatch(setStudent(students));
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    const _id = new URLSearchParams(window.location.search).get("dbID");
+
+    if (redux_dash_data == null) {
+      handleDashboard
+        .getDashboardData(_id)
+        .then((response) => {
+          dispatch(setStudent(students));
+          setDashboard_Data(response[0]);
+          setLocation(response[1]);
+          dispatch(setDashboardInfo(response[0]));
+          dispatch(setLocationDate(response[1]))
+          console.log(response[0]);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      setDashboard_Data(redux_dash_data);
+      setLocation(redux_location_data);
+    }
   }, [students, dispatch]);
 
-  useEffect(()=>{
-    if (hasFetched.current) return;
-
-    hasFetched.current = true;
-    handleDashboard.createDashboard().then((res)=>{
-
-    }).catch((e)=>{
-
-    })
-  },[])
+   useEffect(()=>{
+    const Age=calculateAge(dashboard_Data.startedOrg);
+    setOrgAge(Age);
+  },[dashboard_Data])
 
   function changeSection(e) {
     const selectactive = document.querySelectorAll(".dash-section-active");
@@ -93,14 +122,14 @@ export default function Dashboard() {
   const handleSearch = (e) => {
     const value = e.target.value;
     const result = students.filter((student) =>
-      student.name.toLowerCase().includes(value.toLowerCase())
+      student.name.toLowerCase().includes(value.toLowerCase()),
     );
     setFilteredStudents(result);
   };
   const selectProgram = (e) => {
     const value = e.target.value;
     const result = students.filter((student) =>
-      student.program.toLowerCase().includes(value.toLowerCase())
+      student.program.toLowerCase().includes(value.toLowerCase()),
     );
     setFilteredStudents(result);
   };
@@ -148,24 +177,37 @@ export default function Dashboard() {
               {" "}
               <MdOutlineAnalytics /> Analytics
             </li> */}
+            {dashboard_Data.organizer && (
+              <li
+                onClick={(e) => {
+                  setActiveSection("income");
+                  changeSection(e);
+                }}
+              >
+                {" "}
+                <MdAttachMoney /> Income
+              </li>
+            )}
             <li
               onClick={(e) => {
-                setActiveSection("income");
+                setActiveSection("about");
                 changeSection(e);
               }}
             >
               {" "}
-              <MdAttachMoney /> Income
+              <IoMdInformationCircleOutline  /> About
             </li>
-            <li
-              onClick={(e) => {
-                setActiveSection("settings");
-                changeSection(e);
-              }}
-            >
-              {" "}
-              <CiSettings /> Settings
-            </li>
+            {dashboard_Data.organizer && (
+              <li
+                onClick={(e) => {
+                  setActiveSection("settings");
+                  changeSection(e);
+                }}
+              >
+                {" "}
+                <CiSettings /> Settings
+              </li>
+            )}
           </ul>
         </nav>
 
@@ -191,31 +233,34 @@ export default function Dashboard() {
             <img src="https://i.pravatar.cc/80" alt="trainer" />
             <div>
               <small>Trainer Name</small>
-              <h3>USER NAME</h3>
+              <h3>{dashboard_Data.companyName} </h3>
             </div>
           </div>
           <div>
             <small>Certification</small>
-            <p>ACE Certified</p>
+            {dashboard_Data.certificate ===null ? <p>null</p>:<p>{dashboard_Data.certificate}</p>}
+            <p>{dashboard_Data.certificate}</p>
           </div>
           <div>
             <small>Experience</small>
             <p>
               {" "}
-              <IoAnalytics /> 8 Years
+              <IoAnalytics /> {orgAge}
             </p>
           </div>
-          <div style={{ marginRight: "80px" }}>
+          <div style={{ marginRight: "10px" }}>
             <small>Active Students</small>
             <p>
               {" "}
-              <FiUsers /> 10
+              <FiUsers /> {dashboard_Data.employees}
             </p>
           </div>
         </section>
+        {dashboard_Data.organizer && (
         <div className="add-btn">
           <button onClick={() => setShowModal(true)}>+ Add New Student</button>
         </div>
+        )}
         {activesection === "student" && (
           <section className="students">
             <div className="students-dashboard-m-header">
@@ -233,9 +278,7 @@ export default function Dashboard() {
                 <label htmlFor="urPrograms">
                   <SiSimpleanalytics />
                   <select id="urPrograms" onChange={selectProgram}>
-                    <option value="" selected>
-                      All Programs
-                    </option>
+                    <option value="">All Programs</option>
                     <option value="Muscle Gain">Muscle Gain</option>
                     <option value="Weight Loss">Weight Loss</option>
                     <option value="Athletic Training">Athletic Training</option>
@@ -254,7 +297,7 @@ export default function Dashboard() {
                     <th>Program</th>
                     <th>Join Date</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    {dashboard_Data.organizer && <th>Actions</th>}
                   </tr>
                 </thead>
 
@@ -268,14 +311,16 @@ export default function Dashboard() {
                       <td>
                         <span className={`badge ${s.status}`}>{s.status}</span>
                       </td>
-                      <td>
-                        <StudentView
-                          students={s}
-                          index={index}
-                          setStudents={setStudents}
-                          setFilteredStudents={setFilteredStudents}
-                        />
-                      </td>
+                      {dashboard_Data.organizer && (
+                        <td>
+                          <StudentView
+                            students={s}
+                            index={index}
+                            setStudents={setStudents}
+                            setFilteredStudents={setFilteredStudents}
+                          />
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -284,8 +329,13 @@ export default function Dashboard() {
           </section>
         )}
         {activesection === "programs" && <DashboardPrograms />}
-        {activesection === "income" && <AnnualIncome />}
-        {activesection === "settings" && <DashboardSettings />}
+        {dashboard_Data.organizer && activesection === "income" && (
+          <AnnualIncome />
+        )}
+        {activesection == "about" && <DashboardAbout />}
+        {dashboard_Data.organizer && activesection === "settings" && (
+          <DashboardSettings />
+        )}
       </main>
 
       {showModal && (
