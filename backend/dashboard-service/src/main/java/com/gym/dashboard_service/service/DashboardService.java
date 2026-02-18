@@ -12,7 +12,9 @@ import com.gym.dashboard_service.utils.CreateRandomKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class DashboardService {
@@ -36,6 +38,7 @@ public class DashboardService {
 
         if (location.getLongitude() != 0 && location.getLatitude() != 0){  //make sure location available
             location.set_id(locationId);
+            location.setCategory(dashboard.getCategory());
             locationRepository.save(location);
             dashboard.setLocationID(locationId);
         }else{
@@ -51,18 +54,27 @@ public class DashboardService {
 
         return String.valueOf(dashboardId);
     }
-    public Object getDashboardData(long userId,String DashboardId){
+    public ArrayList<Object> getDashboardData(long userId, String DashboardId){
         DashboardStructure dashboard=dashboardRepository.findBy_id(DashboardId).orElseThrow(
                 ()-> new ResourceNotFoundException("dash not found")
         );
-
+        ArrayList<Object> response=new ArrayList<>();
         if(dashboard != null){
+            CompanyLocationModel location=locationRepository.findById(dashboard.getLocationID()).orElse(null);
             if (dashboard.getOwnerID() == userId){
-                return new ResOwnerDashData(dashboard);
+                response.add(new ResOwnerDashData(dashboard));
+                response.add(location);
+                return response;
             }else{
-                return new ResUserDashData(dashboard);
+                response.add(new ResUserDashData(dashboard));
+                response.add(location);
+                return response;
             }
         }
-        return "";
+        return null;
+    }
+    public List<CompanyLocationModel> getFullLocation(){
+        List<CompanyLocationModel> allLocation=locationRepository.findAll();
+        return allLocation;
     }
 }

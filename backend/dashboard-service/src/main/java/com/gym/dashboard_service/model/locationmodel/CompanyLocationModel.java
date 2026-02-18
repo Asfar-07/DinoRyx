@@ -13,6 +13,7 @@ public class CompanyLocationModel {
     @Id
     private long _id;
     private String companyName;
+    private String category;
     private String address;
     private float latitude;
     private float longitude;
