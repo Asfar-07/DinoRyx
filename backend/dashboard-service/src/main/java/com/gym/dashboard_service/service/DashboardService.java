@@ -20,8 +20,8 @@ import java.util.List;
 public class DashboardService {
 
     @Autowired
-    private final DashboardRepository dashboardRepository;
-    private final LocationRepository locationRepository;
+    public final DashboardRepository dashboardRepository;
+    public final LocationRepository locationRepository;
 
     public DashboardService(DashboardRepository dashboardRepository, LocationRepository locationRepository) {
         this.dashboardRepository = dashboardRepository;
@@ -74,7 +74,6 @@ public class DashboardService {
         return null;
     }
     public List<CompanyLocationModel> getFullLocation(){
-        List<CompanyLocationModel> allLocation=locationRepository.findAll();
-        return allLocation;
+        return locationRepository.findAll();
     }
 }

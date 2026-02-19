@@ -17,6 +17,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
     }
 
+    @ExceptionHandler(DataInvalidFormatException.class)
+    public ResponseEntity<?> DataInvalid(DataInvalidFormatException error){
+        System.out.println("invalid Data--"+ error.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid Data");
+    }
+
     //(DuplicateKeyException) handle duplicate key error from Entity or Database (@Indexed(unique = true))
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<?> DuplicateID(DuplicateKeyException error){
