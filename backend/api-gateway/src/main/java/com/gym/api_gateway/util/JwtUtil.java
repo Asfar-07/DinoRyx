@@ -12,7 +12,7 @@ public class JwtUtil {
 
     @Value("${jwt.secret}")
     private String secret;
-    
+
     // validation method for jwt
     public Claims validateToken(String token) {
         return Jwts.parserBuilder()
