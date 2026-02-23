@@ -34,13 +34,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleMongo(MongoException e) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Database crushed");
     }
-    //Normal java exception from code
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> GeneralError(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Server Down");
-    }
+//    //Normal java exception from code
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<?> GeneralError(Exception e) {
+//        return ResponseEntity
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body("Server Down");
+//    }
 }
 
 /* Work Flow

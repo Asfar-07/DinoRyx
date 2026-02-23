@@ -23,7 +23,7 @@ public class ResUserDashData  {
         this.employees=dashboard.getEmployees();
         this.student=dashboard.getStudent();
         this.locationID=dashboard.getLocationID();
-
+        this.organizer=false;
     }
     private String _id;
     private String companyName;
@@ -40,8 +40,9 @@ public class ResUserDashData  {
     private int student;
     private long locationID;
     private boolean organizer;
+
     public void setOrganizer() {
-        organizer = false;
+        this.organizer = false;
     }
 
 }

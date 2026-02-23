@@ -9,9 +9,11 @@ import com.gym.dashboard_service.repository.LocationRepository;
 import com.gym.dashboard_service.repository.StudentRepository;
 import com.gym.dashboard_service.utils.CreateRandomKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+
 
 public class StudentService extends DashboardService{
 

@@ -14,10 +14,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class DashboardService {
+    @Autowired
+    LocationService locationService;
 
     @Autowired
     public final DashboardRepository dashboardRepository;
@@ -39,7 +40,7 @@ public class DashboardService {
         if (location.getLongitude() != 0 && location.getLatitude() != 0){  //make sure location available
             location.set_id(locationId);
             location.setCategory(dashboard.getCategory());
-            locationRepository.save(location);
+            locationService.addLocation(location);
             dashboard.setLocationID(locationId);
         }else{
             dashboard.setLocationID(0);
@@ -63,17 +64,13 @@ public class DashboardService {
             CompanyLocationModel location=locationRepository.findById(dashboard.getLocationID()).orElse(null);
             if (dashboard.getOwnerID() == userId){
                 response.add(new ResOwnerDashData(dashboard));
-                response.add(location);
-                return response;
             }else{
                 response.add(new ResUserDashData(dashboard));
-                response.add(location);
-                return response;
             }
+            response.add(location);
+            return response;
         }
         return null;
     }
-    public List<CompanyLocationModel> getFullLocation(){
-        return locationRepository.findAll();
-    }
+
 }

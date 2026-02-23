@@ -25,7 +25,7 @@ public class ResOwnerDashData  {
         this.student=dashboard.getStudent();
         this.locationID=dashboard.getLocationID();
         this.income=dashboard.getIncome();
-        this.isOwner=true;
+        this.organizer=true;
     }
     private String _id;
     private String companyName;
@@ -44,10 +44,9 @@ public class ResOwnerDashData  {
     private int student;
     private long locationID;
     private IncomeModel income;
-    private boolean isOwner;
     private boolean organizer;
 
     public void setOrganizer() {
-        organizer = false;
+        this.organizer = true;
     }
 }
