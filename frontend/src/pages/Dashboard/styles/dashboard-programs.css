@@ -1,6 +1,6 @@
 .trainer-graphs {
   margin-top: 30px;
-  padding: 24px;
+  padding:clamp(5px,3vw,25px);
   background: var(--secondary-bg-color);
   border-radius: 18px;
 }
@@ -28,4 +28,14 @@
   color: #cfd8dc;
   font-size: 14px;
   margin-bottom: 10px;
+}
+@media (max-width: 650px) {
+  .trainer-graphs h2 {
+    text-align: center;
+  }
+  .graph-card {
+    padding: 10px;
+    max-width: 600px;
+    min-width: 230px;
+}
 }

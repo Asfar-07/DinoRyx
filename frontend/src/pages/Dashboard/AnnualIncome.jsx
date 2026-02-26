@@ -1,4 +1,4 @@
-import "./AnnualIncome.css";
+import "./styles/AnnualIncome.css";
 import {
   AreaChart,
   Area,

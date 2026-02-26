@@ -1,6 +1,6 @@
 .annual-income {
   margin-top: 30px;
-  padding: 24px;
+ padding:clamp(5px,3vw,25px);
   background: var(--secondary-bg-color);
   border-radius: 20px;
   color: #f0f4f8;

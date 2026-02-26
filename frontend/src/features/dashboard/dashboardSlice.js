@@ -5,7 +5,7 @@ export const dashboardSlice = createSlice({
   initialState: {
     dashboardInfo:null,
     locationData:null,
-    student:null,
+    students:null,
     progress:[],
     income:[],
     settings:[]
@@ -17,10 +17,10 @@ export const dashboardSlice = createSlice({
     setLocationDate:(state,action)=>{
       state.locationData=action.payload
     },
-    setStudent:(state,action)=>{
-      state.student=action.payload
+    setStudentData:(state,action)=>{
+      state.students=action.payload
     },
   }
 })
-export const {setStudent,setDashboardInfo,setLocationDate}=dashboardSlice.actions;
+export const {setStudentData,setDashboardInfo,setLocationDate}=dashboardSlice.actions;
 export default dashboardSlice.reducer;

@@ -1,5 +1,5 @@
 import React from 'react'
-import "./dashboard-programs.css"
+import "./styles/dashboard-programs.css"
     import {
   LineChart,
   Line,

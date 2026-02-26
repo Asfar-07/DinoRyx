@@ -1,0 +1,107 @@
+.student-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+.student-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  overflow: auto;
+  width: 360px;
+  height: 100vh;
+  background: #1d2233;
+  color: #f0f4f8;
+  z-index: 10;
+  padding: 24px;
+  animation: slideIn 0.35s ease forwards;
+}
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+}
+
+.sidebar-header span {
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.sidebar-content {
+  position: relative;
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  margin-top: 24px;
+    padding-bottom: 50px;
+}
+
+.info-row {
+  display: flex;
+  font-size: 14px;
+  gap: 25px;
+}
+.info-col{
+   display: flex;
+   flex-direction: column;
+}
+.info-row input,.info-col input{
+  border: 1px solid var(--secondary-text-color);
+  padding: 2px 5px;
+  border-radius: 8px;
+}
+.info-row >div{
+  flex: 1;
+}
+.info-row >input{
+  flex: 1;
+}
+.demo-selector{
+  border: 1px solid var(--secondary-text-color);
+  padding: 2px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+.info-row.highlight strong {
+  color: #56b2bb;
+}
+.student-sidebar-btn{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: end;
+  
+}
+.calender-chart-contoller{
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+.calender-chart-contoller button{
+  cursor: pointer;
+  margin: 5px 0;
+  color: var(--symbol-color);
+}
+.edit-student-btn {
+  margin-top: 24px;
+  margin: 0 5px;
+  padding: 10px;
+  background: #56b2bb;
+  color: #0a0f22;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 600;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

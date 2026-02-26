@@ -7,94 +7,75 @@ import { MdOutlineDashboard, MdAttachMoney } from "react-icons/md";
 import { FiUsers } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { CgGym } from "react-icons/cg";
-import { IoIosLogOut,IoMdInformationCircleOutline  } from "react-icons/io";
-import { IoAnalytics } from "react-icons/io5";
+import { IoIosLogOut, IoMdInformationCircleOutline } from "react-icons/io";
+import { IoAnalytics, IoMenuSharp } from "react-icons/io5";
 import { SiSimpleanalytics } from "react-icons/si";
 import DashboardPrograms from "./Dashboard-Programs";
 import AnnualIncome from "./AnnualIncome";
 import DashboardSettings from "./Dashboard-Settings";
+import { TiDocumentText } from "react-icons/ti";
 import DashboardAbout from "./Dashboard-About";
 import ThemeMode from "@/components/SmallUI/ThemeMode";
-import StudentView from "./Student-View";
+import StudentView from "./Student-View.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setStudent,
+  setStudentData,
   setDashboardInfo,
-  setLocationDate
+  setLocationDate,
 } from "../../features/dashboard/dashboardSlice";
-import "./dashboard.css";
-import { handleDashboard } from "../../features/dashboard/dashboardService";
+import "./styles/dashboard.css";
+import {
+  handleDashboard,
+  handleStudent,
+} from "../../features/dashboard/dashboardService";
 import { calculateAge } from "@/utils/dateHandle";
+import GeneralLoader from "@/components/Loader/GeneralLoader.jsx";
+
 
 export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const [activesection, setActiveSection] = useState("student");
-  const [students, setStudents] = useState([
-    {
-      name: "John Smith",
-      age: 28,
-      program: "Muscle Gain",
-      date: "2024-01-15",
-      status: "excellent",
-    },
-    {
-      name: "Sarah Johnson",
-      age: 32,
-      program: "Weight Loss",
-      date: "2024-02-20",
-      status: "good",
-    },
-    {
-      name: "Emily Davis",
-      age: 29,
-      program: "General Fitness",
-      date: "2024-03-25",
-      status: "average",
-    },
-    {
-      name: "David Brown",
-      age: 35,
-      program: "Weight Loss",
-      date: "2024-04-05",
-      status: "good",
-    },
-  ]);
+  const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState(students);
   const [dashboard_Data, setDashboard_Data] = useState({});
-  const [location,setLocation] = useState({});
-  const [orgAge,setOrgAge]= useState("");
-  const [newstudentdata, setNewStudentData] = useState({
-    name: "",
-    age: 0,
-    program: "",
-    date: "",
-    status: "",
-  });
-
+  const [location, setLocation] = useState({});
+  const [orgAge, setOrgAge] = useState("");
+  const [newstudentdata, setNewStudentData] = useState({name: "",age: 0,program: "",join_date: "",progressStatus: ""});
   const hasFetched = useRef(false);
+  const [isloading, setisLoading] = useState(false);
+  const [sidebar,setSideBar]= useState("dashboard-sidebar-none");
   const dispatch = useDispatch();
+
   const redux_dash_data = useSelector(
     (state) => state.dashController.dashboardInfo,
   );
   const redux_location_data = useSelector(
     (state) => state.dashController.locationData,
   );
- 
+  const redux_students_data = useSelector(
+    (state) => state.dashController.students,
+  );
+
+  useEffect(()=>{
+     dispatch(setStudentData(students));
+     setFilteredStudents(students)
+  },[students])
+
+  //fetch data from backend
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
     const _id = new URLSearchParams(window.location.search).get("dbID");
 
     if (redux_dash_data == null) {
-      handleDashboard
-        .getDashboardData(_id)
-        .then((response) => {
-          dispatch(setStudent(students));
+      setisLoading(true)
+      handleDashboard.getDashboardData(_id).then((response) => {
           setDashboard_Data(response[0]);
           setLocation(response[1]);
           dispatch(setDashboardInfo(response[0]));
-          dispatch(setLocationDate(response[1]))
-          console.log(response[0]);
+          dispatch(setLocationDate(response[1]));
+          setisLoading(false)
+          fetchStudentData();
         })
         .catch((e) => {
           console.log(e);
@@ -102,53 +83,54 @@ export default function Dashboard() {
     } else {
       setDashboard_Data(redux_dash_data);
       setLocation(redux_location_data);
+      setStudents(redux_students_data)
     }
-  }, [students, dispatch]);
 
-   useEffect(()=>{
-    const Age=calculateAge(dashboard_Data.startedOrg);
+    function fetchStudentData() {
+      handleStudent.getStudentData(_id).then((response) => {
+          setStudents(response);
+          setFilteredStudents(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    const Age = calculateAge(dashboard_Data.startedOrg);
     setOrgAge(Age);
-  },[dashboard_Data])
+  }, [dashboard_Data]);
 
   function changeSection(e) {
     const selectactive = document.querySelectorAll(".dash-section-active");
-    console.log(selectactive);
     selectactive.forEach((element) => {
       element.className = "";
     });
     e.target.className = "dash-section-active";
   }
 
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    const result = students.filter((student) =>
-      student.name.toLowerCase().includes(value.toLowerCase()),
-    );
-    setFilteredStudents(result);
-  };
-  const selectProgram = (e) => {
-    const value = e.target.value;
-    const result = students.filter((student) =>
-      student.program.toLowerCase().includes(value.toLowerCase()),
-    );
-    setFilteredStudents(result);
-  };
   function addNewStudent() {
-    console.log(newstudentdata);
-    setShowModal(false);
-    setStudents([...students, newstudentdata]);
-    setFilteredStudents([...filteredStudents, newstudentdata]);
-    setNewStudentData({
-      name: "",
-      age: 0,
-      program: "",
-      date: "",
-      status: "",
-    });
+    handleStudent.createStudentData(newstudentdata, dashboard_Data._id).then((responce) => {
+        if (responce === "success") {
+          setShowModal(false);
+          setStudents([...students, newstudentdata]);
+          setFilteredStudents([...filteredStudents, newstudentdata]);
+          setNewStudentData({name: "",age: 0,program: "",date: "",progressStatus: ""});
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  function controlSideBar(){
+   sidebar==""? setSideBar("dashboard-sidebar-none") : setSideBar("");
   }
   return (
     <div className="dashboard">
-      <aside className="dashboard-sidebar">
+      {isloading && <GeneralLoader />}
+
+      <aside className={`dashboard-sidebar ${sidebar}`}>
         <div className="dashboard-logo">🏋️ Gym Trainer</div>
         <nav>
           <ul>
@@ -195,7 +177,7 @@ export default function Dashboard() {
               }}
             >
               {" "}
-              <IoMdInformationCircleOutline  /> About
+              <IoMdInformationCircleOutline /> About
             </li>
             {dashboard_Data.organizer && (
               <li
@@ -219,7 +201,13 @@ export default function Dashboard() {
 
       <main className="dashboard-main">
         <header className="dashboard-m-header">
-          <h2>Trainer Dashboard</h2>
+          <div className="dashboard-left-header">
+            <IoMenuSharp
+              className=" font-bold text-3xl cursor-pointer dash-menu"
+              onClick={controlSideBar}
+            />
+            <h2 className=" font-bold text-xl">Trainer Dashboard</h2>
+          </div>
 
           <div className="dashboard-ur-profile">
             <NotifyIcon />
@@ -229,104 +217,63 @@ export default function Dashboard() {
         </header>
 
         <section className="user-info-card">
-          <div className="user-info">
-            <img src="https://i.pravatar.cc/80" alt="trainer" />
-            <div>
-              <small>Trainer Name</small>
-              <h3>{dashboard_Data.companyName} </h3>
-            </div>
-          </div>
-          <div>
-            <small>Certification</small>
-            {dashboard_Data.certificate ===null ? <p>null</p>:<p>{dashboard_Data.certificate}</p>}
-            <p>{dashboard_Data.certificate}</p>
-          </div>
-          <div>
-            <small>Experience</small>
-            <p>
-              {" "}
-              <IoAnalytics /> {orgAge}
-            </p>
-          </div>
-          <div style={{ marginRight: "10px" }}>
-            <small>Active Students</small>
-            <p>
-              {" "}
-              <FiUsers /> {dashboard_Data.employees}
-            </p>
-          </div>
-        </section>
-        {dashboard_Data.organizer && (
-        <div className="add-btn">
-          <button onClick={() => setShowModal(true)}>+ Add New Student</button>
-        </div>
-        )}
-        {activesection === "student" && (
-          <section className="students">
-            <div className="students-dashboard-m-header">
-              <h3>My Students</h3>
-
-              <div className="studentuser-filters">
-                <label htmlFor="userSearch">
-                  <FaSearch />
-                  <input
-                    id="userSearch"
-                    placeholder="Search students..."
-                    onChange={handleSearch}
-                  />
-                </label>
-                <label htmlFor="urPrograms">
-                  <SiSimpleanalytics />
-                  <select id="urPrograms" onChange={selectProgram}>
-                    <option value="">All Programs</option>
-                    <option value="Muscle Gain">Muscle Gain</option>
-                    <option value="Weight Loss">Weight Loss</option>
-                    <option value="Athletic Training">Athletic Training</option>
-                    <option value="General Fitness">General Fitness</option>
-                  </select>
-                </label>
+          <img src="https://i.pravatar.cc/80" alt="trainer" />
+          <main>
+            <div className="user-info">
+              <div>
+                <small>Trainer Name</small>
+                <h3>{dashboard_Data.companyName} </h3>
               </div>
             </div>
-
-            <div className="studentuser-table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Program</th>
-                    <th>Join Date</th>
-                    <th>Status</th>
-                    {dashboard_Data.organizer && <th>Actions</th>}
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {filteredStudents.map((s, index) => (
-                    <tr key={index}>
-                      <td>{s.name}</td>
-                      <td>{s.age}</td>
-                      <td>{s.program}</td>
-                      <td>{s.date}</td>
-                      <td>
-                        <span className={`badge ${s.status}`}>{s.status}</span>
-                      </td>
-                      {dashboard_Data.organizer && (
-                        <td>
-                          <StudentView
-                            students={s}
-                            index={index}
-                            setStudents={setStudents}
-                            setFilteredStudents={setFilteredStudents}
-                          />
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+            <aside>
+              <div>
+                <small>Certification</small>
+                {dashboard_Data.certificate === null ? (
+                  <p>
+                    <TiDocumentText />
+                    null
+                  </p>
+                ) : (
+                  <p>
+                    <TiDocumentText />
+                    {dashboard_Data.certificate}
+                  </p>
+                )}
+                <p>{dashboard_Data.certificate}</p>
+              </div>
+              <div>
+                <small>Experience</small>
+                <p>
+                  {" "}
+                  <IoAnalytics /> {orgAge}
+                </p>
+              </div>
+              <div style={{ marginRight: "10px" }}>
+                <small>Active Students</small>
+                <p>
+                  {" "}
+                  <FiUsers /> {dashboard_Data.employees}
+                </p>
+              </div>
+            </aside>
+          </main>
+        </section>
+        {dashboard_Data.organizer && (
+          <div className="add-btn">
+            <button onClick={() => setShowModal(true)}>
+              + Add New Student
+            </button>
+          </div>
+        )}
+        {activesection === "student" && (
+          <StudentView
+            setStudents={setStudents}
+            setFilteredStudents={setFilteredStudents}
+            organizer={dashboard_Data.organizer}
+            filteredStudents={filteredStudents}
+            dashboardID={dashboard_Data._id}
+            students={students}
+          />
         )}
         {activesection === "programs" && <DashboardPrograms />}
         {dashboard_Data.organizer && activesection === "income" && (
@@ -402,7 +349,7 @@ export default function Dashboard() {
                 onChange={(e) => {
                   setNewStudentData({
                     ...newstudentdata,
-                    date: e.target.value,
+                    join_date: e.target.value,
                   });
                 }}
               />

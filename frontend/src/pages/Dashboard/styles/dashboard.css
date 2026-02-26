@@ -10,6 +10,7 @@
   height: 100vh;
   padding: 20px 0;
   background-color: var(--secondary-bg-color);
+  border: 1px solid var(--primary-bg-color);
   display: flex;
   flex-direction: column;
   color: var(--primary-text-color);
@@ -87,7 +88,9 @@
   justify-content: space-between;
   align-items: center;
 }
-
+.dash-menu{
+  display: none;
+}
 .dashboard-m-header h2 {
   color: var(--primary-text-color);
 }
@@ -98,23 +101,40 @@
   gap: 5px;
 }
 
-
 .user-info-card {
   background-color: var(--secondary-bg-color);
   border-radius: 16px;
-  padding:30px 20px;
+  padding: 30px 20px;
   margin: 25px 0;
-  display:flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   color: var(--primary-text-color);
 }
-
+.user-info-card main {
+  display: flex;
+  flex: 1;
+  padding-left: 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+.user-info-card main aside {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
 .user-info {
   display: flex;
   align-items: center;
   gap: 20px;
   margin-left: 10px;
+}
+.user-info > :first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
 }
 
 .user-info small {
@@ -124,32 +144,35 @@
 .user-info h3 {
   margin: 0px;
   color: var(--primary-text-color);
+  font-size: clamp(15px, 2vw, 20px);
+  font-weight: bold;
 }
 
-.user-info img {
+.user-info-card img {
   border-radius: 50%;
 }
 
-
 .user-info-card small {
   color: var(--secondary-text-color);
+  font-size: clamp(5px, 2vw, 15px);
 }
 
 .user-info-card p {
-   margin: 0px;
+  margin: 0px;
   color: var(--primary-text-color);
+  font-size: clamp(10px, 2vw, 18px);
   font-weight: 500;
 }
-.user-info-card svg{
+.user-info-card svg {
   color: var(--symbol-color);
   margin-right: 8px;
 }
-.add-btn{
+.add-btn {
   width: 100%;
   display: flex;
   justify-content: end;
 }
-.add-btn button{
+.add-btn button {
   background-color: var(--symbol-color);
   color: #000;
   padding: 12px 18px;
@@ -160,115 +183,6 @@
   margin-bottom: 25px;
 }
 
-.students {
-  background-color: var(--secondary-bg-color);
-  border-radius: 16px;
-  padding: 20px;
-  color: var(--primary-text-color);
-}
-
-.students-dashboard-m-header h3 {
-  color: var(--primary-text-color);
-}
-
-.students-dashboard-m-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.studentuser-filters {
-  display: flex;
-  gap: 10px;
-  justify-content: end;
-}
-
-.studentuser-filters label{
-  display: flex;
-  align-items: center;
-  background-color: var(--primary-bg-color);
-  border: 1px solid #2a324d;
-  color: var(--primary-text-color);
-  height: 35px;
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-.studentuser-filters label input{
-  width: 200px;
-  border: 0;
-  background-color: transparent;
-}
-.studentuser-filters label select{
-  /* width: 100px; */
-  color: var(--primary-text-color);
-  border: 0;
-  background-color: transparent;
-  font-weight: bold;
-}
-.studentuser-filters label select option{
-  /* width: 100px; */
-  color: var(--primary-text-color);
-  border: 0;
-  background-color: var(--primary-bg-color);
-}
-.studentuser-filters label svg{
-  font-size: 14px;
-  margin: 0 5px;
-  top: -1px;
-}
-.studentuser-filters input::placeholder {
-  color: var(--secondary-text-color);
-}
-.studentuser-filters input:focus, .studentuser-filters select:focus {
-  border: none;
-  outline: none;
-  color: var(--primary-text-color);
-}
-.studentuser-table-wrapper table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.studentuser-table-wrapper th {
-  color: var(--secondary-text-color);
-  font-weight: 500;
-}
-
-.studentuser-table-wrapper th,
-.studentuser-table-wrapper td {
-  padding: 14px;
-  border-bottom: 1px solid #2a324d;
-  text-align: left;
-}
-
-.studentuser-table-wrapper td {
-  color: var(--primary-text-color);
-}
-
-.studentuser-table-wrapper .badge {
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  text-transform: capitalize;
-  color: #fff;
-}
-
-.studentuser-table-wrapper .excellent {
-  background-color: #1c8c8c;
-}
-.studentuser-table-wrapper .good {
-  background-color: #274c9c;
-}
-.studentuser-table-wrapper .average {
-  background-color: #a47b00;
-}
-.dash-action-btn button{
-  cursor: pointer;
-  background-color: transparent;
-  border: 0;
-  color: var(--primary-text-color);
-  font-size: 18px;
-}
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;
@@ -353,10 +267,82 @@
 
 @media (max-width: 900px) {
   .dashboard-sidebar {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
   }
 
+  .dashboard-m-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    padding: 0 30px;
+    background-color: var(--secondary-bg-color);
+    z-index: 10;
+  }
+  .dash-menu{
+  display: block;
+}
   .dashboard-main {
-    overflow-y: scroll;
+    padding-top: 100px;
+  }
+  .dashboard-left-header {
+    display: flex;
+    align-items: center;
+    flex-grow: 20px;
+    gap: 40px;
+  }
+  .dashboard-sidebar-none {
+    display: none;
+  }
+}
+@media (max-width: 650px) {
+  .dashboard-main {
+    padding: 24px 10px;
+    padding-top: 100px;
+  }
+  .user-info-card {
+    align-items: start;
+    flex-direction: row;
+  }
+  .user-info-card > main {
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    gap: 10px;
+  }
+  .user-info-card img {
+    width: 50px;
+    height: 50px;
+  }
+  .user-info-card main aside {
+    justify-content: end;
+    width: 100%;
+    gap: 10px;
+    text-align: center;
+  }
+  .user-info-card aside > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column-reverse;
+    width: clamp(40px, 17vw, 140px);
+    height: 50px;
+    background-color: var(--symbol-color);
+    color:white;
+    border-radius: 5px;
+  }
+  .user-info-card p {
+    color: white;
+  
+  }
+  .user-info-card > :last-child svg {
+    display: none;
+  }
+  .students-dashboard-m-header > h3 {
+    display: none;
   }
 }
