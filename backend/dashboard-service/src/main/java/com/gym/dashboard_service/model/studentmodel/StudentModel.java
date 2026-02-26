@@ -23,6 +23,7 @@ public class StudentModel {
     private long UserId; // who added
     private String progressStatus;
     private String address;
+    private  String program;
     private String contact;
     private long created;
     private long update_Date;

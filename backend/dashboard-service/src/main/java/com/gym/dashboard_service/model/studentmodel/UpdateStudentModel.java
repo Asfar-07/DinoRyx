@@ -17,6 +17,7 @@ public class UpdateStudentModel {
     private String progressStatus;
     private String address;
     private String contact;
+    private String dashboardId;
     private long update_Date;
     private boolean connection;
     private List<Long> connectionMsg;

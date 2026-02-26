@@ -4,24 +4,20 @@ import com.gym.dashboard_service.exception.DataInvalidFormatException;
 import com.gym.dashboard_service.exception.ResourceNotFoundException;
 import com.gym.dashboard_service.model.studentmodel.StudentModel;
 import com.gym.dashboard_service.model.studentmodel.UpdateStudentModel;
-import com.gym.dashboard_service.repository.DashboardRepository;
-import com.gym.dashboard_service.repository.LocationRepository;
 import com.gym.dashboard_service.repository.StudentRepository;
 import com.gym.dashboard_service.utils.CreateRandomKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 
-
-public class StudentService extends DashboardService{
+@Service
+public class StudentService {
 
     @Autowired
     private final StudentRepository studentRepository;
 
-    public StudentService(DashboardRepository dashboardRepository, LocationRepository locationRepository, StudentRepository studentRepository) {
-        super(dashboardRepository, locationRepository);
+    public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 
@@ -43,12 +39,11 @@ public class StudentService extends DashboardService{
     }
 
     public void updateStudent(StudentModel student, UpdateStudentModel updateStudentModel){
-        student.setName(updateStudentModel.getName());
-        student.setAge(updateStudentModel.getAge());
-        student.setAge(updateStudentModel.getAge());
-        student.setProgressStatus(updateStudentModel.getProgressStatus());
-        student.setAddress(updateStudentModel.getAddress());
-        student.setContact(updateStudentModel.getContact());
+        if(updateStudentModel.getName()!=null) student.setName(updateStudentModel.getName());
+        if(updateStudentModel.getAge()!=0) student.setAge(updateStudentModel.getAge());
+        if(updateStudentModel.getProgressStatus()!=null) student.setProgressStatus(updateStudentModel.getProgressStatus());
+        if(updateStudentModel.getAddress()!=null) student.setAddress(updateStudentModel.getAddress());
+        if(updateStudentModel.getContact()!=null) student.setContact(updateStudentModel.getContact());
         Date date = new Date(System.currentTimeMillis());
         student.setUpdate_Date(date.getTime());
         studentRepository.save(student);
