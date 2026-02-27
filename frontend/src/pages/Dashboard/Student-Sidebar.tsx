@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import DeleteAlertBox from "@/components/SmallUI/DeleteAlertBox";
 import { MdDeleteOutline } from "react-icons/md";
 import { LuPencil } from "react-icons/lu";
-import BuildCalender from '@/components/SmallUI/BuildCalender';
+import BuildCalender from '@/components/SmallUI/ShowPaymentCalender';
 import GeneralLoader from '@/components/Loader/GeneralLoader';
 import { handleStudent } from '@/features/dashboard/dashboardService';
 import ComboboxWithClear from '@/components/SmallUI/ComboboxWithClear';
@@ -161,7 +161,7 @@ export default function StudentSidebar({ student, setStudent, setOpenIndex, dele
                     </div>
 
                     <div className="info-row">
-                        <div className="calender-chart" > <h4>Fees</h4>
+                        <div className="calender-chart" >
                             <BuildCalender />
                             <div className='calender-chart-contoller'>
                                 <button>Payment</button>

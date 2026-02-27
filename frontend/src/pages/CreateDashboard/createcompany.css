@@ -50,7 +50,7 @@
   font-size: 14px;
 }
 
-.company-container input, textarea, select {
+.company-container input,.company-container textarea,.company-container select {
   padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
