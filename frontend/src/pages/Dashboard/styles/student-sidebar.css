@@ -68,14 +68,7 @@
 .info-row.highlight strong {
   color: #56b2bb;
 }
-.student-sidebar-btn{
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  justify-content: end;
-  
-}
+
 .calender-chart-contoller{
   width: 100%;
   display: flex;
@@ -96,6 +89,9 @@
   border-radius: 50%;
   cursor: pointer;
   font-weight: 600;
+}
+.paymentActive{
+  border: 5px solid white;
 }
 @keyframes slideIn {
   from {

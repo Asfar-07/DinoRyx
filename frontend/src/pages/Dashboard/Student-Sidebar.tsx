@@ -163,9 +163,6 @@ export default function StudentSidebar({ student, setStudent, setOpenIndex, dele
                     <div className="info-row">
                         <div className="calender-chart" >
                             <BuildCalender />
-                            <div className='calender-chart-contoller'>
-                                <button>Payment</button>
-                            </div>
                         </div>
                     </div>
                     <div className="info-col">
