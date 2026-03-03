@@ -27,6 +27,7 @@ import "./styles/dashboard.css";
 import {
   handleDashboard,
   handleStudent,
+  handlePayment
 } from "../../features/dashboard/dashboardService";
 import { calculateAge } from "@/utils/dateHandle";
 import GeneralLoader from "@/components/Loader/GeneralLoader.jsx";
@@ -42,8 +43,10 @@ export default function Dashboard() {
   const [orgAge, setOrgAge] = useState("");
   const [newstudentdata, setNewStudentData] = useState({name: "",age: 0,program: "",join_date: "",progressStatus: ""});
   const hasFetched = useRef(false);
+  const hasReduxed = useRef(false);
   const [isloading, setisLoading] = useState(false);
   const [sidebar,setSideBar]= useState("dashboard-sidebar-none");
+  const [dashboard_id,setDashboard_Id] = useState(new URLSearchParams(window.location.search).get("dbID"))
   const dispatch = useDispatch();
 
   const redux_dash_data = useSelector(
@@ -55,21 +58,42 @@ export default function Dashboard() {
   const redux_students_data = useSelector(
     (state) => state.dashController.students,
   );
-
-  useEffect(()=>{
-     dispatch(setStudentData(students));
-     setFilteredStudents(students)
-  },[students])
+  function arrangePayment(record){
+    const finalStudent=students.map((data,index)=>{
+      let collect=[];
+      for (let i = 0; i < record.length; i++) {
+        if(record[i].studentId===data._id){
+          collect=[...collect,record[i]]
+        } 
+      }
+      return {...data,payments:collect};
+    })
+      // setStudents(finalStudent)
+      setFilteredStudents(finalStudent)
+      console.log(finalStudent)
+      
+  }
+  useEffect(() => {
+    if (hasReduxed.current && students.length === 0)  return;
+    hasReduxed.current = true;
+    dispatch(setStudentData(students));
+    setFilteredStudents(students);
+    handlePayment.collectPayment(dashboard_id).then((response)=>{
+      arrangePayment(response)
+    }).catch((error)=>{
+      console.log(error)
+    })
+  }, [students]);
 
   //fetch data from backend
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
-    const _id = new URLSearchParams(window.location.search).get("dbID");
+
 
     if (redux_dash_data == null) {
       setisLoading(true)
-      handleDashboard.getDashboardData(_id).then((response) => {
+      handleDashboard.getDashboardData(dashboard_id).then((response) => {
           setDashboard_Data(response[0]);
           setLocation(response[1]);
           dispatch(setDashboardInfo(response[0]));
@@ -87,7 +111,7 @@ export default function Dashboard() {
     }
 
     function fetchStudentData() {
-      handleStudent.getStudentData(_id).then((response) => {
+      handleStudent.getStudentData(dashboard_id).then((response) => {
           setStudents(response);
           setFilteredStudents(response);
         })

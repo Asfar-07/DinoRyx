@@ -135,6 +135,7 @@ export default function StudentView({ setStudents, setFilteredStudents, organize
                        <StudentSidebar 
                        student={s}
                        setStudent={setStudents}
+                       dashboardId={dashboardID}
                        setOpenIndex={setOpenIndex}
                        deleteStudet={deleteStudet}
                        index={index}/>
@@ -188,6 +189,7 @@ export default function StudentView({ setStudents, setFilteredStudents, organize
                        <StudentSidebar 
                        setStudent={setStudents}
                        student={student}
+                       dashboardId={dashboardID}
                        setOpenIndex={setOpenIndex}
                        deleteStudet={deleteStudet}
                        index={index}/>

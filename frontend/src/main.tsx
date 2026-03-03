@@ -4,16 +4,19 @@ import './index.css';
 import App from './App';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {Provider} from "react-redux"
+import { TooltipProvider } from './components/ui/tooltip';
 import store from './app/store';
 
 
 ReactDOM.createRoot( document.getElementById("root")!).render(
-   <React.StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_PROVIDER_KEY}>
-    <Provider store={store}>
-    <App />
-    </Provider>
-    </GoogleOAuthProvider>
+  <React.StrictMode>
+    <TooltipProvider>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_PROVIDER_KEY}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </GoogleOAuthProvider>
+    </TooltipProvider>
   </React.StrictMode>
 )
 

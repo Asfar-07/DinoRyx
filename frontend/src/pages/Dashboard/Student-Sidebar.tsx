@@ -12,11 +12,12 @@ import "./styles/student-sidebar.css"
 type studentSideBarProps = {
     student: any,
     setStudent: any,
+    dashboardId:string,
     setOpenIndex: Function,
     deleteStudet: Function,
     index: number
 }
-export default function StudentSidebar({ student, setStudent, setOpenIndex, deleteStudet, index }: studentSideBarProps) {
+export default function StudentSidebar({ student, setStudent, setOpenIndex, deleteStudet, index, dashboardId }: studentSideBarProps) {
     type studentModel = {
         _id: number,
         name: string,
@@ -162,7 +163,7 @@ export default function StudentSidebar({ student, setStudent, setOpenIndex, dele
 
                     <div className="info-row">
                         <div className="calender-chart" >
-                            <BuildCalender />
+                            <BuildCalender studentId={student._id} dashboardId={dashboardId} student={student}/>
                         </div>
                     </div>
                     <div className="info-col">

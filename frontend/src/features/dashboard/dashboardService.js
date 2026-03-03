@@ -97,3 +97,30 @@ export const handleStudent ={
     }
   },
 }
+export const handlePayment={
+  collectPayment:async(dash_id)=>{
+     try {
+      const res = await axios.get(
+        `http://localhost:8080/dashboard/fetch/payment/record?dashID=${dash_id}`,
+        headerForm,
+      );
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  },
+  savePayment:async(data)=>{
+    try {
+      const res = await axios.post(
+        "http://localhost:8080/dashboard/save/payment/record",
+        data,
+        headerForm,
+      );
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+}
