@@ -25,6 +25,7 @@ public class StudentModel {
     private String address;
     private  String program;
     private String contact;
+    private String note;
     private long created;
     private long update_Date;
     private boolean connection;

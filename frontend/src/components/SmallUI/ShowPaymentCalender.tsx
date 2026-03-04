@@ -1,4 +1,4 @@
-import React, { useState, type ReactEventHandler } from 'react'
+import React, { useState } from 'react'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react"
 import { TfiClose } from "react-icons/tfi";
@@ -42,7 +42,7 @@ export default function ShowPaymentCalender({ studentId, dashboardId, student }:
     message: ""
   })
   const months = ["JAN", "FEB", "APR", "MAR", 'MAY', 'JUN', 'JUL', 'AGT', "SEP", 'OCT', "NEV", 'DEC'];
-  const starting_date = "2025-04-1";
+  const starting_date = student.join_date;
 
   function beforeStaring(monthIndex: number) {
     if (Number(selectedYear) >= Number(starting_date.split("-")[0])) {
