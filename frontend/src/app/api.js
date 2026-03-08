@@ -20,7 +20,7 @@ apiConnection.interceptors.response.use(
     console.log(error.response?.status, !originalRequest._retry);
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry && originalRequest.url != "/auth/refresh" 
     ) {
       originalRequest._retry = true;
 
@@ -28,7 +28,9 @@ apiConnection.interceptors.response.use(
         await apiConnection.post("/auth/refresh");
         return apiConnection(originalRequest);
       } catch (refreshError) {
-        window.location.href = "/login";
+         if(originalRequest.url != "/user/data/me" ){
+          window.location.href = "/login";
+         }
         return Promise.reject(refreshError);
       }
     }

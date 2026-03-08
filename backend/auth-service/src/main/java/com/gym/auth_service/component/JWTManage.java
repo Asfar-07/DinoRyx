@@ -19,7 +19,7 @@ public class JWTManage {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
     long expireAccessTime = 1000 * 60 * 15;
-    long expireRefreshTime = 1000 * 60 * 15;
+    long expireRefreshTime = 7 * 24 * 60 * 60 * 1000;
     public String generateAccessToken(String email,long userId){
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
