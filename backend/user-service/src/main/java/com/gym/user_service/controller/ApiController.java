@@ -21,7 +21,8 @@ public class ApiController {
         return "user Home";
     }
     @GetMapping(value = "/checkme")
-    public ResponseEntity<HashMap> CheckUser(@RequestHeader("Main-Email-ID") String email){
+    public ResponseEntity<HashMap> CheckUser(@RequestHeader("Email-ID") String email){
+        System.out.println(email);
         Object[] response=service.FetchUser(email);
         if(response[0].equals(true)){
             return ResponseEntity.ok((HashMap) response[2]);
@@ -30,13 +31,13 @@ public class ApiController {
         }
     }
     @PutMapping(value="/update")
-    public ResponseEntity<String> UserUpdate(@RequestHeader("Main-Email-ID") String email, @RequestBody UpdateUserPrint new_userdata){
+    public ResponseEntity<String> UserUpdate(@RequestHeader("Email-ID") String email, @RequestBody UpdateUserPrint new_userdata){
         boolean response=service.UpdateUser(email,new_userdata);
         if(response) return ResponseEntity.ok("success");
         return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
     @DeleteMapping(value="/delete/account")
-    public  ResponseEntity<String> DeleteAccount( @RequestHeader("Main-Email-ID") String email){
+    public  ResponseEntity<String> DeleteAccount( @RequestHeader("Email-ID") String email){
         boolean response=service.DeleteService(email);
         if(response) return ResponseEntity.ok("success");
         return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

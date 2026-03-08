@@ -50,10 +50,12 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         try {
             String token = userCookie.getValue();
             Claims claims=jwtUtil.validateToken(token); // check cookie validation (expire time, genuine)
-            String email = claims.get("sub", String.class); // extract header from jwt
+            String userId = claims.get("sub", String.class);
+            String email = claims.get("email", String.class); // extract header from jwt
             ServerHttpRequest mutatedRequest = exchange.getRequest()
                     .mutate()
-                    .header("Main-Email-ID", email) //gateway include header in http
+                    .header("User-ID",userId)
+                    .header("Email-ID", email) //gateway include header in http
                     .build();
             ServerWebExchange mutatedExchange = exchange.mutate()
                     .request(mutatedRequest)

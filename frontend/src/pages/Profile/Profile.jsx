@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { handleUser } from "../../features/user/userService";
 import { addUser } from "../../features/user/userSlice";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import Navbar from "../../components/Navbar/Navbar";
 import { milliTOdate } from "../../utils/dateHandle";
+import GeneralLoader from "@/components/Loader/GeneralLoader";
 import "./profile.css";
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({joindate:""});
   const [update_profile, setUpdateprofile] = useState({});
+    const hasFetched = useRef(false);
+  const [isLoading,setIsLoading]=useState(false);
 
   let navigate = useNavigate();
   const dispatch=useDispatch();
 
   useEffect(() => {
+    if(hasFetched.current) return;
+    hasFetched.current=true;
+    setIsLoading(true)
     handleUser
       .fetchuser()
       .then((data) => {
+        setIsLoading(false)
         dispatch(addUser(data));
         console.log(data);
         setProfile(data)
         setProfile(P=>({...P,joindate:milliTOdate(data.joindate)}))
       })
       .catch((e) => {
-        e.response?.status === 401 && navigate("/login");
+        // e.response?.status === 401 && navigate("/login");
       });
   }, [navigate, dispatch]);
 
@@ -45,22 +52,25 @@ export default function Profile() {
       })
       .catch((e) => {
         console.log(e.response.status);
-        e.response?.status === 401 && navigate("/login");
+        // e.response?.status === 401 && navigate("/login");
       });
   };
 
   const deleteAccount= ()=>{
     handleUser.removeUser().then((data) => {
-
+      navigate("/login")
       })
       .catch((e) => {
         console.log(e.response.status);
-        e.response?.status === 401 && navigate("/login");
+        // e.response?.status === 401 && navigate("/login");
       });
   }
 
   return (
     <>
+    {isLoading && 
+    <GeneralLoader />
+    }
       <Navbar />
        <div className="account-dashboard">
       <div className="profile-card">

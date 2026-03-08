@@ -1,19 +1,14 @@
-import axios from "axios";
+//@ts-nocheck
 import { statusHandle } from "../../utils/statusHandle";
 import { UserDataForm } from "../../utils/databaseForm";
+import { apiConnection } from "@/app/api";
 
-const headerForm = {
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true,
-};
+
 export const handleUser = {
   fetchuser: async ()=>{
       try {
-      const res = await axios.get(
-        "http://localhost:8080/user/data/checkme",
-        headerForm,
+      const res = await apiConnection.get(
+        "/user/data/checkme",
       );
       return res.data;
     } catch (e) {
@@ -24,10 +19,9 @@ export const handleUser = {
   },
   updateUser: async (data) => {
     try {
-      const res = await axios.put(
-        "http://localhost:8080/user/data/update",
+      const res = await apiConnection.put(
+        "/user/data/update",
         UserDataForm(data), //Structured data and only sending edited data
-        headerForm,
       );
       statusHandle.statusInfo(res.status)
       return res.data;
@@ -39,9 +33,8 @@ export const handleUser = {
   },
   removeUser: async() => {
      try {
-      const res = await axios.delete(
-        "http://localhost:8080/user/data/delete/account",
-        headerForm,
+      const res = await apiConnection.delete(
+        "/user/data/delete/account",
       );
       statusHandle.statusInfo(res.status)
       return res.data;

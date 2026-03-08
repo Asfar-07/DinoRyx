@@ -1,0 +1,39 @@
+//@ts-nocheck
+import axios from "axios";
+
+
+const headerForm = {
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+};
+const apiConnection=axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_URL,
+  withCredentials: true
+})
+
+apiConnection.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+    console.log(error.response?.status, !originalRequest._retry);
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        await apiConnection.post("/auth/refresh");
+        return apiConnection(originalRequest);
+      } catch (refreshError) {
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+export {apiConnection}

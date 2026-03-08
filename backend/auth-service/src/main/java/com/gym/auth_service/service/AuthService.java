@@ -20,8 +20,9 @@ public class AuthService {
     @Autowired
     PasswordResetRepo resetRepo;
     private final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+    HashMap<String, Object> response=new HashMap<>();
 
-    public Object[] signupService(UserDataModel userdata){
+    public HashMap<String,Object> signupService(UserDataModel userdata){
         Random random = new Random();
         if(repository.findByEmail(userdata.getEmail()).orElse(null) == null){
             long numberRID = (long) (100000 + random.nextInt(900000)) *(100000 + random.nextInt(900000));
@@ -39,37 +40,53 @@ public class AuthService {
 
             repository.save(userdata);
 
-            return new Object[]{true,"New User Added"};
+            this.response.put("status",true);
+            this.response.put("message","New User Added");
+            this.response.put("data",userdata);
+            return this.response;
         }else {
-            return new Object[]{false,"Email Existed"};
+            response.put("status",false);
+            response.put("message","Email Existed");
+            response.put("data",null);
+            return  this.response;
         }
     }
-    public Object[] loginService(UserDataModel userdata) {
-        if (repository.findByEmail(userdata.getEmail()).orElse(null) != null) {
-            final String realPassword = repository.findByEmail(userdata.getEmail()).get().getPassword();
-            if (passwordEncoder.matches(userdata.getPassword(), realPassword)){
-                userdata=repository.findByEmail(userdata.getEmail()).orElse(null);
-                return new Object[]{true, "Password Matching"};
+    public HashMap<String,Object> loginService(UserDataModel userdata) {
+        final String enterPassword=userdata.getPassword();
+        userdata=repository.findByEmail(userdata.getEmail()).orElse(null);
+        if (userdata != null) {
+            final String realPassword = userdata.getPassword();
+            if (passwordEncoder.matches(enterPassword, realPassword)){
+                this.response.put("status",true);
+                this.response.put("message","Password Matching");
+                this.response.put("data",userdata);
+                return this.response;
             }
             else {
-                return new Object[]{false, "Password Not Match"};
+                this.response.put("status",false);
+                this.response.put("message","Password Not Match");
+                this.response.put("data",null);
+                return this.response;
             }
-
         } else {
-            return new Object[]{false, "Not Found Email"};
+            this.response.put("status",false);
+            this.response.put("message","Not Found Email");
+            this.response.put("data",null);
+            return this.response;
         }
     }
-    public Object[] googleService(Map<String,String> user){
+    public HashMap<String,Object>  googleService(Map<String,String> user){
         Random random = new Random();
-        UserDataModel userData=new UserDataModel();
+        UserDataModel userData=repository.findByEmail(user.get("email")).orElse(null);
         if(user.get("email") == null){
-            return new Object[]{false};
-        }else {
+            this.response.put("status",false);
+            return this.response;
+        }
+
+        if (userData == null){
             userData.setEmail(user.get("email"));
             userData.setName(user.get("name"));
             userData.setPicture(user.get("picture"));
-        }
-        if (repository.findByEmail(userData.getEmail()).orElse(null) == null){
             long numberRID = (long) (100000 + random.nextInt(900000)) *(100000 + random.nextInt(900000));
             userData.setId(numberRID);
 
@@ -78,9 +95,13 @@ public class AuthService {
 
             userData.setAuth_provider("google");
             repository.save(userData);
-            return new Object[] {true};
+            this.response.put("status",true);
+            this.response.put("data",userData);
+            return this.response;
         }else {
-            return new Object[] {true};
+            this.response.put("status",true);
+            this.response.put("data",userData);
+            return this.response;
         }
     }
     public boolean ResetPassword(String newPassword, String tokenId){

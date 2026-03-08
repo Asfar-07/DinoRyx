@@ -9,23 +9,37 @@ public class CookieManage {
     public CookieManage(HttpServletResponse response){
         this.response=response;
     }
-    public void createCookie(String Token){
-        ResponseCookie cookie= ResponseCookie.from("SecuredJWT",Token).httpOnly(true)
+    public void createCookie(String accessToken,String refreshToken){
+        ResponseCookie accessCookie= ResponseCookie.from("SecuredJWT",accessToken).httpOnly(true)
                 .secure(false)
                 .path("/")
                 .sameSite("Lax")
                 .maxAge(15 * 60)
                 .build();
-        this.response.addHeader(HttpHeaders.SET_COOKIE,cookie.toString());
+        ResponseCookie refreshCookie= ResponseCookie.from("SecuredREFRESH",refreshToken).httpOnly(true)
+                .secure(false)
+                .path("/auth/refresh")
+                .sameSite("Lax")
+                .maxAge(7 * 24 * 60 * 60)
+                .build();
+        this.response.addHeader(HttpHeaders.SET_COOKIE,accessCookie.toString());
+        this.response.addHeader(HttpHeaders.SET_COOKIE,refreshCookie.toString());
     }
     public void removeCookie(){
-        ResponseCookie cookie= ResponseCookie.from("SecuredJWT",null).httpOnly(true)
+        ResponseCookie accessCookie= ResponseCookie.from("SecuredJWT",null).httpOnly(true)
                 .secure(false)
                 .path("/")
                 .sameSite("Lax")
                 .maxAge(0)
                 .build();
-        this.response.addHeader(HttpHeaders.SET_COOKIE,cookie.toString());
+        ResponseCookie refreshCookie= ResponseCookie.from("SecuredREFRESH",null).httpOnly(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
+        this.response.addHeader(HttpHeaders.SET_COOKIE,accessCookie.toString());
+        this.response.addHeader(HttpHeaders.SET_COOKIE,refreshCookie.toString());
     }
 
 }
