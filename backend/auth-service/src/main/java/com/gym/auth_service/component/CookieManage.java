@@ -34,7 +34,7 @@ public class CookieManage {
                 .build();
         ResponseCookie refreshCookie= ResponseCookie.from("SecuredREFRESH",null).httpOnly(true)
                 .secure(false)
-                .path("/")
+                .path("/auth/refresh")
                 .sameSite("Lax")
                 .maxAge(0)
                 .build();
