@@ -5,10 +5,21 @@ import { apiConnection } from "@/app/api";
 
 
 export const handleUser = {
+    isUser: async ()=>{
+      try {
+      const res = await apiConnection.get(
+        "/user/data/me",
+      );
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  },
   fetchuser: async ()=>{
       try {
       const res = await apiConnection.get(
-        "/user/data/checkme",
+        "/user/data/account",
       );
       return res.data;
     } catch (e) {

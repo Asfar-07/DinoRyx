@@ -2,6 +2,7 @@ package com.gym.user_service.Service;
 
 import com.gym.user_service.model.UpdateUserPrint;
 import com.gym.user_service.model.UserDataModel;
+import com.gym.user_service.model.response.ResponseAccount;
 import com.gym.user_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,22 @@ import java.util.Map;
 public class UserService {
     @Autowired
     UserRepository repository;
+    public Object[] FetchMe(String email){
+        UserDataModel userdata=repository.findByEmail(email).orElse(null);
+        ResponseAccount responseAccount=new ResponseAccount();
+        if(userdata != null){
+            responseAccount.setName((userdata.getName()));
+            responseAccount.setEmail(userdata.getEmail());
+            responseAccount.setPicture(userdata.getPicture());
+            responseAccount.setTrainer(userdata.isTrainer());
+            return new Object[]{true,responseAccount};
+        }
+        return  new Object[]{false};
 
+    }
     public Object[] FetchUser(String email){
-        if(repository.findByEmail(email).orElse(null) != null){
-            UserDataModel userdata=repository.findByEmail(email).orElse(null);
+        UserDataModel userdata=repository.findByEmail(email).orElse(null);
+        if(userdata!= null){
             Map<String,Object> collectData=new HashMap<>();
             collectData.put("id", userdata.getId());
             collectData.put("email",userdata.getEmail());

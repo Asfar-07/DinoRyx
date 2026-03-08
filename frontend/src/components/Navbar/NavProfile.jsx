@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState } from "react";
 import "./navprofile.css";
 import { Link } from "react-router-dom";
@@ -5,12 +6,13 @@ import { useSelector } from "react-redux";
 import { authHandle } from "../../features/auth/authService";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { updateAuth } from "../../features/auth/authSlice";
+import { setAuth,removeAuth } from "../../features/auth/authSlice";
 import { removeUser } from "../../features/user/userSlice";
 
 export default function NavProfile() {
   const [accountdiv, setAccountDiv] = useState(false);
   const isAuth = useSelector((state) => state.userauth.isAuthenticated);
+  const authInfo = useSelector((state) => state.userauth.authInfo);
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -20,7 +22,7 @@ export default function NavProfile() {
       .logoutService()
       .then((data) => {
         if(data === "success"){
-          dispatch(updateAuth(false));
+          dispatch(removeAuth());
           dispatch(removeUser());
           navigate("/login");
         }
@@ -42,8 +44,9 @@ export default function NavProfile() {
           <>
             <img src="https://i.pravatar.cc/40" alt="user profile" />
             <div className="header-username">
-              <strong>USER NAME</strong>
-              <small>Certified Trainer</small>
+              <strong>{authInfo.name}</strong>
+              {authInfo.trainer ? <small>Certified Trainer</small> :<small>Normal User</small>}
+              
             </div>
           </>
         ) : (
@@ -73,7 +76,7 @@ export default function NavProfile() {
               </li>
             ) : (
               <li>
-                <a href="/login">Login</a>
+                <Link to="/login">Login</Link>
               </li>
             )}
           </ul>

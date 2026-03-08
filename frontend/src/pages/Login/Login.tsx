@@ -6,55 +6,59 @@ import { authHandle } from "../../features/auth/authService";
 import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { updateAuth } from "../../features/auth/authSlice";
+import { addUser } from "@/features/user/userSlice";
+import GeneralLoader from "@/components/Loader/GeneralLoader";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
+  const [isLoading,setIsLoading] = useState(false);
   const [userdata, setuserData] = useState({name: "",email: "",password: "",});
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleGoogleAuth = async (credentialResponse) => {
+  const handleGoogleAuth = async (credentialResponse:any) => {
     const googleToken = credentialResponse.credential;
     authHandle.googleService(googleToken);
   };
   function handleSubmit() {
+    if(isLoading) return;
+    setIsLoading(true);
     if (isSignup) {
       authHandle
         .signupService(userdata)
         .then((data) => {
-          if (data === "success") {
+            dispatch(addUser(data))
             dispatch(updateAuth(true));
+            setIsLoading(false);
             setuserData({name: "",email: "",password: "",});
             navigate("/");
-          } else {
-            navigate("/login");
-          }
         })
         .catch((err) => {
+          setIsLoading(false);
           console.log(err);
         });
     } else {
       authHandle
         .loginService(userdata)
         .then((data) => {
-          console.log(data);
-          if (data === "success") {
+           dispatch(addUser(data))
             dispatch(updateAuth(true));
+            setIsLoading(false);
             setuserData({name: "",email: "",password: "",});
             navigate("/");
-          } else {
-            navigate("/login");
-          }
         })
         .catch((err) => {
+          setIsLoading(false);
           console.log(err);
         });
     }
   }
   return (
     <div className="auth-container">
+      {isLoading && <GeneralLoader />}
+      
       <div className={`auth-card ${isSignup ? "signup" : "login"}`}>
         <h2>{isSignup ? "Create Account" : "Welcome Back"}</h2>
         <p className="subtitle">

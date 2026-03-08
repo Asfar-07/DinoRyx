@@ -2,6 +2,7 @@ package com.gym.auth_service.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.gym.auth_service.model.UserDataModel;
+import com.gym.auth_service.model.response.ResponseAuth;
 import com.gym.auth_service.service.AuthService;
 import com.gym.auth_service.component.CookieManage;
 import com.gym.auth_service.component.GoogleTokenVerifier;
@@ -28,6 +29,8 @@ public class ApiController {
     @Autowired
     GoogleTokenVerifier googleTokenVerifier;
 
+    ResponseAuth resAuth=new ResponseAuth();
+
     @GetMapping(value = "/")
     public  String Home(){
 
@@ -35,7 +38,7 @@ public class ApiController {
     }
 
     @PostMapping(value = "/login")
-    public  ResponseEntity<String> Login(@RequestBody UserDataModel data, HttpServletResponse response){
+    public  ResponseEntity<ResponseAuth> Login(@RequestBody UserDataModel data, HttpServletResponse response){
         HashMap<String,Object> res= service.loginService(data);
         if (res.get("status").equals(true) && res.get("message").equals("Password Matching")){
             UserDataModel finalModel= (UserDataModel) res.get("data");
@@ -43,8 +46,12 @@ public class ApiController {
             String refreshToken= jwtManage.generateRefreshToken(finalModel.getEmail(),finalModel.getId());
             CookieManage cookie=new CookieManage(response);
             cookie.createCookie(accessToken,refreshToken);
-
-            return ResponseEntity.ok("success");
+            //ResponseModel
+            resAuth.setName(finalModel.getName());
+            resAuth.setEmail(finalModel.getEmail());
+            resAuth.setPicture(finalModel.getPicture());
+            resAuth.setTrainer(finalModel.isTrainer());
+            return ResponseEntity.ok(resAuth);
         } else if (res.get("status").equals(false) && res.get("message").equals("Password Not Match")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -54,7 +61,7 @@ public class ApiController {
     }
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<String> SignUp(@RequestBody UserDataModel userData, HttpServletResponse response){System.out.println(userData.getEmail());
+    public ResponseEntity<ResponseAuth> SignUp(@RequestBody UserDataModel userData, HttpServletResponse response){System.out.println(userData.getEmail());
         HashMap<String,Object> res = service.signupService(userData);
         if (res.get("status").equals(true)){
             UserDataModel finalModel= (UserDataModel) res.get("data");
@@ -62,15 +69,19 @@ public class ApiController {
             String refreshToken= jwtManage.generateRefreshToken(finalModel.getEmail(),finalModel.getId());
             CookieManage cookie=new CookieManage(response);
             cookie.createCookie(accessToken,refreshToken);
-
-            return ResponseEntity.ok("success");
+            //ResponseModel
+            resAuth.setName(finalModel.getName());
+            resAuth.setEmail(finalModel.getEmail());
+            resAuth.setPicture(finalModel.getPicture());
+            resAuth.setTrainer(finalModel.isTrainer());
+            return ResponseEntity.ok(resAuth);
         }
         else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
     @PostMapping(value="/google/provider")
-    public ResponseEntity<String> googleProvider(@RequestBody Map<String, String> body,HttpServletResponse response) throws Exception {
+    public ResponseEntity<ResponseAuth> googleProvider(@RequestBody Map<String, String> body,HttpServletResponse response) throws Exception {
         String token = body.get("token");
         Map<String,String> userDate = new HashMap<>();
         GoogleIdToken idToken = googleTokenVerifier.verify(token);
@@ -94,8 +105,12 @@ public class ApiController {
             String refreshToken= jwtManage.generateRefreshToken(finalModel.getEmail(),finalModel.getId());
             CookieManage cookie=new CookieManage(response);
             cookie.createCookie(accessToken,refreshToken);
-
-            return ResponseEntity.ok("success");
+            //ResponseModel
+            resAuth.setName(finalModel.getName());
+            resAuth.setEmail(finalModel.getEmail());
+            resAuth.setPicture(finalModel.getPicture());
+            resAuth.setTrainer(finalModel.isTrainer());
+            return ResponseEntity.ok(resAuth);
         }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

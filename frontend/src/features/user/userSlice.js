@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const userSlice = createSlice({
   name: 'userData',
   initialState: {
-    user:{},
+    user:null,
     loading:false
   },
   reducers: {
@@ -14,7 +14,7 @@ export const userSlice = createSlice({
 
     },
     removeUser:(state)=>{
-      state.user={};
+      state.user=null;
     }
   }
 })

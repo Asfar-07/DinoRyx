@@ -1,18 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./App.css";
 import "./styles/theme.css";
 import "./styles/global.css";
 import AppRoutes from "./routes/AppRoutes";
 import { useSelector, useDispatch } from "react-redux";
 import { setThemeFromLocal } from "./features/theme/themeSlice";
+import { setAuth,updateAuth } from "./features/auth/authSlice";
 import { ToastContainer } from "react-toastify";
+import { handleUser } from "./features/user/userService";
 
 function App() {
+
+    const hasFetched = useRef(false);
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme.mode);
+  const userInfo=useSelector((state)=> state.userauth.authInfo)
+
   useEffect(() => {
     dispatch(setThemeFromLocal());
+    
   }, [dispatch]);
+
+  useEffect(()=>{
+    if(hasFetched.current) return;
+    hasFetched.current=true;
+    setTimeout(() => {
+      if (!userInfo) {
+        console.log("call")
+        handleUser.isUser().then((response) => {
+          dispatch(updateAuth(true));
+          dispatch(setAuth(response));
+        });
+      }
+    }, 200);
+  },[])
+
   useEffect(() => {
     const root = document.documentElement;
 

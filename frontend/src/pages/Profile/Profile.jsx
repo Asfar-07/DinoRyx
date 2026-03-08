@@ -12,7 +12,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({joindate:""});
   const [update_profile, setUpdateprofile] = useState({});
-    const hasFetched = useRef(false);
+  const hasFetched = useRef(false);
   const [isLoading,setIsLoading]=useState(false);
 
   let navigate = useNavigate();
