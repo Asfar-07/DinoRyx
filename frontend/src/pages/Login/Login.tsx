@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading,setIsLoading] = useState(false);
-  const [userdata, setuserData] = useState({name: "",email: "",password: "",});
+  const [userdata, setUserData] = useState({name: "",email: "",password: "",});
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ export default function Login() {
             dispatch(addUser(data))
             dispatch(updateAuth(true));
             setIsLoading(false);
-            setuserData({name: "",email: "",password: "",});
+            setUserData({name: "",email: "",password: "",});
             navigate("/");
         })
         .catch((err) => {
@@ -46,7 +46,7 @@ export default function Login() {
            dispatch(addUser(data))
             dispatch(updateAuth(true));
             setIsLoading(false);
-            setuserData({name: "",email: "",password: "",});
+            setUserData({name: "",email: "",password: "",});
             navigate("/");
         })
         .catch((err) => {
@@ -58,7 +58,7 @@ export default function Login() {
   return (
     <div className="auth-container">
       {isLoading && <GeneralLoader />}
-      
+      <form ></form>
       <div className={`auth-card ${isSignup ? "signup" : "login"}`}>
         <h2>{isSignup ? "Create Account" : "Welcome Back"}</h2>
         <p className="subtitle">
@@ -71,7 +71,7 @@ export default function Login() {
             placeholder="Full Name"
             value={userdata.name}
             onChange={(e) => {
-              setuserData({ ...userdata, name: e.target.value });
+              setUserData({ ...userdata, name: e.target.value });
             }}
           />
         )}
@@ -80,7 +80,7 @@ export default function Login() {
           placeholder="Email"
           value={userdata.email}
           onChange={(e) => {
-            setuserData({ ...userdata, email: e.target.value });
+            setUserData({ ...userdata, email: e.target.value });
           }}
         />
         <input
@@ -88,7 +88,7 @@ export default function Login() {
           placeholder="Password"
           value={userdata.password}
           onChange={(e) => {
-            setuserData({ ...userdata, password: e.target.value });
+            setUserData({ ...userdata, password: e.target.value });
           }}
         />
 

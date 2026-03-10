@@ -10,14 +10,13 @@ import { setAuth,removeAuth } from "../../features/auth/authSlice";
 import { removeUser } from "../../features/user/userSlice";
 
 export default function NavProfile() {
-  const [accountdiv, setAccountDiv] = useState(false);
+  const [accountDiv, setAccountDiv] = useState(false);
   const isAuth = useSelector((state) => state.userauth.isAuthenticated);
   const authInfo = useSelector((state) => state.userauth.authInfo);
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
-
-  function handlelogout() {
+  function handleLogout() {
     authHandle
       .logoutService()
       .then((data) => {
@@ -36,7 +35,7 @@ export default function NavProfile() {
     <div
       className="main-h-ur-p"
       onClick={() => {
-        accountdiv ? setAccountDiv(false) : setAccountDiv(true);
+        accountDiv ? setAccountDiv(false) : setAccountDiv(true);
       }}
     >
       <div className="header-user-profile">
@@ -44,8 +43,8 @@ export default function NavProfile() {
           <>
             <img src="https://i.pravatar.cc/40" alt="user profile" />
             <div className="header-username">
-              <strong>{authInfo.name}</strong>
-              {authInfo.trainer ? <small>Certified Trainer</small> :<small>Normal User</small>}
+              <strong>{authInfo?.name}</strong>
+              {authInfo?.trainer ? <small>Certified Trainer</small> :<small>Normal User</small>}
               
             </div>
           </>
@@ -56,7 +55,7 @@ export default function NavProfile() {
           />
         )}
       </div>
-      {accountdiv && (
+      {accountDiv && (
         <div className="header-s-account">
           <ul>
             <li>
@@ -72,7 +71,7 @@ export default function NavProfile() {
             </li>
             {isAuth ? (
               <li>
-                <button onClick={handlelogout}>Logout</button>
+                <button onClick={handleLogout}>Logout</button>
               </li>
             ) : (
               <li>
