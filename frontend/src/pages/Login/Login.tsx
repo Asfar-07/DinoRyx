@@ -7,13 +7,20 @@ import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { updateAuth } from "../../features/auth/authSlice";
 import { addUser } from "@/features/user/userSlice";
+import { useForm } from "react-hook-form";
 import GeneralLoader from "@/components/Loader/GeneralLoader";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
+  interface userForm{
+    username:string,
+    email:string,
+    password:string
+  }
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading,setIsLoading] = useState(false);
-  const [userdata, setUserData] = useState({name: "",email: "",password: "",});
+  const loginForm=useForm<userForm>();
+  const {register,handleSubmit}=loginForm;
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,17 +29,16 @@ export default function Login() {
     const googleToken = credentialResponse.credential;
     authHandle.googleService(googleToken);
   };
-  function handleSubmit() {
+  function authenticationSubmit(userData:userForm) {
     if(isLoading) return;
     setIsLoading(true);
     if (isSignup) {
       authHandle
-        .signupService(userdata)
+        .signupService(userData)
         .then((data) => {
             dispatch(addUser(data))
             dispatch(updateAuth(true));
             setIsLoading(false);
-            setUserData({name: "",email: "",password: "",});
             navigate("/");
         })
         .catch((err) => {
@@ -41,12 +47,11 @@ export default function Login() {
         });
     } else {
       authHandle
-        .loginService(userdata)
+        .loginService(userData)
         .then((data) => {
            dispatch(addUser(data))
             dispatch(updateAuth(true));
             setIsLoading(false);
-            setUserData({name: "",email: "",password: "",});
             navigate("/");
         })
         .catch((err) => {
@@ -55,8 +60,10 @@ export default function Login() {
         });
     }
   }
+
  return (
     <div className="main-login min-h-screen bg-(--primary-bg-color) flex items-center justify-center p-4 font-sans">
+      {isLoading && <GeneralLoader />}
       {/* Main Card Container */}
       <div className="login-body  w-full max-w-5xl rounded-[2rem] overflow-hidden flex flex-col md:flex-row shadow-2xl border border-white/5">
         
@@ -76,9 +83,11 @@ export default function Login() {
           <div className="mt-auto w-full relative flex flex-col items-center">
             <div className="w-full h-40 flex items-end justify-center mb-6">
             </div>
-            
-            <button className="bg-(--symbol-color) hover:opacity-90 transition-all text(--primary-bg-color) font-bold py-2.5 px-12 rounded-lg text-lg cursor-pointer">
-              Sign In
+            <button className="bg-(--symbol-color) hover:opacity-90 transition-all text(--primary-bg-color) font-bold py-2.5 px-12 rounded-lg text-lg cursor-pointer"
+            onClick={()=>{
+              isSignup ? setIsSignup(false):setIsSignup(true);
+            }}>
+              {isSignup?"Log In" : "Sign In"}
             </button>
 
             {/* Brick Wall Pattern (Simplified CSS version) */}
@@ -90,24 +99,25 @@ export default function Login() {
 
         {/* Right Side: Form Area */}
         <div className="login-right bg-(--secondary-bg-color)  z-2 md:w-[50%] p-5 md:p-10 flex flex-col justify-center">
-          <h2 className="text-[clamp(1rem,calc(3vw+1rem),2rem)] font-semibold text-(--primary-text-color) mb-8">Log In</h2>
+          <h2 className="text-[clamp(1rem,calc(3vw+1rem),2rem)] font-semibold text-(--primary-text-color) mb-8">{isSignup?"Sign In" : "Log In"}</h2>
           
-          <form className="space-y-4">
-
-             {/* <div>
-              <label className="block text-(--secondary-text-color) text-sm mb-2 font-medium">Username</label>
-              <input 
-                type="text" 
-                placeholder="Enter your username" 
-                className="w-full bg-(--primary-bg-color) border border-white/10 rounded-lg p-3.5 text-(--primary-text-color) focus:outline-none focus:ring-1 focus:ring-(--symbol-color) transition-all placeholder:text-gray-600"
-              />
-            </div> */}
+          <form className="space-y-4" onSubmit={handleSubmit(authenticationSubmit)} noValidate>
+           {isSignup && <div>
+             <label className="block text-(--secondary-text-color) text-sm mb-2 font-medium">Username</label>
+             <input
+               type="text"
+               placeholder="Enter your username"
+               {...register("username")}
+               className="w-full bg-(--primary-bg-color) border border-white/10 rounded-lg p-3.5 text-(--primary-text-color) focus:outline-none focus:ring-1 focus:ring-(--symbol-color) transition-all placeholder:text-gray-600"
+             />
+           </div>}
 
             <div>
               <label className="block text-(--secondary-text-color) text-sm mb-2 font-medium">Email</label>
               <input 
                 type="email" 
                 placeholder="Enter your email" 
+                {...register("email")}
                 className="w-full bg-(--primary-bg-color) border border-white/10 rounded-lg p-3.5 text-(--primary-text-color) focus:outline-none focus:ring-1 focus:ring-(--symbol-color) transition-all placeholder:text-gray-600"
               />
             </div>
@@ -117,6 +127,7 @@ export default function Login() {
               <input 
                 type="password" 
                 placeholder="Enter your password" 
+                {...register("password")}
                 className="w-full bg-(--primary-bg-color) border border-white/10 rounded-lg p-3.5 text-(--primary-text-color) focus:outline-none focus:ring-1 focus:ring-(--symbol-color) transition-all placeholder:text-gray-600"
               />
             </div>
@@ -128,7 +139,7 @@ export default function Login() {
             </div>
 
             <button className="w-full bg-(--symbol-color) hover:opacity-90 transition-all text-(--primary-bg-color) font-bold py-4 rounded-lg text-lg shadow-lg cursor-pointer">
-              Log In
+              {isSignup?"Sign In" : "Log In"}
             </button>
           </form>
 
@@ -152,9 +163,14 @@ export default function Login() {
            </button>
          </div>
 
-          <p className="text-center text-(--secondary-text-color) text-sm">
-            Don't have an account? <button  className="text-(--primary-text-color) font-bold hover:underline decoration-(--symbol-color) underline-offset-4">Sign up</button>
-          </p>
+         <p className="text-center text-(--secondary-text-color) text-sm">
+           {isSignup ? "Already have an account? " : "Don't have an account? "}
+           <button className="text-(--primary-text-color) font-bold hover:underline decoration-(--symbol-color) underline-offset-4"
+             onClick={() => {
+               isSignup ? setIsSignup(false) : setIsSignup(true);
+             }}
+           >{isSignup ? "Log In" : "Sign In"}</button>
+         </p>
         </div>
       </div>
     </div>
