@@ -10,7 +10,7 @@ export const questions:Question[] = [
     id: 1,
     title: "Where did you hear about our website?",
     options: ["Google", "YouTube", "Friend", "Social Media"],
-    optional: false,
+    optional: true,
   },
   {
     id: 2,
@@ -22,6 +22,6 @@ export const questions:Question[] = [
     id: 3,
     title: "What topics are you interested in?",
     options: ["Frontend", "Backend", "DevOps", "AI"],
-    optional: true,
+    optional: false,
   },
 ];
