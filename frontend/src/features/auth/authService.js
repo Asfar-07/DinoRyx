@@ -46,7 +46,6 @@ export const authHandle = {
         { token: data },
         { withCredentials: true },
       );
-      statusHandle.statusInfo(res.status);
       return res.data;
     } catch (e) {
       console.error(e);

@@ -1,4 +1,4 @@
-package com.gym.user_service.model;
+package com.gym.auth_service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +26,12 @@ public class UserTable {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private UserProfileTable profile;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ResetPasswordTable> resetPassword;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<AuthProviderTable> provider;
 
 
     @PrePersist

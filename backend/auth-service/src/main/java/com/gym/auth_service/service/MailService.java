@@ -1,7 +1,7 @@
 package com.gym.auth_service.service;
 
-import com.gym.auth_service.model.PasswordResetForm;
-import com.gym.auth_service.model.UserDataModel;
+import com.gym.auth_service.model.ResetPasswordTable;
+import com.gym.auth_service.model.UserTable;
 import com.gym.auth_service.repository.PasswordResetRepo;
 import com.gym.auth_service.repository.UserRepository;
 import com.gym.auth_service.utils.CaptchaTokenUtil;
@@ -28,8 +28,8 @@ public class MailService {
     private final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
     public void sendResetLink(String email) throws MessagingException {
-        UserDataModel userDataModel=userRepository.findByEmail(email).orElse(null);
-        if (userDataModel == null) {
+        UserTable user=userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
             System.out.println("No user found with this email");
             throw new IllegalArgumentException("No user found with this email");
         };
@@ -38,10 +38,13 @@ public class MailService {
 
 
         String resetUrl = "http://localhost:3000/reset-password?token=" + token; // pass token to url and not tokenHash
-        PasswordResetForm resetTokenTable=new PasswordResetForm();
-        resetTokenTable.setEmail(email);
-        resetTokenTable.setToken(tokenHash);
-        resetTokenTable.setExpiryTime(LocalDateTime.now().plusMinutes(3));       //make expire time (3 min)
+        ResetPasswordTable resetTokenTable=ResetPasswordTable.builder()
+                        .email(email)
+                              .user(user)
+                                .token(tokenHash)
+                                        .expiryTime(LocalDateTime.now().plusMinutes(3))
+                                                .build();
+               //make expire time (3 min)
         resetRepo.save(resetTokenTable);                                         // save detail of reset token to db
 
         MimeMessage message = mailSender.createMimeMessage();                    // call mailer

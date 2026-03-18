@@ -1,13 +1,12 @@
-package com.gym.user_service.model.response;
+package com.gym.auth_service.model.request;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
-public class AccountDTO {
+@Getter @Setter
+public class ReqGoogleAuth {
+
     private String name;
     private String email;
     private String picture;
-    private boolean trainer;
 }

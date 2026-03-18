@@ -4,14 +4,28 @@ import { addUser } from "../../features/user/userSlice";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import Navbar from "../../components/Navbar/Navbar";
-import { milliTOdate } from "../../utils/dateHandle";
 import GeneralLoader from "@/components/Loader/GeneralLoader";
 import "./profile.css";
 
 export default function Profile() {
+  interface userData {
+    id: string,
+    username: string,
+    email: string,
+    createdAt: string,
+    about: string,
+    address:string,
+    available:false,
+    avatar:string,
+    dob:string,
+    gender:string,
+    phone_on:string,
+    trainer:boolean,
+    updateDate:string
+  }
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({joindate:""});
-  const [update_profile, setUpdateprofile] = useState({});
+  const [profile, setProfile] = useState<userData>();
+  const [update_profile, setUpdateProfile] = useState({});
   const hasFetched = useRef(false);
   const [isLoading,setIsLoading]=useState(false);
 
@@ -23,22 +37,24 @@ export default function Profile() {
     hasFetched.current=true;
     setIsLoading(true)
     handleUser
-      .fetchuser()
+      .fetchUser()
       .then((data) => {
         setIsLoading(false)
         dispatch(addUser(data));
         console.log(data);
         setProfile(data)
-        setProfile(P=>({...P,joindate:milliTOdate(data.joindate)}))
+        // setProfile(P=>({...P,joindate:milliTOdate(data.joindate)}))
       })
-      .catch((e) => {
+      .catch(() => {
         // e.response?.status === 401 && navigate("/login");
       });
   }, [navigate, dispatch]);
 
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
-    setUpdateprofile({ ...update_profile, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    if (profile) {
+      setProfile({ ...profile, [e.target.name]: e.target.value });
+    }
+    setUpdateProfile({ ...update_profile, [e.target.name]: e.target.value });
   };
 
   const handleSave = () => {
@@ -46,8 +62,8 @@ export default function Profile() {
     console.log("Updated Profile:", update_profile);
     handleUser
       .updateUser(update_profile)
-      .then((data) => {
-        setUpdateprofile({})
+      .then(() => {
+        setUpdateProfile({})
         dispatch(addUser(profile));
       })
       .catch((e) => {
@@ -57,7 +73,7 @@ export default function Profile() {
   };
 
   const deleteAccount= ()=>{
-    handleUser.removeUser().then((data) => {
+    handleUser.removeUser().then(() => {
       navigate("/login")
       })
       .catch((e) => {
@@ -86,29 +102,29 @@ export default function Profile() {
         {isEditing ? (
           <div className="edit-form">
             <input
-              name="name"
-              value={profile.name}
+              name="username"
+              value={profile?.username}
               onChange={handleChange}
               placeholder="Full Name"
             />
 
             <input
               name="email"
-              value={profile.email}
+              value={profile?.email}
               onChange={handleChange}
               placeholder="Email"
             />
 
             <input
-              name="phone"
-              value={profile.phone}
+              name="phone_on"
+              value={profile?.phone_on}
               onChange={handleChange}
               placeholder="Phone"
             />
 
             <select
               name="gender"
-              value={profile.gender}
+              value={profile?.gender}
               onChange={handleChange}
             >
               <option value="">Select Gender</option>
@@ -119,19 +135,19 @@ export default function Profile() {
 
             <textarea
               name="address"
-              value={profile.address}
+              value={profile?.address}
               onChange={handleChange}
               placeholder="Address"
             />
 
-            <select
+            {/* <select
               name="available"
-              value={profile.available}
+              value={profile?.available}
               onChange={handleChange}
             >
               <option>Yes</option>
               <option>No</option>
-            </select>
+            </select> */}
 
             <button className="btn-primary" onClick={handleSave}>
               Save
@@ -140,21 +156,21 @@ export default function Profile() {
         ) : (
           <>
             <h3>
-              {profile.name} <span className="new-badge">NEW</span>
+              {profile?.username} <span className="new-badge">NEW</span>
             </h3>
-            <p className="username">{profile.username}</p>
+            <p className="username">{profile?.username}</p>
 
             <button className="btn-outline">
-              Preview Fiverr Profile
+              Preview Fiver Profile
             </button>
 
             <div className="profile-info">
-              <p><strong>Email:</strong> {profile.email}</p>
-              <p><strong>Phone:</strong> {profile.phone === null ? "null" :profile.phone}</p>
-              <p><strong>Gender:</strong> {profile.gender === null ? "null" : profile.gender}</p>
-              <p><strong>Address:</strong> {profile.address === null ? "null" : profile.address}</p>
-              <p><strong>Available:</strong> {profile.available === false ? "NO":"YES"}</p>
-              <p><strong>Member since:</strong> {profile.joindate}</p>
+              <p><strong>Email:</strong> {profile?.email}</p>
+              <p><strong>Phone:</strong> {profile?.phone_on === null ? "null" :profile?.phone_on}</p>
+              <p><strong>Gender:</strong> {profile?.gender === null ? "null" : profile?.gender}</p>
+              <p><strong>Address:</strong> {profile?.address === null ? "null" : profile?.address}</p>
+              <p><strong>Available:</strong> {profile?.available === false ? "NO":"YES"}</p>
+              <p><strong>Member since:</strong> {profile?.createdAt}</p>
             </div>
 
             <button

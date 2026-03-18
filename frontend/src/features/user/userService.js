@@ -1,6 +1,5 @@
 //@ts-nocheck
 import { statusHandle } from "../../utils/statusHandle";
-import { UserDataForm } from "../../utils/databaseForm";
 import { apiConnection } from "@/app/api";
 
 
@@ -16,7 +15,7 @@ export const handleUser = {
       throw e;
     }
   },
-  fetchuser: async ()=>{
+  fetchUser: async ()=>{
       try {
       const res = await apiConnection.get(
         "/user/data/account",
@@ -32,7 +31,7 @@ export const handleUser = {
     try {
       const res = await apiConnection.put(
         "/user/data/update",
-        UserDataForm(data), //Structured data and only sending edited data
+        data
       );
       statusHandle.statusInfo(res.status)
       return res.data;

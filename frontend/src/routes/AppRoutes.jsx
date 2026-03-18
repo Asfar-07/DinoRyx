@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route} from "react-router-dom";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login.tsx";
-import Profile from "../pages/Profile/Profile";
+import Profile from "../pages/Profile/Profile.tsx";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import CreateCompany from "@/pages/CreateDashboard/CreateCompany.tsx";

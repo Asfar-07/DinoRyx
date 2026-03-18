@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseAuth {
+public class AuthDTO {
     private String name;
     private String email;
     private String picture;

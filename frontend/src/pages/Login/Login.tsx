@@ -35,7 +35,14 @@ export default function Login() {
   }
   const handleGoogleAuth = async (credentialResponse:any) => {
     const googleToken = credentialResponse.credential;
-    authHandle.googleService(googleToken);
+    authHandle.googleService(googleToken).then((data)=>{
+      dispatch(addUser(data))
+      dispatch(updateAuth(true));
+      resetDefault()
+      navigate("/");
+    }).catch((err)=>{
+      console.log(err);
+    });
   };
 
   function authenticationSubmit(userData:userForm) {

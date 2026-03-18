@@ -26,6 +26,7 @@ public class PasswordResetApi {
     @PostMapping(value = "/forgot/password")
     public ResponseEntity<?> ForgotPassword(@RequestBody HashMap<String,String> bodyData){
         String emailId=bodyData.get("emailId");
+        System.out.println(emailId);
         boolean captchaResponse=captchaVerify.VerifyCaptcha(bodyData.get("captchaToken"));
         if (captchaResponse){
             try {

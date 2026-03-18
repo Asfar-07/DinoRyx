@@ -1,8 +1,10 @@
 package com.gym.auth_service.service;
 
-import com.gym.auth_service.model.PasswordResetForm;
-import com.gym.auth_service.model.UserDataModel;
+import com.gym.auth_service.model.*;
+import com.gym.auth_service.model.request.ReqAuth;
 import com.gym.auth_service.repository.PasswordResetRepo;
+import com.gym.auth_service.repository.ProfileRepository;
+import com.gym.auth_service.repository.ProviderRepository;
 import com.gym.auth_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,33 +18,45 @@ import java.util.*;
 public class AuthService {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
     @Autowired
-    PasswordResetRepo resetRepo;
+    PasswordResetRepo resetRepository;
+    @Autowired
+    ProviderRepository providerRepository;
+    @Autowired
+    ProfileRepository profileRepository;
+
     private final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
     HashMap<String, Object> response=new HashMap<>();
 
-    public HashMap<String,Object> signupService(UserDataModel userdata){
+    public HashMap<String,Object> signupService(ReqAuth request){
         Random random = new Random();
-        if(repository.findByEmail(userdata.getEmail()).orElse(null) == null){
+        if(userRepository.findByEmail(request.getEmail()).orElse(null) == null){
             long numberRID = (long) (100000 + random.nextInt(900000)) *(100000 + random.nextInt(900000));
-            userdata.setId(numberRID);
+            UserTable user=UserTable.builder()
+                    .id(numberRID)
+                            .username(request.getUsername())
+                            .email(request.getEmail())
+                            .build();
+            user = userRepository.save(user);
 
-            Date date = new Date(System.currentTimeMillis());
-            userdata.setFirst_date(date.getTime());
+            AuthProviderTable provider=AuthProviderTable.builder()
+                            .provider("local")
+                            .password(passwordEncoder.encode(request.getPassword()))
+                            .user(user)
+                            .build();
+            providerRepository.save(provider);
 
-            userdata.setAuth_provider("local");
-            userdata.setAvailable(false);
-            userdata.setTrainer(false);
-
-            String hashedPassword = passwordEncoder.encode(userdata.getPassword());
-            userdata.setPassword(hashedPassword);
-
-            repository.save(userdata);
+            UserProfileTable profile=UserProfileTable.builder()
+                    .available(false)
+                    .trainer(false)
+                    .user(user)
+                    .build();
+            profileRepository.save(profile);
 
             this.response.put("status",true);
             this.response.put("message","New User Added");
-            this.response.put("data",userdata);
+            this.response.put("data",user);
             return this.response;
         }else {
             response.put("status",false);
@@ -51,20 +65,27 @@ public class AuthService {
             return  this.response;
         }
     }
-    public HashMap<String,Object> loginService(UserDataModel userdata) {
-        final String enterPassword=userdata.getPassword();
-        userdata=repository.findByEmail(userdata.getEmail()).orElse(null);
-        if (userdata != null) {
-            final String realPassword = userdata.getPassword();
-            if (passwordEncoder.matches(enterPassword, realPassword)){
-                this.response.put("status",true);
-                this.response.put("message","Password Matching");
-                this.response.put("data",userdata);
-                return this.response;
-            }
-            else {
+    public HashMap<String,Object> loginService(ReqAuth request) {
+        final String enterPassword=request.getPassword();
+        UserTable user=userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (user != null ) {
+            AuthProviderTable provider=providerRepository.findByProviderAndUserId("local",user.getId()).orElse(null);
+            if(provider != null) {
+                final String realPassword = provider.getPassword();
+                if (passwordEncoder.matches(enterPassword, realPassword)) {
+                    this.response.put("status", true);
+                    this.response.put("message", "Password Matching");
+                    this.response.put("data", user);
+                    return this.response;
+                } else {
+                    this.response.put("status", false);
+                    this.response.put("message", "Password Not Match");
+                    this.response.put("data", null);
+                    return this.response;
+                }
+            }else {
                 this.response.put("status",false);
-                this.response.put("message","Password Not Match");
+                this.response.put("message","Logged with another service");
                 this.response.put("data",null);
                 return this.response;
             }
@@ -75,46 +96,63 @@ public class AuthService {
             return this.response;
         }
     }
-    public HashMap<String,Object>  googleService(Map<String,String> user){
+    public HashMap<String,Object>  googleService(Map<String,String> request){
         Random random = new Random();
-        UserDataModel userData=repository.findByEmail(user.get("email")).orElse(null);
-        if(user.get("email") == null){
+        if(request.get("email") == null){
             this.response.put("status",false);
             return this.response;
         }
-
-        if (userData == null){
-            userData.setEmail(user.get("email"));
-            userData.setName(user.get("name"));
-            userData.setPicture(user.get("picture"));
+        UserTable userFetch=userRepository.findByEmail(request.get("email")).orElse(null);
+        if (userFetch == null){
             long numberRID = (long) (100000 + random.nextInt(900000)) *(100000 + random.nextInt(900000));
-            userData.setId(numberRID);
+             UserTable user=UserTable.builder()
+                    .id(numberRID)
+                    .username(request.get("name"))
+                    .email(request.get("email"))
+                    .build();
+            user = userRepository.save(user);
+            AuthProviderTable provider=AuthProviderTable.builder()
+                    .provider("google")
+                    .password(null)
+                    .user(user)
+                    .build();
+            providerRepository.save(provider);
+            UserProfileTable profile=UserProfileTable.builder()
+                    .available(false)
+                    .trainer(false)
+                    .avatar(request.get("picture"))
+                    .user(user)
+                    .build();
+            profileRepository.save(profile);
 
-            Date date = new Date(System.currentTimeMillis());
-            userData.setFirst_date(date.getTime());
-
-            userData.setAuth_provider("google");
-            repository.save(userData);
             this.response.put("status",true);
-            this.response.put("data",userData);
-            return this.response;
+            this.response.put("data",user);
         }else {
             this.response.put("status",true);
-            this.response.put("data",userData);
-            return this.response;
+            this.response.put("data",userFetch);
         }
+        return this.response;
     }
     public boolean ResetPassword(String newPassword, String tokenId){
-        List<PasswordResetForm> tokens = resetRepo.findAllValidation(LocalDateTime.now()); // collect data
-        for (PasswordResetForm table : tokens) {                                           // make loop for find match token
+        List<ResetPasswordTable> tokens = resetRepository.findAllValidation(LocalDateTime.now()); // collect data
+        for (ResetPasswordTable table : tokens) {                                           // make loop for find match token
             if (passwordEncoder.matches(tokenId, table.getToken())) {
-                UserDataModel thisUserData=repository.findByEmail(table.getEmail()).orElse(null);
-                if (thisUserData != null){
-                    thisUserData.setPassword(passwordEncoder.encode(newPassword));
-                    table.setUsed(true);                 // for avoid multiple change with using same token
-
-                    repository.save(thisUserData);
-                    resetRepo.save(table);
+                UserTable user=userRepository.findByEmail(table.getEmail()).orElse(null);
+                if (user != null){
+                    AuthProviderTable provider=providerRepository.findByProviderAndUserId("local",user.getId()).orElse(null);
+                    if(provider != null){
+                        provider.setPassword(passwordEncoder.encode(newPassword));
+                        providerRepository.save(provider);
+                    }else {
+                        AuthProviderTable newProvider=AuthProviderTable.builder()
+                                .provider("local")
+                                .password(passwordEncoder.encode(newPassword))
+                                .user(user)
+                                .build();
+                        providerRepository.save(newProvider);
+                    }
+                    table.setUsed(true);
+                    resetRepository.save(table);
 
                     return true; //success all
                 }
@@ -124,4 +162,29 @@ public class AuthService {
         }
         return false; // expired or not exited
     }
+    public  void TestService(){
+//        UserTable user=new UserTable();
+//        UserProfileTable profile=new UserProfileTable();
+//        user.setEmail("Example@email.com");
+//        user.setUsername("asfar");
+//        userRepository.save(user);
+//        profile.setAbout("dfhdfjk");
+//        profile.setPhone_on("1111111");
+//        profile.setAvailable(true);
+//        profile.setTrainer(false);
+//        profile.setUser(user);
+//        profileRepository.save(profile);
+        UserTable user=userRepository.findById(2).orElse(null);
+//        AuthProviderTable providerTable=AuthProviderTable.builder().user(user)
+//                .provider("local")
+//                .password("asdfg")
+//                .build();
+//        providerRepository.save(providerTable);
+        assert user != null;
+//        AuthProviderTable provider= (AuthProviderTable) user.getProvider();
+        System.out.println(user.getEmail());
+        System.out.println(user.getProvider());
+        System.out.println(user.getProfile().getPhone_on());
+    }
+
 }

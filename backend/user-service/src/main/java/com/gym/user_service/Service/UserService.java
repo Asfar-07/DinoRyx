@@ -1,78 +1,91 @@
 package com.gym.user_service.Service;
 
 import com.gym.user_service.model.UpdateUserPrint;
-import com.gym.user_service.model.UserDataModel;
-import com.gym.user_service.model.response.ResponseAccount;
+import com.gym.user_service.model.UserProfileTable;
+import com.gym.user_service.model.UserTable;
+import com.gym.user_service.model.response.AccountDTO;
+import com.gym.user_service.model.response.ProfileDTO;
+import com.gym.user_service.repository.ProfileRepository;
 import com.gym.user_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Service
 public class UserService {
     @Autowired
-    UserRepository repository;
-    public Object[] FetchMe(String email){
-        UserDataModel userdata=repository.findByEmail(email).orElse(null);
-        ResponseAccount responseAccount=new ResponseAccount();
-        if(userdata != null){
-            responseAccount.setName((userdata.getName()));
-            responseAccount.setEmail(userdata.getEmail());
-            responseAccount.setPicture(userdata.getPicture());
-            responseAccount.setTrainer(userdata.isTrainer());
+    UserRepository userRepository;
+    @Autowired
+    ProfileRepository profileRepository;
+    
+    public Object[] FetchMe(long id){
+        UserTable user=userRepository.findByIdWithProfile(id).orElse(null);
+        AccountDTO responseAccount=new AccountDTO();
+        if(user != null){
+            responseAccount.setName((user.getUsername()));
+            responseAccount.setEmail(user.getEmail());
+            responseAccount.setPicture(user.getProfile().getAvatar());
+            responseAccount.setTrainer(user.getProfile().isTrainer());
             return new Object[]{true,responseAccount};
         }
         return  new Object[]{false};
 
     }
-    public Object[] FetchUser(String email){
-        UserDataModel userdata=repository.findByEmail(email).orElse(null);
-        if(userdata!= null){
-            Map<String,Object> collectData=new HashMap<>();
-            collectData.put("id", userdata.getId());
-            collectData.put("email",userdata.getEmail());
-            collectData.put("name",userdata.getName());
-            collectData.put("pic",userdata.getPicture());
-            collectData.put("address",userdata.getAddress());
-            collectData.put("phone", userdata.getPhone_on());
-            collectData.put("gender",userdata.getGender());
-            collectData.put("trainer", userdata.isTrainer());
-            collectData.put("joindate",userdata.getFirst_date());
-            collectData.put("available", userdata.isAvailable());
-            return new Object[]{true, "User Available",collectData};
+    public Object[] FetchUser(long id){
+        UserTable user=userRepository.findByIdWithProfile(id).orElse(null);
+        if(user!= null){
+            ProfileDTO resProfile=ProfileDTO.builder()
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .createdAt(user.getCreatedAt())
+                    .phone_on(user.getProfile().getPhone_on())
+                    .about(user.getProfile().getAbout())
+                    .address(user.getProfile().getAddress())
+                    .dob(user.getProfile().getDob())
+                    .avatar(user.getProfile().getAvatar())
+                    .gender(user.getProfile().getGender())
+                    .available(user.getProfile().isAvailable())
+                    .trainer(user.getProfile().isTrainer())
+                    .build();
+            return new Object[]{true, "User Available",resProfile};
         }else {
             return new Object[]{false, "Not Available"};
         }
     }
 
-    public boolean UpdateUser(String email,UpdateUserPrint update_user){
-        UserDataModel userdata_from_db=repository.findByEmail(email).orElse(null);
-        if(userdata_from_db != null){
-
-            Date date = new Date(System.currentTimeMillis());
-            userdata_from_db.setUpdate_date(date.getTime());
-
+    public boolean UpdateUser(long id,UpdateUserPrint update_user){
+        UserTable user=userRepository.findByIdWithProfile(id).orElse(null);
+        if(user != null){
+            
             //filtering received data and set to userdata_from_db for remove vanishing data from DB
-            if(update_user.getName() != null && !update_user.getName().equals(userdata_from_db.getName())) {userdata_from_db.setName(update_user.getName());}
-            if(update_user.getEmail() != null && !update_user.getEmail().equals(userdata_from_db.getEmail())) {userdata_from_db.setEmail(update_user.getEmail());}
-            if(update_user.getAddress() != null && !update_user.getAddress().equals(userdata_from_db.getAddress())) {userdata_from_db.setAddress(update_user.getAddress());}
-            if(update_user.getGender() != null && !update_user.getGender().equals(userdata_from_db.getGender())) {userdata_from_db.setGender(update_user.getGender());}
-            if(update_user.getPhone_on() != null && !update_user.getPhone_on().equals(userdata_from_db.getPhone_on())) {userdata_from_db.setPhone_on(update_user.getPhone_on());}
-            if(update_user.isAvailable() != userdata_from_db.isAvailable()) {userdata_from_db.setAvailable(update_user.isAvailable());}
-            repository.save(userdata_from_db);
+            if(update_user.getName() != null && !update_user.getName().equals(user.getUsername())) {
+                user.setUsername(update_user.getName());
+                userRepository.save(user);
+            }
+            UserProfileTable profile = getUserProfileTable(update_user, user);
+            profileRepository.save(profile);
             return  true;
         }else{
             return false;
         }
     }
-    public boolean DeleteService(String email){
-        UserDataModel userdata_from_db=repository.findByEmail(email).orElse(null);
+
+    private static UserProfileTable getUserProfileTable(UpdateUserPrint update_user, UserTable user) {
+        UserProfileTable profile= user.getProfile();
+//            if(update_user.getEmail() != null && !update_user.getEmail().equals(user.getEmail())) {user.setEmail(update_user.getEmail());}
+        if(update_user.getAddress() != null && !update_user.getAddress().equals(user.getProfile().getAddress())) {profile.setAddress(update_user.getAddress());}
+        if(update_user.getGender() != null && !update_user.getGender().equals(user.getProfile().getGender())) {profile.setGender(update_user.getGender());}
+        if(update_user.getPhone_on() != null && !update_user.getPhone_on().equals(user.getProfile().getPhone_on())) {profile.setPhone_on(update_user.getPhone_on());}
+        if(update_user.isAvailable() != user.getProfile().isAvailable()) {profile.setAvailable(update_user.isAvailable());}
+        return profile;
+    }
+
+    public boolean DeleteService(long id){
+        UserTable userdata_from_db=userRepository.findById(id).orElse(null);
         if(userdata_from_db != null) {
-            repository.delete(userdata_from_db);
+            userRepository.delete(userdata_from_db);
             return true;
         }
         return false;
