@@ -1,20 +1,23 @@
 package com.gym.auth_service.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Getter @Setter
 @Entity
-@Table(name="password_reset_table")
-public class PasswordResetForm {
-
+@Table(name = "user_reset_password")
+@NoArgsConstructor @AllArgsConstructor
+@Builder
+public class ResetPasswordTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id" ,nullable = false)
+    private UserTable user;
 
     @Column(nullable = false)
     private String email;
@@ -26,5 +29,4 @@ public class PasswordResetForm {
     private LocalDateTime expiryTime;
 
     private boolean used = false;
-
 }
