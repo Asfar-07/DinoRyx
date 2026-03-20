@@ -15,7 +15,7 @@ public class UserProfileTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "phone")
-    private String phone_on;
+    private String phone_no;
     @Lob
     @Column(name = "about")
     private String about;

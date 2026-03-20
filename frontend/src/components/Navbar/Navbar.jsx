@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 export default function Navbar() {
   const isAuth = useSelector((state)=>state.userauth.isAuthenticated);
   return (
-    <div className="Navbar">
+    <div className="Navbar absolute top-0 left-0 w-full z-50">
       <nav>
         <div className="sitelogo">Logo</div>
         <ul className="secdash">

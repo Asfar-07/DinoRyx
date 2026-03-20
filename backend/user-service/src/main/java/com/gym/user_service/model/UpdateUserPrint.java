@@ -11,9 +11,12 @@ public class UpdateUserPrint {
     private String name;
     private String email;
     private String picture;
+    private String about;
+    private String dob;
+    private String avatar;
     private long updateDate;
     private  String address;
-    private String phone_on;
+    private String phone_no;
     private  boolean available;
     private  String gender;
     private boolean trainer;

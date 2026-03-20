@@ -40,7 +40,7 @@ public class UserService {
                     .username(user.getUsername())
                     .email(user.getEmail())
                     .createdAt(user.getCreatedAt())
-                    .phone_on(user.getProfile().getPhone_on())
+                    .phone_no(user.getProfile().getPhone_no())
                     .about(user.getProfile().getAbout())
                     .address(user.getProfile().getAddress())
                     .dob(user.getProfile().getDob())
@@ -77,8 +77,9 @@ public class UserService {
 //            if(update_user.getEmail() != null && !update_user.getEmail().equals(user.getEmail())) {user.setEmail(update_user.getEmail());}
         if(update_user.getAddress() != null && !update_user.getAddress().equals(user.getProfile().getAddress())) {profile.setAddress(update_user.getAddress());}
         if(update_user.getGender() != null && !update_user.getGender().equals(user.getProfile().getGender())) {profile.setGender(update_user.getGender());}
-        if(update_user.getPhone_on() != null && !update_user.getPhone_on().equals(user.getProfile().getPhone_on())) {profile.setPhone_on(update_user.getPhone_on());}
+        if(update_user.getPhone_no() != null && !update_user.getPhone_no().equals(user.getProfile().getPhone_no())) {profile.setPhone_no(update_user.getPhone_no());}
         if(update_user.isAvailable() != user.getProfile().isAvailable()) {profile.setAvailable(update_user.isAvailable());}
+        if(update_user.getAbout() != null && !update_user.getAbout().equals(user.getProfile().getAbout())) {profile.setAbout(update_user.getAbout());}
         return profile;
     }
 

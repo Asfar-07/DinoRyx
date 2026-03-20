@@ -16,7 +16,7 @@ public class ProfileDTO {
     private String username;
     private String email;
     private LocalDateTime createdAt;
-    private String phone_on;
+    private String phone_no;
     private String about;
     private String address;
     private String dob;
