@@ -1,0 +1,41 @@
+.setting-left{
+    background-color: var(--primary-bg-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+
+}
+.element-scroll:hover{
+    background-color: #56b3bb83;
+}
+.select-element{
+    background-color: var(--symbol-color);
+
+}
+.setting-main-body{
+    width: 85%;
+    min-width: 300px;
+    margin: auto;
+    padding-top:40px ;
+}
+@media (max-width: 768px) {
+    .setting-left{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10;
+        display: none;
+    }
+    .active{
+        display: block;
+    }
+    .setting-right{
+        width: 100%;
+    }
+    .setting-main-body{
+        width: 100%;
+        padding-top: 80px;
+    }
+}

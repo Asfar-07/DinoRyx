@@ -165,7 +165,7 @@ export default function ProfileDashboard() {
                 <CommandShortcut>⌘P</CommandShortcut></>)
         },
         function:()=>{
-          navigate("/account")
+          navigate("/account");
         }
     },
     {
@@ -177,11 +177,11 @@ export default function ProfileDashboard() {
                 <CommandShortcut>⌘B</CommandShortcut></>)
         },
         function:()=>{
-          setIsEditing(true)
+          setIsEditing(true);
         }
     },
     {
-        name: "Settings",
+        name: "settings",
         component: () => {
             return (<>
                  <SettingsIcon />
@@ -189,10 +189,11 @@ export default function ProfileDashboard() {
                 <CommandShortcut>⌘S</CommandShortcut></>)
         },
         function: () => {
+          navigate("/settings/general")
          }
     },
     {
-        name: "Delete Account",
+        name: "delete_account",
         component: () => {
             return (<>
                 <Trash />

@@ -2,6 +2,9 @@
   /* position: relative; */
   box-sizing: border-box;
 }
+body{
+  background-color: var(--primary-bg-color);
+}
 .btn {
   display: flex;
   justify-content: center;

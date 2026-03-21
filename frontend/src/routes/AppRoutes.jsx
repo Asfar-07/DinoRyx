@@ -8,6 +8,7 @@ import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import CreateCompany from "@/pages/CreateDashboard/CreateCompany.tsx";
 import MainLocation from "@/components/MapUI/MainLocation";
 import Welcome from "@/pages/Welcome/Welcome.tsx";
+import GeneralSetting from "@/pages/Setting/GeneralSetting.tsx";
 
 export default function AppRoutes() {
   return (
@@ -23,6 +24,7 @@ export default function AppRoutes() {
            <Route path="/create-company" Component={CreateCompany}></Route>
            <Route path="/nearby-location" Component={MainLocation}></Route>
            <Route path="/welcome-to-dinoRyx" Component={Welcome}></Route>
+           <Route path="/settings/general" Component={GeneralSetting}></Route>
        </Routes>
       </BrowserRouter>
     </div>
