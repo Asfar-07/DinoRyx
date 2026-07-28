@@ -1,0 +1,13 @@
+.glow-primary {
+    box-shadow: rgba(86, 178, 187, 0.35) 0px 0px 40px, rgba(86, 178, 187, 0.2) 0px 0px 120px;
+}
+.glass-li { 
+    
+   -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    background: linear-gradient(#ffffff0d, #ffffff05);
+    border: 1px solid #ffffff14;
+}
+.to-primary-glow{
+    background: linear-gradient(to right,rgba(0, 0, 0, 0.125) 10%, rgba(255, 255, 255, 0) 100%) #56b2bb;
+}

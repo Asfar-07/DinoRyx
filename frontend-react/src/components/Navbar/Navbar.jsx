@@ -3,40 +3,100 @@ import "./navbar.css";
 import NavProfile from "./NavProfile";
 import NotifyIcon from "@/components/SmallUI/NotifyIcon";
 import ThemeMode from "@/components/SmallUI/ThemeMode";
+import { MapPin, Menu, X } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+const navLinks = [
+  { text:"Home", link: "/"},
+  { text:"Trainers", link: "/"},
+  { text:"Dashboard", link: "/user/manage/dashboard"},
+  { text:"Connect", link: "/"},
+  { text:"Map", link: "/"},
+  { text:"Event", link: "/"},
+  { text:"Reviews", link: "/"},
+]
+
 export default function Navbar() {
   const isAuth = useSelector((state)=>state.userauth.isAuthenticated);
+  const [openBox, setOpenBox] = React.useState(false);
+
   return (
-    <div className="Navbar absolute top-0 left-0 w-full z-50">
-      <nav>
-        <div className="sitelogo">Logo</div>
-        <ul className="secdash">
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/user/manage/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/">Contact</Link>
-          </li>
-          <li>
-            <Link to="/">About</Link>
-          </li>
-          {/* <li>
-            <a href="/">
-              <button className="btn">Login</button>
-            </a>
-          </li> */}
-          <li style={{display:"flex", alignItems:'center'}}>
+    <header className="fixed inset-x-0 top-0 z-50 transition-all duration-300 py-3">
+      <main className="flex max-w-7xl mx-auto gap-4 px-4 sm:px-6">
+        <nav
+          className="flex glass-strong-nav w-full items-center justify-between gap-4 rounded-2xl px-4 py-2.5 transition-all duration-300 border border-transparent
+      shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)]"
+        >
+          <div className="flex items-center gap-2.5 ">
+            <div className="h-9 w-9 rounded-full bg-(--symbol-color) shadow-[0_0_24px_rgba(86,178,187,0.55)]"></div>
+            <span className="text-lg font-extrabold tracking-tight text-(--primary-text-color)">
+              Dino
+              <span className="text-(--symbol-color)">Ryx</span>
+            </span>
+          </div>
+          <ul className="hidden items-center  gap-8 lg:flex">
+            {navLinks.map((nav) => (
+              <li className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color)">
+                <Link to={nav.link}>{nav.text}</Link>
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/"
+              className="bg-(--symbol-color) hidden items-center gap-1.5 rounded-full bg-gradient-to-r  px-4 py-2 text-sm font-semibold text-[#0a0f22] transition-transform hover:scale-[1.03] sm:inline-flex"
+            >
+              <MapPin className="size-5" /> Nearby
+            </Link>
+            {isAuth ? (
+              <NavProfile />
+            ) : (
+              <Link
+                to="/"
+                className="hidden rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium  transition-colors text-(--primary-text-color) hover:bg-white/10 sm:inline-flex"
+              >
+                {" "}
+                Login
+              </Link>
+            )}
+
             {isAuth && <NotifyIcon />}
-             < NavProfile />
             <ThemeMode />
-          </li>
-        </ul>
-      </nav>
-    </div>
+            <button
+              className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 lg:hidden"
+              onClick={() => {
+                openBox ? setOpenBox(false) : setOpenBox(true);
+              }}
+            >
+              {openBox ? (
+                <X className="size-5 text-(--primary-text-color)" />
+              ) : (
+                <Menu className="size-5 text-(--primary-text-color)" />
+              )}
+            </button>
+          </div>
+        </nav>
+      </main>
+      {openBox && (
+        <div className="mx-auto mt-2 max-w-7xl px-4 lg:hidden sm:px-6">
+          <div className="glass-strong space-y-1 rounded-2xl px-3 py-6">
+            <ul className=" flex flex-col  gap-2 ">
+              {navLinks.map((nav) => (
+                <li className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color) block rounded-2xl px-3 py-2 hover:bg-white/5">
+                  <Link to={nav.link}>{nav.text}</Link>
+                </li>
+              ))}
+              <Link
+                to="/"
+                className="mt-2 block rounded-lg bg-(--symbol-color) px-3 py-2.5 text-center text-sm font-semibold text-[#0a0f22]"
+              >
+                Login
+              </Link>
+            </ul>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }

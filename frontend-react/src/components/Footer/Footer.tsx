@@ -1,0 +1,158 @@
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PawPrint, Github, Linkedin, Instagram, Facebook, Twitter, Gem } from "lucide-react";
+
+interface FooterLinkGroup {
+  title: string;
+  links: { label: string; href: string }[];
+}
+
+const linkGroups: FooterLinkGroup[] = [
+  {
+    title: "Platform",
+    links: [
+      { label: "Features", href: "#features" },
+      { label: "Trainers", href: "#trainers" },
+      { label: "Nearby Gyms", href: "#nearby-gyms" },
+      { label: "Dashboard", href: "#dashboard" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "#about" },
+      { label: "Careers", href: "#careers" },
+      { label: "Blog", href: "#blog" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Help Center", href: "#help-center" },
+      { label: "Documentation", href: "#documentation" },
+      { label: "FAQ", href: "#faq" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy", href: "#privacy" },
+      { label: "Terms", href: "#terms" },
+    ],
+  },
+];
+
+const socialLinks = [
+  { icon: Github, label: "GitHub", href: "#" },
+  { icon: Linkedin, label: "LinkedIn", href: "#" },
+  { icon: Instagram, label: "Instagram", href: "#" },
+  { icon: Facebook, label: "Facebook", href: "#" },
+  { icon: Twitter, label: "Twitter", href: "#" },
+];
+
+export default function Footer() {
+  const [email, setEmail] = React.useState("");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmail("");
+  };
+
+  return (
+    <footer className=" w-full bg-[#0a0f22] text-[#f0f4f8]">
+      <div className="mx-auto max-w-7xl px-6 py-16 md:px-10">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_2fr]">
+          {/* Brand column */}
+          <div className="flex flex-col gap-5">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1d2233] ring-1 ring-[#56b2bb]/30">
+                <PawPrint className="h-5 w-5 text-[#56b2bb]" />
+              </span>
+              <span className="text-xl font-bold tracking-tight">
+                Dino<span className="text-[#56b2bb]">Ryx</span>
+              </span>
+            </div>
+
+            <p className="mt-5 max-w-sm text-sm text-[#bac7cc]">
+              The trainer-first gym management platform. Memberships,
+              billing, progress and nearby discovery — all in one
+              intelligent ecosystem.
+            </p>
+
+            <form
+              onSubmit={handleSubscribe}
+              className="glass-li flex w-full max-w-sm items-center gap-2 rounded-full border-[#1d2233] text-(--secondary-text-color)
+               placeholder:text-(--secondary-text-color) focus-visible:ring-[#56b2bb] focus-visible:ring-offset-0"
+            >
+              <Input
+                type="email"
+                required
+                placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-11 focus-visible:ring-offset-0 focus-visible:ring-transparent border-0"
+              />
+              <Button
+                type="submit"
+                className="h-11 shrink-0 rounded-full to-primary-glow cursor-pointer px-5 font-medium text-[#0a0f22] hover:bg-[#56b2bb]/90"
+              >
+                Subscribe
+              </Button>
+            </form>
+
+            <div className="flex items-center gap-3 pt-1">
+              {socialLinks.map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1d2233] text-[#bac7cc] transition-colors hover:bg-[#56b2bb]/20 hover:text-[#56b2bb]"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+            {linkGroups.map((group) => (
+              <div key={group.title} className="flex flex-col gap-4">
+                <h3 className="text-sm font-semibold text-[#f0f4f8]">
+                  {group.title}
+                </h3>
+                <ul className="flex flex-col gap-3">
+                  {group.links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* Link columns */}
+          
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-[#1d2233] text-xs">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6  text-[#bac7cc] sm:flex-row md:px-10">
+          <p>© 2026 DinoRyx. All rights reserved.</p>
+          <p className="flex items-center gap-1.5">
+            Crafted with
+            <Gem className="h-3.5 w-3.5 text-[#56b2bb]" fill="#56b2bb" />
+            for trainers worldwide.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
