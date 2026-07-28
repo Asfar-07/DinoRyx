@@ -11,10 +11,10 @@ const navLinks = [
   { text:"Home", link: "/"},
   { text:"Trainers", link: "/"},
   { text:"Dashboard", link: "/user/manage/dashboard"},
-  { text:"Connect", link: "/"},
-  { text:"Map", link: "/"},
+  { text:"Help", link: "/settings/general"},
+  { text:"Map", link: "/nearby-location"},
   { text:"Event", link: "/"},
-  { text:"Reviews", link: "/"},
+  { text:"Reviews", link: "#review"},
 ]
 
 export default function Navbar() {
@@ -38,13 +38,14 @@ export default function Navbar() {
           <ul className="hidden items-center  gap-8 lg:flex">
             {navLinks.map((nav) => (
               <li className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color)">
-                <Link to={nav.link}>{nav.text}</Link>
+                {nav.text=="Dashboard" ? (isAuth ? <Link to={nav.link}>{nav.text}</Link>: <Link to="/login">{nav.text}</Link>) : <Link to={nav.link}>{nav.text}</Link>}
+                
               </li>
             ))}
           </ul>
           <div className="flex items-center gap-2">
             <Link
-              to="/"
+              to="/nearby-location"
               className="bg-(--symbol-color) hidden items-center gap-1.5 rounded-full bg-gradient-to-r  px-4 py-2 text-sm font-semibold text-[#0a0f22] transition-transform hover:scale-[1.03] sm:inline-flex"
             >
               <MapPin className="size-5" /> Nearby
@@ -53,7 +54,7 @@ export default function Navbar() {
               <NavProfile />
             ) : (
               <Link
-                to="/"
+                to="/login"
                 className="hidden rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium  transition-colors text-(--primary-text-color) hover:bg-white/10 sm:inline-flex"
               >
                 {" "}
@@ -84,15 +85,23 @@ export default function Navbar() {
             <ul className=" flex flex-col  gap-2 ">
               {navLinks.map((nav) => (
                 <li className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color) block rounded-2xl px-3 py-2 hover:bg-white/5">
-                  <Link to={nav.link}>{nav.text}</Link>
+                   {nav.text=="Dashboard" ? (isAuth ? <Link to={nav.link}>{nav.text}</Link>: <Link to="/login">{nav.text}</Link>) : <Link to={nav.link}>{nav.text}</Link>}
                 </li>
               ))}
+              {isAuth ? 
               <Link
-                to="/"
+                to="/account"
+                className="mt-2 block rounded-lg bg-(--symbol-color) px-3 py-2.5 text-center text-sm font-semibold text-[#0a0f22]"
+              >
+                Login
+              </Link>:
+              <Link
+                to="/login"
                 className="mt-2 block rounded-lg bg-(--symbol-color) px-3 py-2.5 text-center text-sm font-semibold text-[#0a0f22]"
               >
                 Login
               </Link>
+              }
             </ul>
           </div>
         </div>

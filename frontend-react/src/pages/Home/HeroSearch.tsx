@@ -2,6 +2,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const popularTags = [
   "CrossFit",
@@ -14,9 +15,11 @@ const popularTags = [
 export default function HeroSearch() {
   const [query, setQuery] = React.useState("");
   const [location, setLocation] = React.useState("");
+  const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    navigate("/nearby-location");
     // handle search logic here
   };
 

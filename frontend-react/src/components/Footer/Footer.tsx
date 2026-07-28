@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { PawPrint, Github, Linkedin, Instagram, Facebook, Twitter, Gem } from "lucide-react";
 
 interface FooterLinkGroup {
@@ -14,7 +16,7 @@ const linkGroups: FooterLinkGroup[] = [
     links: [
       { label: "Features", href: "#features" },
       { label: "Trainers", href: "#trainers" },
-      { label: "Nearby Gyms", href: "#nearby-gyms" },
+      { label: "Nearby Gyms", href: "/nearby-location" },
       { label: "Dashboard", href: "#dashboard" },
     ],
   },
@@ -22,14 +24,14 @@ const linkGroups: FooterLinkGroup[] = [
     title: "Company",
     links: [
       { label: "About", href: "#about" },
-      { label: "Careers", href: "#careers" },
+      { label: "team", href: "#team" },
       { label: "Blog", href: "#blog" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Help Center", href: "#help-center" },
+      { label: "Help Center", href: "/settings/general" },
       { label: "Documentation", href: "#documentation" },
       { label: "FAQ", href: "#faq" },
     ],
@@ -37,8 +39,8 @@ const linkGroups: FooterLinkGroup[] = [
   {
     title: "Legal",
     links: [
-      { label: "Privacy", href: "#privacy" },
-      { label: "Terms", href: "#terms" },
+      { label: "Privacy", href: "/settings/general" },
+      { label: "Terms", href: "/settings/general" },
     ],
   },
 ];
@@ -53,6 +55,7 @@ const socialLinks = [
 
 export default function Footer() {
   const [email, setEmail] = React.useState("");
+  const isAuth = useSelector((state) => state.userauth.isAuthenticated);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +117,7 @@ export default function Footer() {
               ))}
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {linkGroups.map((group) => (
               <div key={group.title} className="flex flex-col gap-4">
@@ -124,12 +127,10 @@ export default function Footer() {
                 <ul className="flex flex-col gap-3">
                   {group.links.map((link) => (
                     <li key={link.label}>
-                      <a
-                        href={link.href}
-                        className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]"
-                      >
-                        {link.label}
-                      </a>
+                      {link.label == "Dashboard" ? (isAuth ? <Link to={link.href} className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]">{link.label}</Link>
+                        : <Link to="/login" className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]">{link.label}</Link>)
+                        : <Link to={link.href} className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]">{link.label}</Link>
+                        }
                     </li>
                   ))}
                 </ul>
@@ -138,7 +139,7 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          
+
         </div>
       </div>
 

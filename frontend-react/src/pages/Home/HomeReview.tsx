@@ -61,7 +61,7 @@ const testimonials: Testimonial[] = [
 
 export default function HomeReview() {
   return (
-    <section className="w-full bg-(--primary-bg-color) px-6 py-24 text-center text-(--primary-text-color) md:px-10">
+    <section id="review" className="w-full bg-(--primary-bg-color) px-6 py-24 text-center text-(--primary-text-color) md:px-10">
       <div className="mx-auto flex max-w-3xl flex-col items-center">
         <span className="glass inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-(--symbol-color)">
           Loved by trainers

@@ -1,4 +1,6 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   Sparkles,
   ArrowRight,
@@ -62,11 +64,13 @@ const trustItems = [
 ];
 
 export default function MainHero() {
+  const isAuth = useSelector((state)=>state.userauth.isAuthenticated);
+
   return (
     <section className="w-full bg-(--primary-bg-color) px-6 py-20 text-(--primary-text-color) md:px-10 lg:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
         {/* Left column */}
-        <div className="flex flex-col">
+        <div className="flex flex-col max-md:mt-10">
           <span className="glass-li inline-flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium text-[#bac7cc] ring-1 ring-white/5">
             <Sparkles className="h-3.5 w-3.5 text-[#56b2bb]" />
             The new operating system for modern gyms
@@ -85,19 +89,27 @@ export default function MainHero() {
           </p>
 
           <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <button className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
+            {isAuth ?
+              <Link to="/account" className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
           to-primary-glow shadow-[0_0_40px_-10px_rgba(86,178,187,0.6)] transition-transform hover:scale-[1.03] cursor-pointer">
-              Get Started
-              <ArrowRight className="h-4 w-4" />
-            </button>
-
-            <button
+                Get Started
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              :
+              <Link to="/Login" className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
+          to-primary-glow shadow-[0_0_40px_-10px_rgba(86,178,187,0.6)] transition-transform hover:scale-[1.03] cursor-pointer">
+                Get Started
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            }
+           
+            <Link to="/nearby-location"
               className="glass flex items-center gap-1.5 rounded-full border-[#f0f4f8]/15  px-7 py-4 text-sm font-semibold
              text-(--primary-text-color) hover:bg-[#1d2233] cursor-pointer"
             >
               <MapPin className="h-4 w-4 text-[#56b2bb]" />
               Explore Nearby Gyms
-            </button>
+            </Link>
           </div>
 
           <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
