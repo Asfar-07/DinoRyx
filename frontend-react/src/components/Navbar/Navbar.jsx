@@ -28,13 +28,13 @@ export default function Navbar() {
           className="flex glass-strong-nav w-full items-center justify-between gap-4 rounded-2xl px-4 py-2.5 transition-all duration-300 border border-transparent
       shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)]"
         >
-          <div className="flex items-center gap-2.5 ">
+          <Link to="/" className="flex items-center gap-2.5 ">
             <div className="h-9 w-9 rounded-full bg-(--symbol-color) shadow-[0_0_24px_rgba(86,178,187,0.55)]"></div>
             <span className="text-lg font-extrabold tracking-tight text-(--primary-text-color)">
               Dino
               <span className="text-(--symbol-color)">Ryx</span>
             </span>
-          </div>
+          </Link>
           <ul className="hidden items-center  gap-8 lg:flex">
             {navLinks.map((nav) => (
               <li className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color)">

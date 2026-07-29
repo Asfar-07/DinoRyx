@@ -84,7 +84,7 @@ export default function MainHero() {
 
           <p className="mt-6 max-w-xl text-lg leading-relaxed  text-(--secondary-text-color)">
             Manage students, billing, progress, locations and your complete
-            gym ecosystem from one intelligent platform — designed around
+            gym ecosystem from one intelligent platform designed around
             the trainer.
           </p>
 

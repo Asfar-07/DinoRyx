@@ -79,7 +79,7 @@ export default function Footer() {
 
             <p className="mt-5 max-w-sm text-sm text-[#bac7cc]">
               The trainer-first gym management platform. Memberships,
-              billing, progress and nearby discovery — all in one
+              billing, progress and nearby discovery all in one
               intelligent ecosystem.
             </p>
 
