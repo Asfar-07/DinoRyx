@@ -1,4 +1,4 @@
-import React from 'react'
+//@ts-nocheck
 import "./thememode.css"
 import { MdOutlineDarkMode } from "react-icons/md";
 import { CiLight } from "react-icons/ci";

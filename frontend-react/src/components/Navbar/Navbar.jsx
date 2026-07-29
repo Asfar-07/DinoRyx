@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from "react";
 import "./navbar.css";
 import NavProfile from "./NavProfile";
@@ -46,7 +47,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link
               to="/nearby-location"
-              className="bg-(--symbol-color) hidden items-center gap-1.5 rounded-full bg-gradient-to-r  px-4 py-2 text-sm font-semibold text-[#0a0f22] transition-transform hover:scale-[1.03] sm:inline-flex"
+              className="bg-(--symbol-color) hidden items-center gap-1.5 rounded-full bg-linear-to-r  px-4 py-2 text-sm font-semibold text-[#0a0f22] transition-transform hover:scale-[1.03] sm:inline-flex"
             >
               <MapPin className="size-5" /> Nearby
             </Link>

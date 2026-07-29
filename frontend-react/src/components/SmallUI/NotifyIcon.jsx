@@ -1,4 +1,3 @@
-import React from "react";
 import './notifyicon.css'
 import { FaRegBell} from "react-icons/fa";
 

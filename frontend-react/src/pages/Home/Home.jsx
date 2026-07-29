@@ -1,4 +1,3 @@
-import React from 'react'
 import "./home.css"
 import HeroSearch from './HeroSearch'
 import HomeStart from './HomeStart'

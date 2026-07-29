@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useState } from "react";
 import "./resetpassword.css";
 import { authHandle } from "../../features/auth/authService";

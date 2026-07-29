@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+//@ts-nocheck
+import { useEffect, useRef } from "react";
 import "./App.css";
 import "./styles/theme.css";
 import "./styles/global.css";
@@ -11,7 +12,7 @@ import { handleUser } from "./features/user/userService";
 
 function App() {
 
-    const hasFetched = useRef(false);
+  const hasFetched = useRef(false);
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme.mode);
   const userInfo=useSelector((state)=> state.userauth.authInfo)

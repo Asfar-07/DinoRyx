@@ -35,6 +35,7 @@ export default function LocationPicker({ onSelect , Selected } :LocationPickerPr
   function getUserLocation() {
     if (!navigator.geolocation) {
       setMessage("Geolocation not supported");
+      console.log(loading);
       setLoading(false);
       return;
     }

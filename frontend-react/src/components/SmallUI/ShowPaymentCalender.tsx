@@ -131,7 +131,7 @@ export default function ShowPaymentCalender({ studentId, dashboardId, student }:
   function sendToBack(data: setAllData) {
     if(isLoading) return;
     setIsLoading(true)
-    handlePayment.savePayment(data).then((response) => {
+    handlePayment.savePayment(data).then(() => {
       setIsLoading(false)
       setPaymented([...paymented, data])
       setPaymentDate("");

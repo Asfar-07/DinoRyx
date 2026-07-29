@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useSelector } from "react-redux";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";

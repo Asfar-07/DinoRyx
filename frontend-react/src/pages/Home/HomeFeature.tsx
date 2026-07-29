@@ -1,4 +1,3 @@
-import * as React from "react";
 import { CreditCard, CheckCircle2, MapPin } from "lucide-react";
 
 const trainerCards = [
