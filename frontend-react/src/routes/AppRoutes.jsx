@@ -12,6 +12,7 @@ import GeneralSetting from "@/pages/Setting/GeneralSetting.tsx";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import HeaderLayout from "@/layouts/HeaderLayout.jsx";
 import NoLayout from "@/layouts/NoLayout.jsx";
+// import LoginTest from "@/pages/Login/LoginTest.tsx";
 // import OnboardingPage from "@/pages/Welcome/Onboarding.tsx";
 
 export default function AppRoutes() {

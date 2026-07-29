@@ -134,7 +134,7 @@ export default function MainHero() {
           />
 
           <img
-            src="/images/DynoHome.webp"
+            src="/images/DinoHome.webp"
             alt="DinoRyx mascot lifting a dumbbell"
             className="relative z-10 mx-auto h-full w-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
           />
