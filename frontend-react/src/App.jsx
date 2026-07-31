@@ -27,7 +27,6 @@ function App() {
     hasFetched.current=true;
     setTimeout(() => {
       if (!userInfo) {
-        console.log("call")
         handleUser.isUser().then((response) => {
           dispatch(updateAuth(true));
           dispatch(setAuth(response));

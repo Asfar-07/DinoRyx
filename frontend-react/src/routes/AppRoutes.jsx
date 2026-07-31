@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route} from "react-router-dom";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Home from "../pages/Home/Home";
-import Login from "../pages/Login/Login.tsx";
+import Login from "@/pages/Login/Login.tsx";
 import Profile from "../pages/Profile/Profile.tsx";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
@@ -12,7 +12,6 @@ import GeneralSetting from "@/pages/Setting/GeneralSetting.tsx";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import HeaderLayout from "@/layouts/HeaderLayout.jsx";
 import NoLayout from "@/layouts/NoLayout.jsx";
-// import LoginTest from "@/pages/Login/LoginTest.tsx";
 // import OnboardingPage from "@/pages/Welcome/Onboarding.tsx";
 
 export default function AppRoutes() {
