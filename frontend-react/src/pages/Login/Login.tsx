@@ -1,6 +1,5 @@
 import  React, {useState} from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
@@ -8,7 +7,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { FaFacebookF } from "react-icons/fa";
 
 import { authHandle } from "../../features/auth/authService";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { updateAuth } from "../../features/auth/authSlice";
 import { addUser } from "@/features/user/userSlice";
@@ -22,8 +21,6 @@ export default function Login() {
   }
 
   const [showPassword, setShowPassword] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
   const [rememberMe, setRememberMe] = React.useState(false);
 
   const [isSignup, setIsSignup] = useState(false);
@@ -135,7 +132,7 @@ export default function Login() {
       <main className="mx-auto max-w-5xl px-6 pb-16 pt-6 md:px-10">
         <div className="grid overflow-hidden rounded-3xl bg-[#131a2e] ring-1 ring-white/5 md:grid-cols-2">
           {/* Left panel */}
-          <div className="relative flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#16243a] to-[#0f1626] p-10">
+          <div className="relative flex flex-col justify-between overflow-hidden bg-linear-to-b from-[#16243a] to-[#0f1626] p-10">
             <div
               aria-hidden
               className="pointer-events-none absolute left-1/2 top-1/2 h-[60%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#56b2bb]/10 blur-[100px]"
@@ -299,7 +296,7 @@ export default function Login() {
 
               <Button
                 type="submit"
-                className="h-12 rounded-xl bg-gradient-to-r from-[#56b2bb] to-[#7fd7e0] font-semibold text-[#0a0f22]
+                className="h-12 rounded-xl bg-linear-to-r from-[#56b2bb] to-[#7fd7e0] font-semibold text-[#0a0f22]
                  hover:opacity-90 cursor-pointer"
               >
                 {isSignup?"Sign In" : "Log In"}
@@ -356,38 +353,26 @@ export default function Login() {
   );
 }
 
-function GoogleIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path
-        fill="#4285F4"
-        d="M23.52 12.27c0-.82-.07-1.6-.2-2.36H12v4.47h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.74Z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.88-3c-1.08.72-2.46 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.26v3.11A12 12 0 0 0 12 24Z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M5.27 14.29a7.2 7.2 0 0 1 0-4.58V6.6H1.26a12 12 0 0 0 0 10.8l4.01-3.11Z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 4.75c1.76 0 3.34.6 4.59 1.79l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.26 6.6l4.01 3.11C6.22 6.86 8.87 4.75 12 4.75Z"
-      />
-    </svg>
-  );
-}
+// function GoogleIcon({ className }: { className?: string }) {
+//   return (
+//     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+//       <path
+//         fill="#4285F4"
+//         d="M23.52 12.27c0-.82-.07-1.6-.2-2.36H12v4.47h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.74Z"
+//       />
+//       <path
+//         fill="#34A853"
+//         d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.88-3c-1.08.72-2.46 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.26v3.11A12 12 0 0 0 12 24Z"
+//       />
+//       <path
+//         fill="#FBBC05"
+//         d="M5.27 14.29a7.2 7.2 0 0 1 0-4.58V6.6H1.26a12 12 0 0 0 0 10.8l4.01-3.11Z"
+//       />
+//       <path
+//         fill="#EA4335"
+//         d="M12 4.75c1.76 0 3.34.6 4.59 1.79l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.26 6.6l4.01 3.11C6.22 6.86 8.87 4.75 12 4.75Z"
+//       />
+//     </svg>
+//   );
+// }
 
-function AppleIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M16.36 1.2c.1 1-.28 2-.85 2.72-.6.75-1.6 1.35-2.57 1.27-.12-.98.35-2.02.9-2.66.62-.72 1.68-1.28 2.52-1.33ZM20.9 17.3c-.5 1.14-.74 1.65-1.38 2.66-.9 1.4-2.16 3.15-3.73 3.16-1.39.02-1.75-.9-3.64-.9-1.88 0-2.29.88-3.68.92-1.56.05-2.75-1.5-3.65-2.9-2.5-3.86-2.77-8.39-1.22-10.8 1.1-1.72 2.83-2.73 4.46-2.73 1.66 0 2.7.92 4.08.92 1.33 0 2.15-.92 4.08-.92 1.45 0 2.98.79 4.07 2.16-3.58 1.96-3 7.06.61 8.43Z" />
-    </svg>
-  );
-}
