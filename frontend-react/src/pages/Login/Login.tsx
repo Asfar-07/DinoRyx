@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import { FaFacebookF } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 import { authHandle } from "../../features/auth/authService";
 import { useNavigate } from "react-router";
@@ -286,12 +287,12 @@ export default function Login() {
                   Remember me
                 </label>
 
-                <a
-                  href="/forgot"
+                <Link
+                  to = {"/forgot"}
                   className="text-sm font-medium text-[#56b2bb] underline underline-offset-2 hover:text-[#56b2bb]/80"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
 
               <Button
