@@ -35,12 +35,12 @@ export default function AppRoutes() {
           <Route element={<NoLayout />}>
             <Route path="/user/manage/dashboard" Component={Dashboard} />
             <Route path="/login" Component={Login} />
-            <Route path="/forgot-password" Component={ForgotPassword} />
-            <Route path="/reset-password" Component={ResetPassword} />
-            <Route path="/create-company" Component={CreateCompany} />
-            <Route path="/welcome-to-dinoRyx" Component={Welcome} />
+            <Route path="/forgot" Component={ForgotPassword} />
+            <Route path="/reset/password" Component={ResetPassword} />
+            <Route path="/create/company" Component={CreateCompany} />
+            <Route path="/welcome/home" Component={Welcome} />
           </Route>
-          
+
         </Routes>
       </BrowserRouter>
     </div>

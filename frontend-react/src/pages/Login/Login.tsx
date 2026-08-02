@@ -287,7 +287,7 @@ export default function Login() {
                 </label>
 
                 <a
-                  href="/forgot-password"
+                  href="/forgot"
                   className="text-sm font-medium text-[#56b2bb] underline underline-offset-2 hover:text-[#56b2bb]/80"
                 >
                   Forgot password?
