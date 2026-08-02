@@ -40,6 +40,7 @@ export default function AppRoutes() {
             <Route path="/create-company" Component={CreateCompany} />
             <Route path="/welcome-to-dinoRyx" Component={Welcome} />
           </Route>
+          
         </Routes>
       </BrowserRouter>
     </div>

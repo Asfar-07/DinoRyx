@@ -107,10 +107,10 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen w-full bg-[#0a0f22] text-[#f0f4f8]">
+    <div className="min-h-screen w-full bg-(--primary-bg-color) text-(--primary-text-color)">
       {/* Top bar */}
       <header className="flex items-center justify-between px-6 py-6 md:px-10">
-        <a href="#home" className="flex items-center gap-2.5">
+        <a href="/" className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1d2233] ring-1 ring-[#56b2bb]/30">
             <span className="h-3.5 w-3.5 rounded-full bg-[#56b2bb]" />
           </span>
@@ -120,8 +120,8 @@ export default function Login() {
         </a>
 
         <a
-          href="#home"
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-[#f0f4f8] transition-colors hover:bg-[#1d2233]"
+          href="/"
+          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-(--primary-text-color) transition-colors hover:bg-[#1d2233]"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to site
@@ -130,7 +130,7 @@ export default function Login() {
 
       {/* Card */}
       <main className="mx-auto max-w-5xl px-6 pb-16 pt-6 md:px-10">
-        <div className="grid overflow-hidden rounded-3xl bg-[#131a2e] ring-1 ring-white/5 md:grid-cols-2">
+        <div className="grid overflow-hidden rounded-3xl bg-[#131a2e] text-white ring-1 ring-white/5 md:grid-cols-2">
           {/* Left panel */}
           <div className="relative flex flex-col justify-between overflow-hidden bg-linear-to-b from-[#16243a] to-[#0f1626] p-10">
             <div
