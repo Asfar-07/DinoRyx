@@ -119,6 +119,7 @@ public class ApiController {
         }
 
     }
+
     @PostMapping(value="/facebook/provider")
     public ResponseEntity<String> facebookProvider(@RequestBody Map<String, String> body) throws Exception {
         String token = body.get("token");
@@ -152,4 +153,5 @@ public class ApiController {
         cookie.removeCookie();
         return ResponseEntity.ok("success");
     }
+
 }
