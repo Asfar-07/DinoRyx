@@ -10,7 +10,7 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  // const google_captcha_key = import.meta.env.VITE_GOOGLE_RECAPTCHA_CLIENT_KEY;
+  const google_captcha_key = import.meta.env.VITE_GOOGLE_RECAPTCHA_CLIENT_KEY;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,12 +55,12 @@ export default function ForgotPassword() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/* <div className="captcha-box">
+          <div className="captcha-box">
             <ReCAPTCHA  //this Google reCaptcha for check bot
               sitekey={google_captcha_key} //its site key of client
               onChange={(token) => setCaptchaToken(token)}
             />
-          </div> */}
+          </div>
 
           {error && <p className="error-text">{error}</p>}
           {message && <p className="success-text">{message}</p>}

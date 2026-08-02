@@ -288,7 +288,7 @@ export default function Login() {
                 </label>
 
                 <Link
-                  to = {"/forgot"}
+                  to = {"/login/forgot"}
                   className="text-sm font-medium text-[#56b2bb] underline underline-offset-2 hover:text-[#56b2bb]/80"
                 >
                   Forgot password?
