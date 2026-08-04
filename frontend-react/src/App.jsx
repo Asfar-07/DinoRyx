@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import "./styles/theme.css";
 import "./styles/global.css";
@@ -9,8 +9,10 @@ import { setThemeFromLocal } from "./features/theme/themeSlice";
 import { setAuth,updateAuth } from "./features/auth/authSlice";
 import { ToastContainer } from "react-toastify";
 import { handleUser } from "./features/user/userService";
+import TrialNotice from "./components/notice/TrialNotice";
 
 function App() {
+  const [open, setOpen] = useState(true);
 
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
@@ -56,6 +58,9 @@ function App() {
   return (
     <div className="App">
       <ToastContainer />
+      <TrialNotice open={open}
+  onOpenChange={setOpen}
+  onStartExploring={() => setOpen(false)}/>
       <AppRoutes />
     </div>
   );
