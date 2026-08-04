@@ -6,11 +6,14 @@ const headerForm = {
   },
   withCredentials: true,
 };
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 export const handleLocation= {
     getAllLocation:async()=>{
          try {
               const res = await axios.get(
-                "http://localhost:8080/dashboard/get/all/location",
+                `${backendUrl}/dashboard/get/all/location`,
                 headerForm,
               );
               return res.data;

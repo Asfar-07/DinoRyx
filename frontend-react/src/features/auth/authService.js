@@ -8,11 +8,14 @@ const headerForm = {
   },
   withCredentials: true,
 };
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 export const authHandle = {
   signupService: async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/auth/signup",
+        `${backendUrl}/auth/signup`,
         data,
         headerForm,
       );
@@ -27,7 +30,7 @@ export const authHandle = {
   loginService: async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/auth/login",
+        `${backendUrl}/auth/login`,
         data,
         headerForm,
       );
@@ -42,7 +45,7 @@ export const authHandle = {
   googleService: async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/auth/google/provider",
+        `${backendUrl}/auth/google/provider`,
         { token: data },
         { withCredentials: true },
       );
@@ -57,7 +60,7 @@ export const authHandle = {
   logoutService: async () => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/auth/logout",
+        `${backendUrl}/auth/logout`,
         {},
         headerForm,
       );
@@ -72,7 +75,7 @@ export const authHandle = {
   forgotPasswordService: async (email, token) => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/auth/forgot/password",
+        `${backendUrl}/auth/forgot/password`,
         { emailId: email, captchaToken: token },
         headerForm,
       );
@@ -85,7 +88,7 @@ export const authHandle = {
   ResetPasswordService: async (paramToken, newPassword) => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/auth/reset/password",
+        `${backendUrl}/auth/reset/password`,
         { token: paramToken, new_password: newPassword },
         headerForm,
       );
