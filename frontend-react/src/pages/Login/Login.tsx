@@ -111,8 +111,8 @@ export default function Login() {
       {/* Top bar */}
       <header className="flex items-center justify-between px-6 py-6 md:px-10">
         <a href="/" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1d2233] ring-1 ring-[#56b2bb]/30">
-            <span className="h-3.5 w-3.5 rounded-full bg-[#56b2bb]" />
+          <span className="flex h-9 w-9 items-center justify-center rounded-full ">
+            <img src="/android-chrome-192x192.png" alt="logo" />
           </span>
           <span className="text-lg font-bold tracking-tight">
             Dino<span className="text-[#56b2bb]">Ryx</span>

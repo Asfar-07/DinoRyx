@@ -71,7 +71,7 @@ export default function Footer() {
           <div className="flex flex-col gap-5">
             <div className="flex items-center gap-2.5">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1d2233] ring-1 ring-[#56b2bb]/30">
-                <PawPrint className="h-5 w-5 text-[#56b2bb]" />
+                <img src="/android-chrome-192x192.png" alt="logo" />
               </span>
               <span className="text-xl font-bold tracking-tight">
                 Dino<span className="text-[#56b2bb]">Ryx</span>

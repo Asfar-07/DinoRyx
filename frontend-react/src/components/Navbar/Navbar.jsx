@@ -30,7 +30,9 @@ export default function Navbar() {
       shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)]"
         >
           <Link to="/" className="flex items-center gap-2.5 ">
-            <div className="h-9 w-9 rounded-full bg-(--symbol-color) shadow-[0_0_24px_rgba(86,178,187,0.55)]"></div>
+            <div className="h-9 w-9 rounded-full ">
+              <img src="/android-chrome-192x192.png" alt="logo" />
+            </div>
             <span className="text-lg font-extrabold tracking-tight text-(--primary-text-color)">
               Dino
               <span className="text-(--symbol-color)">Ryx</span>
