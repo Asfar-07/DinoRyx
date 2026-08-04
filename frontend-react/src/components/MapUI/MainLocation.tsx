@@ -1,8 +1,8 @@
 import { Map, MapMarker, MapControls, MarkerContent, MarkerTooltip, MarkerPopup } from '../ui/map';
 import { GoLinkExternal } from "react-icons/go";
 import { MdAddCircleOutline } from "react-icons/md";
-import { useRef, useEffect,useState } from 'react';
-import { handleLocation } from '@/features/location/locationService';
+// import { useRef, useEffect, useState } from 'react';
+// import { handleLocation } from '@/features/location/locationService';
 
 export default function MainLocation() {
     // const locations = [
@@ -22,16 +22,17 @@ export default function MainLocation() {
          
     // ];
     type Location=[{_id:number,companyName:string,address:string,latitude:number,longitude:number}] | []
-    const [locations,setLocations]=useState<Location>([]);
-    const hasFetched = useRef<boolean>(false);
+    const locations:Location=[{_id:1,companyName:"Demo Fitness",address:"20 W 34th St, New York, NY 10001",latitude:40.7484,longitude:-73.9857}]
+    // const [locations, setLocations]=useState<Location>([]);
+    // const hasFetched = useRef<boolean>(false);
 
-    useEffect(()=>{
-        if(hasFetched.current) return;
-        hasFetched.current=true;
-        handleLocation.getAllLocation().then((response)=>{
-            setLocations(response);
-        });
-    },[])
+    // useEffect(()=>{
+    //     if(hasFetched.current) return;
+    //     hasFetched.current=true;
+    //     handleLocation.getAllLocation().then((response)=>{
+    //         setLocations(response);
+    //     });
+    // },[])
     return (
         <div style={{ width: "100%", height: "100vh" }}>
             {/* <aside className=' w-70 h-full fixed top-0 left-0 z-50  bg-(--secondary-bg-color) border-r-2'></aside> */}
@@ -63,7 +64,7 @@ export default function MainLocation() {
                                         </section>
                                         <section className=' w-full'>
                                             <span className=' py-1 px-2 text-[10px] rounded-[2px] bg-gray-600 text-white'>GYM</span>
-                                            <p className=' my-1.5 font-extralight text-[10px] leading-3 tracking-[1px] text-gray-600 line-clamp-2'> Welcome to [Gym Name], where excuses don't burn calories </p>
+                                            <p className=' my-1.5 font-extralight text-[10px] leading-3 tracking-[1px] text-gray-600 line-clamp-2'> Welcome to Demo Fitness, where excuses don't burn calories </p>
                                         </section>
                                         <section className=' w-full flex justify-end'>
                                             <button className='py-1 px-3 rounded-sm cursor-pointer bg-cyan-800 text-white'>Dashboard</button>
