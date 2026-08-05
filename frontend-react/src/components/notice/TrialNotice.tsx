@@ -61,7 +61,8 @@ export default function TrialNotice({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="min-w-[80%] max-w-[1024px] h-[90vh] max-h-[750px] overflow-hidden border-0 bg-(--primary-bg-color) p-0 text-(--primary-text-color) ring-1 ring-white/10 sm:rounded-3xl flex flex-col"
+        className="min-w-[80%] max-w-[1024px] h-[90vh] max-h-[750px] overflow-hidden border-0 bg-(--primary-bg-color) p-0 text-(--primary-text-color) ring-1 ring-white/10 sm:rounded-3xl flex flex-col
+        max-sm:w-90"
       >
         <DialogClose className=" cursor-pointer absolute right-6 top-6 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-(--primary-bg-color) text-[#bac7cc] ring-1 ring-white/10 transition-colors hover:bg-[#1d2233]/70 hover:text-[#f0f4f8]">
           <X className="h-4 w-4" />
@@ -69,7 +70,7 @@ export default function TrialNotice({
         </DialogClose>
 
         <ScrollArea className="trial-notice-scroll relative min-h-0 flex-1">
-          <div className="p-8 sm:p-10">
+          <div className="p-4 sm:p-10">
           {/* Header */}
           <div className="flex items-start gap-4 pr-12">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#1d2233] ring-1 ring-[#56b2bb]/20">

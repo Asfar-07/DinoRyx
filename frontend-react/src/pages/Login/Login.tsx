@@ -129,10 +129,11 @@ export default function Login() {
       </header>
 
       {/* Card */}
-      <main className="mx-auto max-w-5xl px-6 pb-16 pt-6 md:px-10">
+      <main className="mx-auto max-w-5xl px-4 pb-16 pt-6 md:px-10">
         <div className="grid overflow-hidden rounded-3xl bg-[#131a2e] text-white ring-1 ring-white/5 md:grid-cols-2">
           {/* Left panel */}
-          <div className="relative flex flex-col justify-between overflow-hidden bg-linear-to-b from-[#16243a] to-[#0f1626] p-10">
+          <div className="relative flex flex-col justify-between overflow-hidden bg-linear-to-b from-[#16243a] to-[#0f1626] p-10
+          max-sm:py-10 max-sm:px-6">
             <div
               aria-hidden
               className="pointer-events-none absolute left-1/2 top-1/2 h-[60%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#56b2bb]/10 blur-[100px]"
@@ -165,7 +166,7 @@ export default function Login() {
           </div>
 
           {/* Right panel */}
-          <div className="flex flex-col justify-center p-10">
+          <div className="flex flex-col justify-center p-10 max-sm:py-10 max-sm:px-6">
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
               {isSignup ? "Sign In" : "Log In"}
             </h2>
@@ -309,7 +310,7 @@ export default function Login() {
               <div className="h-px flex-1 bg-white/10" />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
               <Button
                 type="button"
                 variant="outline"
@@ -319,6 +320,7 @@ export default function Login() {
                 <GoogleLogin
                   onSuccess={handleGoogleAuth}
                   onError={() => console.log("Login Failed")}
+                  width={200}
                 />
               </Button>
               <Button

@@ -82,9 +82,10 @@ export default function Navbar() {
           </div>
         </nav>
       </main>
+      {/* // mobile responsive navbar */}
       {openBox && (
         <div className="mx-auto mt-2 max-w-7xl px-4 lg:hidden sm:px-6">
-          <div className="glass-strong space-y-1 rounded-2xl px-3 py-6">
+          <div className="glass-strong-nav space-y-1 rounded-2xl px-3 py-6">
             <ul className=" flex flex-col  gap-2 ">
               {navLinks.map((nav) => (
                 <li className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color) block rounded-2xl px-3 py-2 hover:bg-white/5">
