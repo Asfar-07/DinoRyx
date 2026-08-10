@@ -12,7 +12,7 @@ import GeneralSetting from "@/pages/Setting/GeneralSetting.tsx";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import HeaderLayout from "@/layouts/HeaderLayout.jsx";
 import NoLayout from "@/layouts/NoLayout.jsx";
-// import OnboardingPage from "@/pages/Welcome/Onboarding.tsx";
+import OnboardingPage from "@/pages/Welcome/Onboarding.tsx";
 
 export default function AppRoutes() {
   return (
@@ -38,7 +38,7 @@ export default function AppRoutes() {
             <Route path="/login/forgot" Component={ForgotPassword} />
             <Route path="/reset-password" Component={ResetPassword} />
             <Route path="/create/company" Component={CreateCompany} />
-            <Route path="/welcome/home" Component={Welcome} />
+            <Route path="/welcome/home" Component={OnboardingPage} />
           </Route>
 
         </Routes>

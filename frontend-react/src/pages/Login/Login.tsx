@@ -56,7 +56,7 @@ export default function Login() {
             dispatch(updateAuth(true));
             resetDefault()
             setIsLoading(false);
-            navigate("/");
+            navigate("/welcome/home");
         })
         .catch((err) => {
           setIsLoading(false);
