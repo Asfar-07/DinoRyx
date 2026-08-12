@@ -1,4 +1,4 @@
-import  React, {useState} from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -12,51 +12,56 @@ import { useDispatch } from "react-redux";
 import { updateAuth } from "../../features/auth/authSlice";
 import { addUser } from "@/features/user/userSlice";
 import { useForm } from "react-hook-form";
+import FloatingCharacters from "@/components/animate-ui/FloatingCharacters";
 
 export default function Login() {
-   interface userForm{
-    username:string,
-    email:string,
-    password:string
+  interface userForm {
+    username: string,
+    email: string,
+    password: string
   }
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
 
   const [isSignup, setIsSignup] = useState(false);
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  //for dino animation
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
   //useForm
-  const loginForm = useForm<userForm>({defaultValues:{username:"",email:"",password:""}});
-  const {register, handleSubmit, formState, reset} = loginForm;
-  const {errors}=formState;
-  
+  const loginForm = useForm<userForm>({ defaultValues: { username: "", email: "", password: "" } });
+  const { register, handleSubmit, formState, reset } = loginForm;
+  const { errors } = formState;
+
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
   //form resect from useForm
-  const resetDefault=()=>{
+  const resetDefault = () => {
     reset({
-      username:"",
-      email:"",
-      password:""
+      username: "",
+      email: "",
+      password: ""
     })
   }
 
-  function authenticationSubmit(userData:userForm) {
-    if(isLoading) return;
+  function authenticationSubmit(userData: userForm) {
+    if (isLoading) return;
     setIsLoading(true);
     if (isSignup) {
-      
-      
+
+
       authHandle
         .signupService(userData)
         .then((data) => {
-            dispatch(addUser(data))
-            dispatch(updateAuth(true));
-            resetDefault()
-            setIsLoading(false);
-            navigate("/welcome/home");
+          dispatch(addUser(data))
+          dispatch(updateAuth(true));
+          resetDefault()
+          setIsLoading(false);
+          navigate("/welcome/home");
         })
         .catch((err) => {
           setIsLoading(false);
@@ -67,11 +72,11 @@ export default function Login() {
       authHandle
         .loginService(userData)
         .then((data) => {
-           dispatch(addUser(data))
-            dispatch(updateAuth(true));
-            resetDefault()
-            setIsLoading(false);
-            navigate("/");
+          dispatch(addUser(data))
+          dispatch(updateAuth(true));
+          resetDefault()
+          setIsLoading(false);
+          navigate("/");
         })
         .catch((err) => {
           setIsLoading(false);
@@ -80,31 +85,47 @@ export default function Login() {
     }
   }
 
-  const handleGoogleAuth = async (credentialResponse:any) => {
+  const handleGoogleAuth = async (credentialResponse: any) => {
     const googleToken = credentialResponse.credential;
-    authHandle.googleService(googleToken).then((data)=>{
+    authHandle.googleService(googleToken).then((data) => {
       dispatch(addUser(data))
       dispatch(updateAuth(true));
       resetDefault()
       navigate("/");
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log(err);
     });
   };
 
-  function errorValidation(){
-    if(errors.email?.message && errors.password?.message){
+  function errorValidation() {
+    if (errors.email?.message && errors.password?.message) {
       return "Please enter valid email, password";
-    }if (errors.email?.message) {
+    } if (errors.email?.message) {
       return errors.email?.message;
-    }if (errors.password?.message) {
-      if(isSignup) return errors.password?.message;
+    } if (errors.password?.message) {
+      if (isSignup) return errors.password?.message;
       return "Please enter valid password";
-    }else{
-      if(isSignup) return (errors.username?.message);
+    } else {
+      if (isSignup) return (errors.username?.message);
     }
   }
 
+  //useForm validation set here for more readable code
+  const emailField = register("email", {
+    required: "Please enter email",
+    pattern: {
+      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      message: "Invalid email",
+    },
+  });
+
+  const passwordField = register("password", {
+    required: "Please enter password", pattern: {
+      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
+      message:
+        "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one symbol"
+    }
+  });
 
   return (
     <div className="min-h-screen w-full bg-(--primary-bg-color) text-(--primary-text-color)">
@@ -148,20 +169,60 @@ export default function Login() {
                 training.
               </p>
             </div>
+            
+            {/* default dino image (if not focus email or password) */}
+            {( !passwordFocused && !emailFocused ) &&
+            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+              <img
+                src="/images/DinoHome.webp"
+                alt="DinoRyx mascot"
+                className="size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+              />
+            </div> 
+            }
 
-            <img
-              src="/images/DinoHome.webp"
-              alt="DinoRyx mascot"
-              className="relative z-10 mx-auto h-64 w-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)] sm:h-72"
-            />
+            {/* dino image for email focus */}
+            {( emailFocused ) &&
+            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+              <img
+                src="/images/DinoKnow.webp"
+                alt="DinoRyx mascot"
+                className="size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+              />
+            </div> 
+            }
+
+            {/* dino image for password with close eyes because not showing password in input */}
+            {passwordFocused && !showPassword &&
+            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+              <FloatingCharacters />
+              <img
+                src="/images/DinoThinkingEyesClose.webp"
+                alt="DinoRyx thinking eyes closed"
+                className="relative z-2 size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+              />
+            </div> 
+            }
+
+            {/* dino image for password with open eyes because  showing password in input */}
+            {passwordFocused && showPassword &&
+            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+              <FloatingCharacters />
+              <img
+                src="/images/DinoThinkingEyesOpen.webp"
+                alt="DinoRyx thinking eyes open"
+                className="relative z-2 size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+              />
+            </div> 
+            }
 
             <Button className="relative z-10 h-12 w-fit rounded-full bg-[#56b2bb] px-8 font-semibold text-[#0a0f22]
              hover:bg-[#56b2bb]/90 cursor-pointer"
-              onClick={()=>{
-              isSignup ? setIsSignup(false):setIsSignup(true);
-              resetDefault()
-            }}>
-              {isSignup?"Log In" : "Sign In"}
+              onClick={() => {
+                isSignup ? setIsSignup(false) : setIsSignup(true);
+                resetDefault()
+              }}>
+              {isSignup ? "Log In" : "Sign In"}
             </Button>
           </div>
 
@@ -180,23 +241,23 @@ export default function Login() {
                     resetDefault()
                   }}
                 >
-                Log In
-              </button>
-              : 
-              <button
+                  Log In
+                </button>
+                :
+                <button
                   className="font-semibold text-[#56b2bb] underline underline-offset-2 hover:text-[#56b2bb]/80 cursor-pointer"
                   onClick={() => {
                     isSignup ? setIsSignup(false) : setIsSignup(true);
                     resetDefault()
                   }}
                 >
-                Create an account
-              </button>
+                  Create an account
+                </button>
               }
-             
+
             </p>
 
-            <form  className="mt-7 flex flex-col gap-5" onSubmit={handleSubmit(authenticationSubmit)}>
+            <form className="mt-7 flex flex-col gap-5" onSubmit={handleSubmit(authenticationSubmit)}>
               {isSignup && <div className="flex flex-col gap-2">
                 <Label htmlFor="text" className="text-sm font-semibold">
                   Name
@@ -230,13 +291,12 @@ export default function Login() {
                     id="email"
                     type="email"
                     placeholder="Enter your email"
-                    autoComplete="email"
-                    {...register("email", {
-                      required: "Please enter email", pattern: {
-                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        message: "Invalid email"
-                      }
-                    })}
+                    {...emailField}
+                    onFocus={() => setEmailFocused(true)}
+                    onBlur={(e) => {
+                      emailField.onBlur(e);
+                      setEmailFocused(false);
+                    }}
                     className="h-12 w-full text-sm rounded-xl border-white/10 bg-[#1a2136] pl-10 text-[#f0f4f8] placeholder:text-[#bac7cc]/60 focus-visible:ring-[#56b2bb] focus-visible:ring-offset-0"
                   />
                 </div>
@@ -253,13 +313,12 @@ export default function Login() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     autoComplete="current-password"
-                    {...register("password", {
-                      required: "Please enter password", pattern: {
-                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
-                        message:
-                          "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one symbol"
-                      }
-                    })}
+                    {...passwordField}
+                    onFocus={() => setPasswordFocused(true)}
+                    onBlur={(e) => {
+                      passwordField.onBlur(e);
+                      setPasswordFocused(false);
+                    }}
                     className="h-12 w-full text-sm rounded-xl border-white/10 bg-[#1a2136] pl-10 pr-10 text-[#f0f4f8] placeholder:text-[#bac7cc]/60 focus-visible:ring-[#56b2bb] focus-visible:ring-offset-0"
                   />
                   <button
@@ -288,7 +347,7 @@ export default function Login() {
                 </label>
 
                 <a
-                  href = {"/login/forgot"}
+                  href={"/login/forgot"}
                   className="text-sm font-medium text-[#56b2bb] underline underline-offset-2 hover:text-[#56b2bb]/80"
                 >
                   Forgot password?
@@ -300,7 +359,7 @@ export default function Login() {
                 className="h-12 rounded-xl bg-linear-to-r from-[#56b2bb] to-[#7fd7e0] font-semibold text-[#0a0f22]
                  hover:opacity-90 cursor-pointer"
               >
-                {isSignup?"Sign In" : "Log In"}
+                {isSignup ? "Sign In" : "Log In"}
               </Button>
             </form>
 
@@ -329,7 +388,7 @@ export default function Login() {
                 className=" relative overflow-hidden h-12 gap-2 rounded-xl border-white/10 bg-transparent font-medium text-[#f0f4f8] 
                 hover:bg-[#1a2136] hover:text-[#f0f4f8] cursor-pointer"
               >
-                <FaFacebookF className="text-blue-600 size-5"/>
+                <FaFacebookF className="text-blue-600 size-5" />
                 Facebook
                 {/* <div className=" absolute inset-0 bg-[#00000079]"></div> */}
               </Button>
@@ -341,11 +400,11 @@ export default function Login() {
                 className="font-semibold text-[#56b2bb] underline bg-transparent underline-offset-2 
                 hover:bg-transparent hover:text-[#56b2bb]/80 cursor-pointer"
                 onClick={() => {
-               isSignup ? setIsSignup(false) : setIsSignup(true);
-               resetDefault()
-             }}
+                  isSignup ? setIsSignup(false) : setIsSignup(true);
+                  resetDefault()
+                }}
               >
-               {isSignup ? "Log In" : "Sign In"}
+                {isSignup ? "Log In" : "Sign In"}
               </Button>
             </p>
           </div>
