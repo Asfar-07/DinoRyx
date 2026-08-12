@@ -7,7 +7,6 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword.tsx";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import CreateCompany from "@/pages/CreateDashboard/CreateCompany.tsx";
 import MainLocation from "@/components/MapUI/MainLocation";
-import Welcome from "@/pages/Welcome/Welcome.tsx";
 import GeneralSetting from "@/pages/Setting/GeneralSetting.tsx";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import HeaderLayout from "@/layouts/HeaderLayout.jsx";
