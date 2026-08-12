@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import { StarsBackground } from "@/components/animate-ui/components/backgrounds/stars";
 
+import { handleSurvey } from "@/features/survey/surveyService";
+
 
 type Role = "trainer" | "student" | "gym_owner";
 
@@ -166,7 +168,6 @@ function SummaryCard({ icon: Icon, label, value }: SummaryCardProps) {
 }
 
 //main component
-
 export default function DinoRyxOnboarding() {
   const [step, setStep] = React.useState(1);
   const [finished, setFinished] = React.useState(false);
@@ -195,6 +196,16 @@ export default function DinoRyxOnboarding() {
     { label: "Community" },
     { label: "Finish" },
   ][step - 1];
+
+
+  React.useEffect(() => {
+    handleSurvey.getQuestions().then((data) => {
+      console.log("Survey questions:", data[0].option
+);
+    }).catch((error) => {
+      console.error("Error fetching survey questions:", error);
+    })
+  })
 
   const toggleGoal = (id: string) =>
     setGoals((g) => (g.includes(id) ? g.filter((x) => x !== id) : [...g, id]));

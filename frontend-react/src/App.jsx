@@ -6,9 +6,9 @@ import "./styles/global.css";
 import AppRoutes from "./routes/AppRoutes";
 import { useSelector, useDispatch } from "react-redux";
 import { setThemeFromLocal } from "./features/theme/themeSlice";
-// import { setAuth,updateAuth } from "./features/auth/authSlice";
+import { setAuth,updateAuth } from "./features/auth/authSlice";
 import { ToastContainer } from "react-toastify";
-// import { handleUser } from "./features/user/userService";
+import { handleUser } from "./features/user/userService";
 
 function App() {
   const hasFetched = useRef(false);
@@ -21,18 +21,18 @@ function App() {
     
   }, [dispatch]);
 
-  // useEffect(()=>{
-  //   if(hasFetched.current) return;
-  //   hasFetched.current=true;
-  //   setTimeout(() => {
-  //     if (!userInfo) {
-  //       handleUser.isUser().then((response) => {
-  //         dispatch(updateAuth(true));
-  //         dispatch(setAuth(response));
-  //       });
-  //     }
-  //   }, 200);
-  // },[])
+  useEffect(()=>{
+    if(hasFetched.current) return;
+    hasFetched.current=true;
+    setTimeout(() => {
+      if (!userInfo) {
+        handleUser.isUser().then((response) => {
+          dispatch(updateAuth(true));
+          dispatch(setAuth(response));
+        });
+      }
+    }, 200);
+  },[])
 
   useEffect(() => {
     const root = document.documentElement;
