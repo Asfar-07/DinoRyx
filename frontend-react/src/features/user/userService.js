@@ -4,8 +4,8 @@ import { apiConnection } from "@/app/api";
 
 
 export const handleUser = {
-    isUser: async ()=>{
-      try {
+  isUser: async () => {
+    try {
       const res = await apiConnection.get(
         "/user/data/me",
       );
@@ -15,8 +15,8 @@ export const handleUser = {
       throw e;
     }
   },
-  fetchUser: async ()=>{
-      try {
+  fetchUser: async () => {
+    try {
       const res = await apiConnection.get(
         "/user/data/account",
       );
@@ -41,8 +41,8 @@ export const handleUser = {
       throw e;
     }
   },
-  removeUser: async() => {
-     try {
+  removeUser: async () => {
+    try {
       const res = await apiConnection.delete(
         "/user/data/delete/account",
       );

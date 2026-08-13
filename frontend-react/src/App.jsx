@@ -25,13 +25,13 @@ function App() {
     if(hasFetched.current) return;
     hasFetched.current=true;
     setTimeout(() => {
-      if (!userInfo) {
-        handleUser.isUser().then((response) => {
-          dispatch(updateAuth(true));
-          dispatch(setAuth(response));
-        });
-      }
-    }, 200);
+      // if (!userInfo) {
+      //   handleUser.isUser().then((response) => {
+      //     dispatch(updateAuth(true));
+      //     dispatch(setAuth(response));
+      //   });
+      // }
+    }, 500);
   },[])
 
   useEffect(() => {
