@@ -1,22 +1,11 @@
 import { Slider } from "@/components/ui/slider";
 import { MapPin, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-type Community = "yes" | "later";
-type Role = "trainer" | "student" | "gym_owner";
-
-interface communityTrainerOptions {
-  id: Community;
-  title: string;
-  description: string;
-}
+import type { TrainerQuestionsProps } from "../Onboarding.types";
 
 export default function TrainerQuestions({ step, role, experienceLevels, experience, setExperience, sessionsPerWeek, setSessionsPerWeek,
    days, selectedDays, toggleDay, city, setCity, studentCount, setStudentCount, communityTrainerOptions, community, setCommunity }:
-  { step: number, role: Role | null, experienceLevels: any[], experience: number, setExperience: (level: number) => void,
-    sessionsPerWeek: number, setSessionsPerWeek: (sessions: number) => void, days: string[], selectedDays: string[], toggleDay: (day: string) => void,
-     city: string, setCity: (city: string) => void, studentCount: number, setStudentCount: (count: number) => void,
-     communityTrainerOptions: communityTrainerOptions[], community: Community | null, setCommunity: (id: Community) => void }) {
+   TrainerQuestionsProps) {
   return (
     <div>
       {/* trainer and gym owner experience step */}

@@ -1,19 +1,9 @@
-import React from 'react'
 import { Check } from "lucide-react";
-
-type Source = "google" | "friends" | "instagram" | "other_social";
-type Role = "trainer" | "student" | "gym_owner";
-
-interface Roles {
-    id: Role;
-    icon: React.ElementType;
-    title: string;
-    description: string;
-}
+import type { NormalQuestionsProps } from '../Onboarding.types';
 
 export default function NormalQuestions({ step, sourceOptions, source, setSource, roles, role, setRole}:
-    { step: number, sourceOptions: { id: Source, icon: React.ElementType, title: string }[], source: Source | null, setSource: (source: Source) => void,
-     roles: Roles[], role: Role | null, setRole: (role: Role) => void }) {
+    NormalQuestionsProps
+) {
     return (
         <div>
             {step === 1 && (

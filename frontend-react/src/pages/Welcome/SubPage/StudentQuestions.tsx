@@ -1,18 +1,12 @@
-import React from 'react'
 import { Check } from "lucide-react";
 import { MapPin, Bell } from "lucide-react"
 import { Switch } from "@/components/ui/switch";
-import { Input} from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
+import type { StudentQuestions } from '../Onboarding.types';
 
-type Role = "trainer" | "student" | "gym_owner";
-type Community = "yes" | "later";
-
-export default function StudentQuestions({ role, step, goalOptions, goals,toggleGoal, days, selectedDays, toggleDay, 
-  city, setCity, remindersOn, setRemindersOn, communityStudentOptions, community, setCommunity} : 
-  { role: Role | null, step: number, goalOptions: { id: string, icon: React.ElementType, label: string }[], goals: string[], toggleGoal: (goalId: string) => void,
-    days: string[], selectedDays: string[], toggleDay: (day: string) => void, city: string, setCity: (city: string) => void,
-    remindersOn: boolean, setRemindersOn: (on: boolean) => void, communityStudentOptions: { id: string, title: string, description: string }[],
-    community: Community | null, setCommunity: (communityId: string) => void }) {
+export default function StudentQuestions({ role, step, goalOptions, goals, toggleGoal, days, selectedDays, toggleDay,
+  city, setCity, remindersOn, setRemindersOn, communityStudentOptions, community, setCommunity }:
+  StudentQuestions) {
   return (
     <div>
       {/* user goal for student */}
@@ -32,8 +26,8 @@ export default function StudentQuestions({ role, step, goalOptions, goals,toggle
                   type="button"
                   onClick={() => toggleGoal(id)}
                   className={`flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ring-1 transition-colors ${selected
-                      ? "bg-[#56b2bb]/15 text-(--symbol-color) ring-(--symbol-color)"
-                      : "bg-[#1a2136]/50 text-[#f0f4f8] ring-white/10 cursor-pointer"
+                    ? "bg-[#56b2bb]/15 text-(--symbol-color) ring-(--symbol-color)"
+                    : "bg-[#1a2136]/50 text-[#f0f4f8] ring-white/10 cursor-pointer"
                     }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -69,8 +63,8 @@ export default function StudentQuestions({ role, step, goalOptions, goals,toggle
                   type="button"
                   onClick={() => toggleDay(day)}
                   className={`flex h-16 w-16 items-center justify-center rounded-full text-sm font-bold ring-1 transition-colors ${selected
-                      ? "bg-(--symbol-color) text-[#0a0f22] ring-(--symbol-color)"
-                      : "bg-[#1a2136]/50 text-[#f0f4f8] ring-white/10 cursor-pointer"
+                    ? "bg-(--symbol-color) text-[#0a0f22] ring-(--symbol-color)"
+                    : "bg-[#1a2136]/50 text-[#f0f4f8] ring-white/10 cursor-pointer"
                     }`}
                 >
                   {day}
@@ -128,8 +122,8 @@ export default function StudentQuestions({ role, step, goalOptions, goals,toggle
                   type="button"
                   onClick={() => setCommunity(id)}
                   className={`relative flex flex-col items-start gap-1 rounded-2xl p-5 text-left ring-1 transition-all ${selected
-                      ? "bg-[#1a2136] shadow-[0_0_30px_-8px_rgba(86,178,187,0.5)] ring-(--symbol-color)"
-                      : "bg-[#1a2136]/50 ring-white/10 cursor-pointer"
+                    ? "bg-[#1a2136] shadow-[0_0_30px_-8px_rgba(86,178,187,0.5)] ring-(--symbol-color)"
+                    : "bg-[#1a2136]/50 ring-white/10 cursor-pointer"
                     }`}
                 >
                   {selected && (

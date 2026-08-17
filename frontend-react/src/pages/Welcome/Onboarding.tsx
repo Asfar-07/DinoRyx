@@ -25,15 +25,9 @@ import NormalQuestions from "./SubPage/NormalQuestions";
 import StudentQuestions from "./SubPage/StudentQuestions";
 import TrainerQuestions from "./SubPage/TrainerQuestions";
 
+import type { Role, Roles, GoalOptions, Source, SourceOptions, Community, CommunityStudentOptions } from "./Onboarding.types";
 
-type Role = "trainer" | "student" | "gym_owner";
-
-const roles: {
-  id: Role;
-  icon: React.ElementType;
-  title: string;
-  description: string;
-}[] = [
+const roles: Roles[] = [
   {
     id: "trainer",
     icon: Dumbbell,
@@ -54,7 +48,7 @@ const roles: {
   },
 ];
 
-const goalOptions: { id: string; icon: React.ElementType; label: string }[] =
+const goalOptions: GoalOptions[] =
   [
     { id: "build_strength", icon: Dumbbell, label: "Build Strength" },
     { id: "fat_loss", icon: Flame, label: "Fat Loss" },
@@ -73,22 +67,13 @@ const experienceLevels = [
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// Where did you hear about DinoRyx?
-type Source = "google" | "friends" | "instagram" | "other_social";
-
-const sourceOptions: {
-  id: Source;
-  icon: React.ElementType;
-  title: string;
-}[] = [
+const sourceOptions: SourceOptions[] = [
   { id: "google", icon: Search, title: "Google" },
   { id: "friends", icon: Search, title: "Friends" },
   { id: "instagram", icon: Search, title: "Instagram" },
   { id: "other_social", icon: Search, title: "Another social media" },
 ];
 
-// Do you want to help build a strong fitness community?
-type Community = "yes" | "later";
 
 const communityStudentOptions: {
   id: Community;
@@ -107,11 +92,7 @@ const communityStudentOptions: {
   },
 ];
 
-const communityTrainerOptions: {
-  id: Community;
-  title: string;
-  description: string;
-}[] = [
+const communityTrainerOptions: CommunityStudentOptions[] = [
   {
     id: "yes",
     title: "Yes, Let's go",
