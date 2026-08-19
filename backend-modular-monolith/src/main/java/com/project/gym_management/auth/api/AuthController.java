@@ -134,6 +134,7 @@ public class AuthController {
     @PostMapping(value = "/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue("SecuredREFRESH") String refreshToken,
                                           HttpServletResponse response) {
+
         if (!JwtTokenManage.validate(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

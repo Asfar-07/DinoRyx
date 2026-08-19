@@ -1,20 +1,57 @@
+import type { LucideIcon } from "lucide-react";
+
+export type NormalKey = "hear_about" | "user_role"
+
 export type Role = "trainer" | "student" | "gym_owner";
 
+export type Source =
+    | "share_instagram"
+    | "share_friends"
+    | "other_social"
+    | "share_google";
+
+export type QsType =
+    | "SINGLE"
+    | "MULTIPLE"
+    | "TEXT"
+    | "SCALE"
+    | "BOOLEAN";
+
+export interface Option<TOptionKey extends string> {
+    id: number;
+    order: number;
+    optionKey: TOptionKey;
+    optionText: string;
+    active: boolean;
+    icon?: LucideIcon;
+    description?: string;
+}
+
+export default interface Questions<TOptionKey extends string = string> {
+    id: number;
+    order: number;
+    questionKey: string;
+    questionText: string;
+    type: QsType;
+    required: boolean;
+    active: boolean;
+    options: Option<TOptionKey>[];
+}
+
+
 export interface Roles {
-    id: Role;
-      icon: React.ElementType;
-      title: string;
-      description: string;
+  id: Role;
+  icon: React.ElementType;
+  title: string;
+  description: string;
 }
 
 export type GoalOptions = {
-  id: string; icon: React.ElementType; label: string 
+  id: string; icon: React.ElementType; label: string
 }
 
-export type Source = "google" | "friends" | "instagram" | "other_social";
-
 export interface SourceOptions {
-  id: Source;
+  id: string;
   icon: React.ElementType;
   title: string;
 }
@@ -34,9 +71,8 @@ export interface CommunityTrainerOptions {
 }
 
 export interface NormalQuestionsProps {
-    step: number, sourceOptions: SourceOptions[],
-    source: Source | null, setSource: (source: Source) => void,
-    roles: Roles[], role: Role | null, setRole: (role: Role) => void
+  step: number, questions: Questions[]
+  source: Source | null, setSource: (source: Source) => void, role: Role | null, setRole: (role: Role) => void
 }
 
 export interface StudentQuestions {

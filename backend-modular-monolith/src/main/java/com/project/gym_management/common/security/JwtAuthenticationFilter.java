@@ -29,12 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        System.out.println("Incoming request: " + request.getMethod() + " " + request.getRequestURI());
         String path = request.getRequestURI();
-        if (path.startsWith("/auth")) {  //pass request with no condition
+        if (path.startsWith("/auth") || path.startsWith("/survey")) {  //pass request with no condition
             chain.doFilter(request, response);
             return;
         }
+
+        System.out.println("Incoming request: " + request.getMethod() + " " + request.getRequestURI());
 
         if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
             chain.doFilter(request, response);

@@ -25,7 +25,83 @@ import NormalQuestions from "./SubPage/NormalQuestions";
 import StudentQuestions from "./SubPage/StudentQuestions";
 import TrainerQuestions from "./SubPage/TrainerQuestions";
 
+import type Questions from "./Onboarding.types";
 import type { Role, Roles, GoalOptions, Source, SourceOptions, Community, CommunityStudentOptions } from "./Onboarding.types";
+import GeneralLoader from "@/components/Loader/GeneralLoader";
+
+const demoQuestions: Questions[] = [
+    {
+        id: 1,
+        order: 1,
+        questionKey: "hear_about",
+        questionText: "Where did you hear about DinoRyx?",
+        type: "SINGLE",
+        required: true,
+        active: true,
+        options: [
+            {
+                id: 4,
+                optionKey: "share_instagram",
+                optionText: "Instagram",
+                order: 3,
+                active: true
+            },
+            {
+                id: 3,
+                optionKey: "share_friends",
+                optionText: "Friends",
+                order: 2,
+                active: true
+            },
+            {
+                id: 2,
+                optionKey: "other_social",
+                optionText: "Another Social Media",
+                order: 4,
+                active: true
+            },
+            {
+                id: 1,
+                optionKey: "share_google",
+                optionText: "Google",
+                order: 1,
+                active: true
+            }
+        ]
+    },
+    {
+        id: 2,
+        order: 2,
+        questionKey: "user_role",
+        questionText: "Who are you training as?",
+        type: "SINGLE",
+        required: true,
+        active: true,
+        options: [
+            {
+                id: 5,
+                optionKey: "trainer",
+                optionText: "Trainer",
+                order: 1,
+                active: true
+            },
+            {
+                id: 6,
+                optionKey: "student",
+                optionText: "Student",
+                order: 2,
+                active: true
+            },
+            {
+                id: 7,
+                optionKey: "gym_owner",
+                optionText: "Gym Owner",
+                order: 2,
+                active: true
+            }
+        ]
+    }
+];
 
 const roles: Roles[] = [
   {
@@ -80,17 +156,17 @@ const communityStudentOptions: {
   title: string;
   description: string;
 }[] = [
-  {
-    id: "yes",
-    title: "Yes, I'm in!",
-    description: "Count me in for updates & feedback",
-  },
-  {
-    id: "later",
-    title: "Maybe later",
-    description: "I'll decide another time",
-  },
-];
+    {
+      id: "yes",
+      title: "Yes, I'm in!",
+      description: "Count me in for updates & feedback",
+    },
+    {
+      id: "later",
+      title: "Maybe later",
+      description: "I'll decide another time",
+    },
+  ];
 
 const communityTrainerOptions: CommunityStudentOptions[] = [
   {
@@ -150,9 +226,11 @@ function SummaryCard({ icon: Icon, label, value }: SummaryCardProps) {
 //main component
 export default function DinoRyxOnboarding() {
   const [step, setStep] = React.useState<number>(1);
+  const [loading, setLoading] = React.useState<boolean>(true);
   const [finished, setFinished] = React.useState<boolean>(false);
+  // const [questions, setQuestions] = React.useState<Questions[]>([]);
 
-  const [source, setSource] = React.useState<Source | null>("friends");
+  const [source, setSource] = React.useState<Source | null>("share_friends");
   const [role, setRole] = React.useState<Role | null>("student");
   const [goals, setGoals] = React.useState<string[]>(["fat_loss", "endurance"]);
   const [experience, setExperience] = React.useState<number>(2);
@@ -179,13 +257,24 @@ export default function DinoRyxOnboarding() {
 
 
   React.useEffect(() => {
-    handleSurvey.getQuestions().then((data) => {
-      console.log("Survey questions:", data[0].option
-);
-    }).catch((error) => {
-      console.error("Error fetching survey questions:", error);
-    })
-  })
+    let cancelled = false;
+
+    handleSurvey.getQuestions()
+      .then((data: Questions[]) => {
+        if (cancelled) return;
+        console.log("Survey questions:", data);
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (!cancelled) console.error("Error fetching survey questions:", error);
+        setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const toggleGoal = (id: string) =>
     setGoals((g) => (g.includes(id) ? g.filter((x) => x !== id) : [...g, id]));
@@ -226,16 +315,17 @@ export default function DinoRyxOnboarding() {
 
   return (
     <div className="relative min-h-screen w-full  px-6 py-8 text-[#f0f4f8] md:px-10 overflow-hidden">
+      {loading && <GeneralLoader />}
       <div className="pointer-events-none z-1 absolute -left-40 top-10 h-[420px] w-[420px] rounded-full bg-(--symbol-color)/80 blur-[240px]">
       </div>
       <div className="pointer-events-none z-1 absolute -right-32 bottom-0 h-[380px] w-[380px] rounded-full bg-(--symbol-color)/80 blur-[240px]">
       </div>
       <StarsBackground
-       factor={0.15}
-       speed={100}
-       starColor='#7be6df'
-       transition={ {stiffness: 50, damping: 20} }
-       className="absolute inset-0 z-0 h-full w-full bg-[#0a0f22]"
+        factor={0.15}
+        speed={100}
+        starColor='#7be6df'
+        transition={{ stiffness: 50, damping: 20 }}
+        className="absolute inset-0 z-0 h-full w-full bg-[#0a0f22]"
       />
       <div className="relative z-2 mx-auto max-w-4xl">
         {/* Header */}
@@ -308,152 +398,150 @@ export default function DinoRyxOnboarding() {
             </div>
           ) : (
             <>
-          {/* ---------------- Step content ---------------- */}
-          <div className="min-h-[340px]">
-            <NormalQuestions step={step} sourceOptions={sourceOptions} source={source} setSource={setSource}
-            roles={roles} role={role} setRole={setRole}
-            />
+              {/* ---------------- Step content ---------------- */}
+              <div className="min-h-[340px]">
+                <NormalQuestions step={step} questions={demoQuestions} source={source} setSource={setSource} role={role} setRole={setRole} 
+                />
 
-            <StudentQuestions role={role} step={step} goalOptions={goalOptions} goals={goals} toggleGoal={toggleGoal} 
-            days={days} selectedDays={selectedDays} toggleDay={toggleDay} city={city} setCity={setCity}
-            remindersOn={remindersOn} setRemindersOn={setRemindersOn} communityStudentOptions={communityStudentOptions}
-            community={community} setCommunity={(id) => setCommunity(id as Community)}
-            />
+                <StudentQuestions role={role} step={step} goalOptions={goalOptions} goals={goals} toggleGoal={toggleGoal}
+                  days={days} selectedDays={selectedDays} toggleDay={toggleDay} city={city} setCity={setCity}
+                  remindersOn={remindersOn} setRemindersOn={setRemindersOn} communityStudentOptions={communityStudentOptions}
+                  community={community} setCommunity={(id) => setCommunity(id as Community)}
+                />
 
-            <TrainerQuestions role={role} step={step} experienceLevels={experienceLevels} experience={experience} setExperience={setExperience}
-            sessionsPerWeek={sessionsPerWeek} setSessionsPerWeek={setSessionsPerWeek}
-            days={days} selectedDays={selectedDays} toggleDay={toggleDay} city={city} setCity={setCity}
-            communityTrainerOptions={communityTrainerOptions} community={community} setCommunity={(id) => setCommunity(id as Community)}
-            studentCount={studentCount} setStudentCount={setStudentCount}
-            />
+                <TrainerQuestions role={role} step={step} experienceLevels={experienceLevels} experience={experience} setExperience={setExperience}
+                  sessionsPerWeek={sessionsPerWeek} setSessionsPerWeek={setSessionsPerWeek}
+                  days={days} selectedDays={selectedDays} toggleDay={toggleDay} city={city} setCity={setCity}
+                  communityTrainerOptions={communityTrainerOptions} community={community} setCommunity={(id) => setCommunity(id as Community)}
+                  studentCount={studentCount} setStudentCount={setStudentCount}
+                />
 
-            {step === 6 && (
-              <div>
-                <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-                  You&apos;re all set
-                </h1>
-                <p className="mt-2 text-[#bac7cc]">
-                  Here&apos;s a quick look at your setup.
-                </p>
+                {step === 6 && (
+                  <div>
+                    <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+                      You&apos;re all set
+                    </h1>
+                    <p className="mt-2 text-[#bac7cc]">
+                      Here&apos;s a quick look at your setup.
+                    </p>
 
-                <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <SummaryCard
-                    icon={Search}
-                    label="Heard about us via"
-                    value={sourceLabel(source)}
-                  />
-                  <SummaryCard icon={Users} label="Role" value={roleLabel(role)} />
-                  {role === "student" && (
-                    <SummaryCard
-                      icon={Target}
-                      label="Goals"
-                      value={goals.length > 0 ? `${goals.length} selected` : "Not set"}
-                    />
-                  )}
-                  {role !== "student" && (
-                     <SummaryCard
-                    icon={Trophy}
-                    label="Experience"
-                    value={experienceLabel(experience)}
-                  />
-                  )} 
-
-                  <SummaryCard
-                    icon={CalendarDays}
-                    label="Schedule"
-                    value={scheduleSummary}
-                  />
-                  <SummaryCard
-                    icon={MapPin}
-                    label="City"
-                    value={city || "Not set"}
-                  />
-                  
-                  {role === "student" && (
+                    <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <SummaryCard
-                    icon={Bell}
-                    label="Reminders"
-                    value={remindersOn ? "On" : "Off"}
-                  />
-                  )}
+                        icon={Search}
+                        label="Heard about us via"
+                        value={sourceLabel(source)}
+                      />
+                      <SummaryCard icon={Users} label="Role" value={roleLabel(role)} />
+                      {role === "student" && (
+                        <SummaryCard
+                          icon={Target}
+                          label="Goals"
+                          value={goals.length > 0 ? `${goals.length} selected` : "Not set"}
+                        />
+                      )}
+                      {role !== "student" && (
+                        <SummaryCard
+                          icon={Trophy}
+                          label="Experience"
+                          value={experienceLabel(experience)}
+                        />
+                      )}
 
-                  <SummaryCard
-                    icon={Heart}
-                    label="Community"
-                    value={communityLabel(community)}
-                  />
-                </div>
+                      <SummaryCard
+                        icon={CalendarDays}
+                        label="Schedule"
+                        value={scheduleSummary}
+                      />
+                      <SummaryCard
+                        icon={MapPin}
+                        label="City"
+                        value={city || "Not set"}
+                      />
+
+                      {role === "student" && (
+                        <SummaryCard
+                          icon={Bell}
+                          label="Reminders"
+                          value={remindersOn ? "On" : "Off"}
+                        />
+                      )}
+
+                      <SummaryCard
+                        icon={Heart}
+                        label="Community"
+                        value={communityLabel(community)}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Footer for handle buttons */}
-          <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-6">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goBack}
-              disabled={step === 1}
-              className="relative cursor-pointer h-11 gap-1.5 rounded-full border-white/10 bg-transparent px-5 font-semibold text-[#f0f4f8] hover:bg-[#1d2233] hover:text-[#f0f4f8] disabled:pointer-events-none disabled:opacity-40"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
+              {/* Footer for handle buttons */}
+              <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={goBack}
+                  disabled={step === 1}
+                  className="relative cursor-pointer h-11 gap-1.5 rounded-full border-white/10 bg-transparent px-5 font-semibold text-[#f0f4f8] hover:bg-[#1d2233] hover:text-[#f0f4f8] disabled:pointer-events-none disabled:opacity-40"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back
+                </Button>
 
-            <div className="flex items-center gap-2">
-              {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
-                const idx = i + 1;
-                const isCurrent = idx === step;
-                const isDone = idx < step;
-                return (
-                  <span
-                    key={idx}
-                    className={`h-2 rounded-full transition-all ${
-                      isCurrent
-                        ? "w-7 bg-gradient-to-r from-(--symbol-color) to-[#7fd7e0]"
-                        : isDone
-                        ? "w-2 bg-(--symbol-color)"
-                        : "w-2 bg-white/15"
-                    }`}
-                  />
-                );
-              })}
-            </div>
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
+                    const idx = i + 1;
+                    const isCurrent = idx === step;
+                    const isDone = idx < step;
+                    return (
+                      <span
+                        key={idx}
+                        className={`h-2 rounded-full transition-all ${isCurrent
+                            ? "w-7 bg-gradient-to-r from-(--symbol-color) to-[#7fd7e0]"
+                            : isDone
+                              ? "w-2 bg-(--symbol-color)"
+                              : "w-2 bg-white/15"
+                          }`}
+                      />
+                    );
+                  })}
+                </div>
 
-            {step < TOTAL_STEPS ? (
-              <Button
-                type="button"
-                onClick={goNext}
-                className="relative z-0 cursor-pointer h-11 gap-1.5 rounded-full bg-(--symbol-color) px-6 font-semibold text-[#0a0f22] hover:bg-(--symbol-color)/90"
-              >
-                Continue
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={handleFinishSetup}
-                className="relative z-0 cursor-pointer h-11 gap-1.5 rounded-full bg-(--symbol-color) px-6 font-semibold text-[#0a0f22] hover:bg-(--symbol-color)/90"
-              >
-                Finish setup
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
+                {step < TOTAL_STEPS ? (
+                  <Button
+                    type="button"
+                    onClick={goNext}
+                    className="relative z-0 cursor-pointer h-11 gap-1.5 rounded-full bg-(--symbol-color) px-6 font-semibold text-[#0a0f22] hover:bg-(--symbol-color)/90"
+                  >
+                    Continue
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleFinishSetup}
+                    className="relative z-0 cursor-pointer h-11 gap-1.5 rounded-full bg-(--symbol-color) px-6 font-semibold text-[#0a0f22] hover:bg-(--symbol-color)/90"
+                  >
+                    Finish setup
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </>
           )}
 
-          {step < TOTAL_STEPS && 
-          <div className="absolute -z-5 bottom-5 right-[12.5%] h-25 w-20 rotate-y-180">
-            <img
-              src="/images/DinoHome.webp"
-              alt="dino logo"
-              aria-hidden
-              className="size-full"
-            />
-          </div>
+          {step < TOTAL_STEPS &&
+            <div className="absolute -z-5 bottom-5 right-[12.5%] h-25 w-20 rotate-y-180">
+              <img
+                src="/images/DinoHome.webp"
+                alt="dino logo"
+                aria-hidden
+                className="size-full"
+              />
+            </div>
           }
-          
+
         </div>
       </div>
     </div>
