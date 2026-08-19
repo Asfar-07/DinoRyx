@@ -1,7 +1,7 @@
-//@ts-nocheck
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { motion, type Variants } from "motion/react";
 import {
   Sparkles,
   ArrowRight,
@@ -18,6 +18,17 @@ import {
   Cloud,
 } from "lucide-react";
 
+interface RootState {
+  userauth: {
+    isAuthenticated: boolean;
+  };
+}
+
+interface TrustItem {
+  icon: React.ElementType;
+  label: string;
+}
+
 interface FloatingBadgeProps {
   icon: React.ElementType;
   label: string;
@@ -28,6 +39,16 @@ interface FloatingBadgeProps {
   delay?: number;
 }
 
+const badgeEntranceVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.6, y: 12 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "backOut" },
+  },
+};
+
 function FloatingBadge({
   icon: Icon,
   label,
@@ -36,176 +57,277 @@ function FloatingBadge({
   rotate = 0,
   duration = 4,
   delay = 0,
-}: FloatingBadgeProps) {
+}: FloatingBadgeProps): React.JSX.Element {
   return (
-    <div
-      className={`absolute animate-float flex items-center gap-2 rounded-full glass-li py-2 pl-2 pr-4 shadow-lg ring-1 ring-(--symbol-color)/10 backdrop-blur-sm hover:z-20 ${className}`}
-      style={
-        {
-          "--badge-rotate": `${rotate}deg`,
-          animationDuration: `${duration}s`,
-          animationDelay: `${delay}s`,
-        } as React.CSSProperties
-      }
+    <motion.div
+      className={`absolute ${className}`}
+      variants={badgeEntranceVariants}
     >
-      <span
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${iconBg}`}
+      <div
+        className="animate-float flex items-center gap-2 rounded-full glass-li py-2 pl-2 pr-4 shadow-lg ring-1 ring-(--symbol-color)/10 backdrop-blur-sm hover:z-20"
+        style={
+          {
+            "--badge-rotate": `${rotate}deg`,
+            animationDuration: `${duration}s`,
+            animationDelay: `${delay}s`,
+          } as React.CSSProperties
+        }
       >
-        <Icon className="h-3.5 w-3.5" />
-      </span>
-      <span className="text-sm font-semibold text-(--primary-text-color)">{label}</span>
-    </div>
+        <span
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${iconBg}`}
+        >
+          <Icon className="h-3.5 w-3.5" />
+        </span>
+        <span className="text-sm font-semibold text-(--primary-text-color)">
+          {label}
+        </span>
+      </div>
+    </motion.div>
   );
 }
 
-const trustItems = [
+const trustItems: TrustItem[] = [
   { icon: Check, label: "Trusted by Trainers" },
   { icon: ShieldCheck, label: "Secure" },
   { icon: Cloud, label: "Cloud Based" },
 ];
 
-export default function MainHero() {
-  const isAuth = useSelector((state)=>state.userauth.isAuthenticated);
+const leftColVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const leftItemVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const trustRowVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const trustItemVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: "easeOut" },
+  },
+};
+
+const rightColVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+const badgesContainerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.4,
+    },
+  },
+};
+
+export default function MainHero(): React.JSX.Element {
+  const isAuth = useSelector(
+    (state: RootState) => state.userauth.isAuthenticated
+  );
 
   return (
     <section className="w-full bg-(--primary-bg-color) px-6 py-20 text-(--primary-text-color) md:px-10 lg:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
         {/* Left column */}
-        <div className="flex flex-col max-md:mt-10">
-          <span className="glass-li inline-flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium text-[#bac7cc] ring-1 ring-white/5">
+        <motion.div
+          className="flex flex-col max-md:mt-10"
+          variants={leftColVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          <motion.span
+            variants={leftItemVariants}
+            className="glass-li inline-flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium text-[#bac7cc] ring-1 ring-white/5"
+          >
             <Sparkles className="h-3.5 w-3.5 text-[#56b2bb]" />
             The new operating system for modern gyms
-          </span>
+          </motion.span>
 
-          <h1 className="mt-6 text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+          <motion.h1
+            variants={leftItemVariants}
+            className="mt-6 text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
+          >
             Build Your Ultimate
             <br />
             <span className="text-[#56b2bb]">Gym Network.</span>
-          </h1>
+          </motion.h1>
 
-          <p className="mt-6 max-w-xl text-lg leading-relaxed  text-(--secondary-text-color)">
+          <motion.p
+            variants={leftItemVariants}
+            className="mt-6 max-w-xl text-lg leading-relaxed  text-(--secondary-text-color)"
+          >
             Manage students, billing, progress, locations and your complete
             gym ecosystem from one intelligent platform designed around
             the trainer.
-          </p>
+          </motion.p>
 
-          <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            {isAuth ?
-              <Link to="/account" className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
-          to-primary-glow shadow-[0_0_40px_-10px_rgba(86,178,187,0.6)] transition-transform hover:scale-[1.03] cursor-pointer">
+          <motion.div
+            variants={leftItemVariants}
+            className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center"
+          >
+            {isAuth ? (
+              <Link
+                to="/account"
+                className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
+          to-primary-glow shadow-[0_0_40px_-10px_rgba(86,178,187,0.6)] transition-transform hover:scale-[1.03] cursor-pointer"
+              >
                 Get Started
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              :
-              <Link to="/Login" className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
-          to-primary-glow shadow-[0_0_40px_-10px_rgba(86,178,187,0.6)] transition-transform hover:scale-[1.03] cursor-pointer">
+            ) : (
+              <Link
+                to="/Login"
+                className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
+          to-primary-glow shadow-[0_0_40px_-10px_rgba(86,178,187,0.6)] transition-transform hover:scale-[1.03] cursor-pointer"
+              >
                 Get Started
                 <ArrowRight className="h-4 w-4" />
               </Link>
-            }
-           
-            <Link to="/nearby-location"
+            )}
+
+            <Link
+              to="/nearby-location"
               className="glass flex items-center gap-1.5 rounded-full border-[#f0f4f8]/15  px-7 py-4 text-sm font-semibold
              text-(--primary-text-color) hover:bg-[#1d2233] cursor-pointer"
             >
               <MapPin className="h-4 w-4 text-[#56b2bb]" />
               Explore Nearby Gyms
             </Link>
-          </div>
+          </motion.div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
-            {trustItems.map(({ icon: Icon, label }) => (
-              <div
+          <motion.div
+            variants={trustRowVariants}
+            className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3"
+          >
+            {trustItems.map(({ icon: Icon, label }: TrustItem) => (
+              <motion.div
                 key={label}
+                variants={trustItemVariants}
                 className="flex items-center gap-1.5 text-xs text-(--secondary-text-color)"
               >
                 <Icon className="h-4 w-4 text-[#56b2bb]" />
                 {label}
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Right column */}
-        <div className="relative mx-auto aspect-square w-full max-w-lg">
+        <motion.div
+          className="relative mx-auto aspect-square w-full max-w-lg"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
           {/* ambient glow behind mascot */}
           <div
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#56b2bb]/20 blur-[80px]"
           />
 
-          <img
+          <motion.img
             src="/images/DinoHome.webp"
             alt="DinoRyx mascot lifting a dumbbell"
             className="relative z-10 mx-auto h-full w-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+            variants={rightColVariants}
           />
 
-          <FloatingBadge
-            icon={Dumbbell}
-            label="Workouts"
-            className="left-[2%] top-[16%]"
-            rotate={-3}
-            duration={4.2}
-            delay={0}
-          />
-          <FloatingBadge
-            icon={TrendingUp}
-            label="+18%"
-            className="left-[-4%] top-[35%]"
-            rotate={2}
-            duration={5}
-            delay={0.6}
-          />
-          <FloatingBadge
-            icon={Wallet}
-            label="$4,280"
-            className="left-[0%] top-[54%]"
-            rotate={-2}
-            duration={4.6}
-            delay={1.1}
-          />
-          <FloatingBadge
-            icon={MapPin}
-            label="Nearby"
-            className="left-[4%] top-[73%]"
-            rotate={3}
-            duration={5.4}
-            delay={0.3}
-          />
+          <motion.div variants={badgesContainerVariants}>
+            <FloatingBadge
+              icon={Dumbbell}
+              label="Workouts"
+              className="left-[2%] top-[16%]"
+              rotate={-3}
+              duration={4.2}
+              delay={0}
+            />
+            <FloatingBadge
+              icon={TrendingUp}
+              label="+18%"
+              className="left-[-4%] top-[35%]"
+              rotate={2}
+              duration={5}
+              delay={0.6}
+            />
+            <FloatingBadge
+              icon={Wallet}
+              label="$4,280"
+              className="left-[0%] top-[54%]"
+              rotate={-2}
+              duration={4.6}
+              delay={1.1}
+            />
+            <FloatingBadge
+              icon={MapPin}
+              label="Nearby"
+              className="left-[4%] top-[73%]"
+              rotate={3}
+              duration={5.4}
+              delay={0.3}
+            />
 
-          <FloatingBadge
-            icon={Trophy}
-            label="Milestones"
-            className="right-[0%] top-[12%]"
-            rotate={3}
-            duration={4.8}
-            delay={0.4}
-          />
-          <FloatingBadge
-            icon={HeartPulse}
-            label="128 bpm"
-            className="right-[-6%] top-[38%]"
-            rotate={-2}
-            duration={4.3}
-            delay={0.9}
-          />
-          <FloatingBadge
-            icon={Timer}
-            label="45:12"
-            className="right-[-8%] top-[63%]"
-            rotate={2}
-            duration={5.2}
-            delay={0.2}
-          />
-          <FloatingBadge
-            icon={Calendar}
-            label="Mon 08:00"
-            className="right-[-4%] top-[82%]"
-            rotate={-3}
-            duration={4.7}
-            delay={1.3}
-          />
-        </div>
+            <FloatingBadge
+              icon={Trophy}
+              label="Milestones"
+              className="right-[0%] top-[12%]"
+              rotate={3}
+              duration={4.8}
+              delay={0.4}
+            />
+            <FloatingBadge
+              icon={HeartPulse}
+              label="128 bpm"
+              className="right-[-6%] top-[38%]"
+              rotate={-2}
+              duration={4.3}
+              delay={0.9}
+            />
+            <FloatingBadge
+              icon={Timer}
+              label="45:12"
+              className="right-[-8%] top-[63%]"
+              rotate={2}
+              duration={5.2}
+              delay={0.2}
+            />
+            <FloatingBadge
+              icon={Calendar}
+              label="Mon 08:00"
+              className="right-[-4%] top-[82%]"
+              rotate={-3}
+              duration={4.7}
+              delay={1.3}
+            />
+          </motion.div>
+        </motion.div>
       </div>
 
       <style>{`

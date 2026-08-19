@@ -13,6 +13,8 @@ import { updateAuth } from "../../features/auth/authSlice";
 import { addUser } from "@/features/user/userSlice";
 import { useForm } from "react-hook-form";
 import FloatingCharacters from "@/components/animate-ui/FloatingCharacters";
+import { MagneticButton } from "@/components/magnetic";
+import { ShineButton } from "@/components/shine"; 
 
 export default function Login() {
   interface userForm {
@@ -185,7 +187,7 @@ export default function Login() {
             {( emailFocused ) &&
             <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
               <img
-                src="/images/DinoKnow.webp"
+                src="/images/DinoEmail.webp"
                 alt="DinoRyx mascot"
                 className="size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
               />
@@ -216,14 +218,18 @@ export default function Login() {
             </div> 
             }
 
-            <Button className="relative z-10 h-12 w-fit rounded-full bg-[#56b2bb] px-8 font-semibold text-[#0a0f22]
+            <MagneticButton
+              strength={40}
+              stiffness={300}
+              damping={20}
+              className="relative z-10 h-12 w-fit rounded-full bg-[#56b2bb] px-8 font-semibold text-[#0a0f22]
              hover:bg-[#56b2bb]/90 cursor-pointer"
               onClick={() => {
                 isSignup ? setIsSignup(false) : setIsSignup(true);
                 resetDefault()
               }}>
               {isSignup ? "Log In" : "Sign In"}
-            </Button>
+            </MagneticButton>
           </div>
 
           {/* Right panel */}
@@ -354,13 +360,13 @@ export default function Login() {
                 </a>
               </div>
 
-              <Button
+              <ShineButton
                 type="submit"
                 className="h-12 rounded-xl bg-linear-to-r from-[#56b2bb] to-[#7fd7e0] font-semibold text-[#0a0f22]
                  hover:opacity-90 cursor-pointer"
               >
                 {isSignup ? "Sign In" : "Log In"}
-              </Button>
+              </ShineButton>
             </form>
 
             <div className="my-6 flex items-center gap-3">
