@@ -37,7 +37,7 @@ public class Question {
     @Column( nullable = false)
     private boolean active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ver_id", nullable = false)
     private SurveyVersion surveyVersion;
 

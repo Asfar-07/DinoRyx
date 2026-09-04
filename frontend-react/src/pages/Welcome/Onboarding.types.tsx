@@ -107,8 +107,8 @@ export interface TrainerQuestionsProps {
 }
 
 export interface ResponseToBack {
-  sessionId: number;
-  surveyVersionId: number;
+  sessionId?: number;
+  surveyVersionId?: number;
   responses: Record<number, ResponseEntry>;
 }
 

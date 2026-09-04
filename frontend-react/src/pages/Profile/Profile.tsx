@@ -22,10 +22,11 @@ import {
 import {
   Pencil, Check, X, MapPin, Calendar, Phone, Mail,
   User, ShieldCheck, LogIn, UserMinus, Trash2,
-  LayoutDashboard, Users, Plus, Trash, SettingsIcon, UserIcon
+  LayoutDashboard, Users, Plus, Trash, SettingsIcon, UserIcon,
+  Sparkles, Compass
 } from "lucide-react";
 import ShortcutsCommand from '@/components/SmallUI/ShortcutsCommand';
-import {CommandShortcut} from "@/components/ui/command";
+import { CommandShortcut } from "@/components/ui/command";
 
 interface UserData {
   id: string;
@@ -60,7 +61,6 @@ interface DashboardCard {
   color: string;
 }
 
-
 const trainerCards: DashboardCard[] = [
   { id: "d1", name: "UX Mastery Hub", about: "Deep-dive sessions on user research, wireframing & usability testing.", logo: "🎨", isOwner: true, memberCount: 342, color: "#56b2bb" },
   { id: "d2", name: "Design Systems Lab", about: "Building scalable component libraries with Figma and tokens.", logo: "⚙️", isOwner: true, memberCount: 189, color: "#a78bfa" },
@@ -72,6 +72,26 @@ const followedCards: DashboardCard[] = [
   { id: "f2", name: "Motion Design", about: "After Effects, Lottie, and CSS animation tutorials for everyone.", logo: "🎬", isOwner: false, memberCount: 876, color: "#fbbf24" },
   { id: "f3", name: "Typography Club", about: "Font pairing, type scales, and the art of readable text.", logo: "🔤", isOwner: false, memberCount: 430, color: "#f472b6" },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Small decorative dino mascot for the hero card.                     */
+/* Placeholder illustration — swap the SVG below for your own asset.   */
+/* ------------------------------------------------------------------ */
+function DinoMascot() {
+  return (
+    <svg viewBox="0 0 140 140" width="140" height="140" aria-hidden="true">
+      <ellipse cx="70" cy="120" rx="34" ry="8" fill="#000" opacity="0.25" />
+      <path d="M40 118 C30 90 32 60 52 44 C58 30 78 26 90 36 C98 30 112 34 114 44 C118 46 118 54 112 56 C114 62 108 68 102 66 C100 76 92 82 84 80 C86 96 80 112 70 118 Z" fill="#56b2bb" />
+      <path d="M52 44 C58 30 78 26 90 36" stroke="#7be6df" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <circle cx="94" cy="42" r="3.2" fill="#0a0f22" />
+      <path d="M46 60 L36 54 L46 68 Z" fill="#3a8b93" />
+      <path d="M56 96 L48 112 L60 108 Z" fill="#3a8b93" />
+      <path d="M82 100 L86 116 L94 106 Z" fill="#3a8b93" />
+      <path d="M60 40 L64 30 L68 40 Z" fill="#fbbf24" />
+      <path d="M70 38 L74 28 L78 38 Z" fill="#fbbf24" />
+    </svg>
+  );
+}
 
 function ChannelCard({ card, isTrainer, onUnfollow, onDelete }: {
   card: DashboardCard;
@@ -122,7 +142,7 @@ function ChannelCard({ card, isTrainer, onUnfollow, onDelete }: {
       <div className="flex items-center justify-between pt-1">
         {isTrainer && card.isOwner
           ? <span className="owner-badge" style={{ background: `${card.color}18`, color: card.color, border: `1px solid ${card.color}2e` }}>Owner</span>
-          : <span className="secondary-text text-xs">Following</span>
+          : <span className="following-tag"><Sparkles size={11} />Following</span>
         }
         <button className="enter-btn flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg">
           <LogIn size={12} /> Enter
@@ -132,6 +152,22 @@ function ChannelCard({ card, isTrainer, onUnfollow, onDelete }: {
   );
 }
 
+/* Reusable dashed "invite" tile — used both for the trainer's
+   "create a channel" slot and the follower's "discover channels" slot. */
+function DiscoverTile({ icon, title, description, onClick }: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button className="discover-card" onClick={onClick} type="button">
+      <span className="discover-icon">{icon}</span>
+      <span className="discover-title">{title}</span>
+      <span className="discover-desc">{description}</span>
+    </button>
+  );
+}
 
 export default function ProfileDashboard() {
   const [userData, setUserData] = useState<UserData>({
@@ -150,62 +186,61 @@ export default function ProfileDashboard() {
     updateDate: "",
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const hasFetched = useRef(false);
   const [cards, setCards] = useState<DashboardCard[]>(userData?.trainer ? trainerCards : followedCards);
   let navigate = useNavigate();
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
-   const CommandItems = [{
-        name: "profile",
-        component: () => {
-            return (<>
-                <UserIcon />
-                <span>Profile</span>
-                <CommandShortcut>⌘P</CommandShortcut></>)
-        },
-        function:()=>{
-          navigate("/account");
-        }
+  const CommandItems = [{
+    name: "profile",
+    component: () => {
+      return (<>
+        <UserIcon />
+        <span>Profile</span>
+        <CommandShortcut>⌘P</CommandShortcut></>)
     },
-    {
-        name: "edit",
-        component: () => {
-            return (<>
-                <Pencil />
-                <span>Edit</span>
-                <CommandShortcut>⌘B</CommandShortcut></>)
-        },
-        function:()=>{
-          setIsEditing(true);
-        }
+    function: () => {
+      navigate("/account");
+    }
+  },
+  {
+    name: "edit",
+    component: () => {
+      return (<>
+        <Pencil />
+        <span>Edit</span>
+        <CommandShortcut>⌘B</CommandShortcut></>)
     },
-    {
-        name: "settings",
-        component: () => {
-            return (<>
-                 <SettingsIcon />
-                <span>Settings</span>
-                <CommandShortcut>⌘S</CommandShortcut></>)
-        },
-        function: () => {
-          navigate("/settings/general")
-         }
+    function: () => {
+      setIsEditing(true);
+    }
+  },
+  {
+    name: "settings",
+    component: () => {
+      return (<>
+        <SettingsIcon />
+        <span>Settings</span>
+        <CommandShortcut>⌘S</CommandShortcut></>)
     },
-    {
-        name: "delete_account",
-        component: () => {
-            return (<>
-                <Trash />
-                <span className=' text-red-600'>Delete Account</span>
-                <CommandShortcut>⌘S</CommandShortcut></>)
-        },
-        function: () => { 
-        }
+    function: () => {
+      navigate("/settings/general")
+    }
+  },
+  {
+    name: "delete_account",
+    component: () => {
+      return (<>
+        <Trash />
+        <span className=' text-red-600'>Delete Account</span>
+        <CommandShortcut>⌘S</CommandShortcut></>)
     },
-    
-    ];
+    function: () => {
+    }
+  },
 
+  ];
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<EditableFields>({
     defaultValues: {
@@ -226,10 +261,10 @@ export default function ProfileDashboard() {
     setIsLoading(true)
     handleUser.fetchUser().then((data) => {
       console.log(data)
-        setIsLoading(false)
-        dispatch(addUser(data));
-        setUserData(data);
-      })
+      setIsLoading(false)
+      dispatch(addUser(data));
+      setUserData(data);
+    })
       .catch(() => {
         setIsLoading(false);
         // e.response?.status === 401 && navigate("/login");
@@ -238,8 +273,8 @@ export default function ProfileDashboard() {
 
   const watchedGender = watch("gender");
 
-  const onSubmit = (data: EditableFields) => { 
-    if(isLoading) return;
+  const onSubmit = (data: EditableFields) => {
+    if (isLoading) return;
     setIsLoading(true);
     const updated = (Object.keys(data) as (keyof EditableFields)[]).reduce(
       (acc, key) => {
@@ -253,15 +288,15 @@ export default function ProfileDashboard() {
       setIsEditing(false);
       return; // nothing changed
     }
-    console.log("Updated Profile:", updated); 
+    console.log("Updated Profile:", updated);
     handleUser.updateUser(updated).then(() => {
-        setUserData((prev) => ({ ...prev, ...updated }));
-        setIsEditing(false);
-        dispatch(addUser(userData));
-        setIsLoading(false);
-      })
+      setUserData((prev) => ({ ...prev, ...updated }));
+      setIsEditing(false);
+      dispatch(addUser(userData));
+      setIsLoading(false);
+    })
       .catch((e) => {
-         setIsLoading(false);
+        setIsLoading(false);
         console.log(e.response.status);
       });
   };
@@ -278,233 +313,266 @@ export default function ProfileDashboard() {
   const ownedCards = cards.filter((c) => c.isOwner);
   const followingCards = cards.filter((c) => !c.isOwner);
 
+  // NOTE: sessions / streak / badges aren't part of UserData yet — these are
+  // placeholders until the API exposes them. "Channels" is real (cards.length).
+  const heroStats = [
+    { label: "Sessions", value: "128" },
+    { label: "Streak", value: "21d" },
+    { label: "Channels", value: String(cards.length) },
+    { label: "Badges", value: "7" },
+  ];
+
   return (
     <div className="root-wrap min-h-screen w-full p-4 md:p-8">
       {isLoading && <GeneralLoader />}
-      <Navbar /> 
-      <div className="max-w-6xl mx-auto pt-15  grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+      <Navbar />
 
-        {/* LEFT Profile */}
-        <div className="lg:col-span-2">
-          <div className="glass p-6 flex flex-col gap-5">
+      <div className="max-w-6xl mx-auto pt-8 flex flex-col gap-6">
 
-            <div className="flex flex-col items-center gap-3 pt-1">
-              <div className="relative">
-                <Avatar className="w-24 h-24 glow-ring">
-                  <AvatarImage src={userData.avatar} />
-                  <AvatarFallback style={{ background:"rgba(86,178,187,.13)", color:"var(--sym)", fontSize:28, fontFamily:"Syne,sans-serif", fontWeight:700 }}>
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 flex items-center justify-center"
-                  style={{ background:"#34d399", borderColor:"var(--bg)" }} />
+        {/* ══ Account hero ══ */}
+        <div className="account-hero">
+          <div>
+            <span className="hero-eyebrow">Account</span>
+            <h1 className="hero-title">Your <span>Profile</span></h1>
+            <p className="hero-desc">
+              Everything about your training identity — details, availability and the communities you follow.
+            </p>
+            <div className="stats-row">
+              {heroStats.map((s) => (
+                <div className="stat-pill" key={s.label}>
+                  <span className="stat-value">{s.value}</span>
+                  <span className="stat-label">{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="hero-mascot">
+            <DinoMascot />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+
+          {/* LEFT Profile */}
+          <div className="lg:col-span-2">
+            <div className="glass p-6 flex flex-col gap-5">
+
+              <div className="flex flex-col items-center gap-3 pt-1">
+                <div className="relative">
+                  <Avatar className="w-24 h-24 glow-ring">
+                    <AvatarImage src={userData.avatar} />
+                    <AvatarFallback style={{ background: "rgba(86,178,187,.13)", color: "var(--sym)", fontSize: 28, fontFamily: "Syne,sans-serif", fontWeight: 700 }}>
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                    style={{ background: "#34d399", borderColor: "var(--bg)" }} />
+                </div>
+                <div className="text-center">
+                  <h1 className="user-name text-[22px]">{userData.username}</h1>
+                  <p className="secondary-text text-xs mt-0.5">@{userData.username.toLowerCase().replace(/\s+/g, "")}</p>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap justify-center">
+                  <span className="online-badge"><span className="online-dot" />Online</span>
+                  {userData.trainer && <span className="trainer-badge"><ShieldCheck size={11} />Trainer</span>}
+                </div>
               </div>
-              <div className="text-center">
-                <h1 className="user-name text-[22px]">{userData.username}</h1>
-                <p className="secondary-text text-xs mt-0.5">@{userData.username.toLowerCase().replace(/\s+/g,"")}</p>
+
+              <Separator className="divider" />
+
+              {/* Form */}
+              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3.5">
+                <span className="sec-label">Profile Info</span>
+
+                {/* About */}
+                <div className="flex flex-col gap-1">
+                  {isEditing && <label className="secondary-text text-xs font-medium">About</label>}
+                  {isEditing
+                    ? <textarea {...register("about")} className="ci w-full p-3 resize-none text-sm" rows={3} />
+                    : <p className="primary-text text-sm leading-relaxed">{userData.about}</p>}
+                </div>
+
+                {/* Address */}
+                <div className="info-row">
+                  <MapPin size={14} className="symbol info-icon" />
+                  <div className="flex-1">
+                    <label className="secondary-text text-xs">Address</label>
+                    {isEditing
+                      ? <input {...register("address")} className="ci w-full mt-1 h-8.5 text-sm" />
+                      : <p className="primary-text text-sm">{userData.address}</p>}
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div className="info-row">
+                  <Phone size={14} className="symbol info-icon" />
+                  <div className="flex-1">
+                    <label className="secondary-text text-xs">Phone</label>
+                    {isEditing
+                      ? <input {...register("phone_no")} className="ci w-full mt-1 h-8.5 text-sm" />
+                      : <p className="primary-text text-sm">{userData.phone_no}</p>}
+                  </div>
+                </div>
+
+                {/* Gender — editable */}
+                <div className="info-row">
+                  <User size={14} className="symbol info-icon" />
+                  <div className="flex-1">
+                    <label className="secondary-text text-xs">Gender</label>
+                    {isEditing
+                      ? (
+                        <Select value={watchedGender} onValueChange={(v) => setValue("gender", v)}>
+                          <SelectTrigger className="sel-trigger mt-1 w-full">
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                          <SelectContent className="sel-content">
+                            {["Male", "Female", "Non-binary", "Prefer not to say"].map((g) => (
+                              <SelectItem key={g} value={g} style={{ color: "var(--pt)", cursor: "pointer" }}>{g}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )
+                      : <p className="primary-text text-sm">{userData.gender}</p>}
+                  </div>
+                </div>
+
+                {/* Read-only */}
+                <div className="info-row">
+                  <Mail size={14} className="symbol info-icon" />
+                  <div className="flex-1">
+                    <label className="secondary-text text-xs">Email</label>
+                    <p className="primary-text text-sm">{userData.email}</p>
+                  </div>
+                </div>
+                <div className="info-row">
+                  <Calendar size={14} className="symbol info-icon" />
+                  <div className="flex-1">
+                    <label className="secondary-text text-xs">Member Since</label>
+                    <p className="primary-text text-sm">{userData.createdAt}</p>
+                  </div>
+                </div>
+
+                {/* Available */}
+                <div className="toggle-row mt-1">
+                  <span className="primary-text text-sm font-medium">Available for work</span>
+                  <Switch checked={userData.available} onCheckedChange={(v) => setUserData((p) => ({ ...p, available: v }))} />
+                </div>
+
+                {/* Edit / Save / Cancel */}
+                {!isEditing
+                  ? (
+                    <Button type="button" onClick={() => setIsEditing(true)} className="btn-accent w-full h-10 mt-1 gap-2">
+                      <Pencil size={13} /> Edit Details
+                    </Button>
+                  )
+                  : (
+                    <div className="flex gap-2 mt-1">
+                      <Button type="submit" className="btn-accent flex-1 h-10 gap-2">
+                        <Check size={13} /> Save
+                      </Button>
+                      <Button type="button" onClick={handleCancel} className="btn-danger flex-1 h-10 gap-2">
+                        <X size={13} /> Cancel
+                      </Button>
+                    </div>
+                  )}
+              </form>
+            </div>
+          </div>
+
+          {/* ══ RIGHT — Channels / Dashboards ══ */}
+          <div className="lg:col-span-3 flex flex-col gap-5">
+
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <LayoutDashboard size={14} className="symbol" />
+                <span className="sec-label">{userData.trainer ? "My Channels" : "Followed Channels"}</span>
               </div>
-              <div className="flex items-center gap-2 flex-wrap justify-center">
-                <span className="online-badge"><span className="online-dot" />Online</span>
-                {userData.trainer && <span className="trainer-badge"><ShieldCheck size={11} />Trainer</span>}
+              <div className='flex justify-center items-center gap-3'>
+                <span className="count-pill">{cards.length}</span>
+                <ShortcutsCommand CommandItems={CommandItems} CustomButton={
+                  <Button className="setting-btn text-white flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg cursor-pointer">
+                    <SettingsIcon size={13} /> Setting
+                  </Button>} />
               </div>
             </div>
 
-            <Separator className="divider" />
-
-            {/* Form */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3.5">
-              <span className="sec-label">Profile Info</span>
-
-              {/* About */}
-              <div className="flex flex-col gap-1">
-                <label className="secondary-text text-xs font-medium">About</label>
-                {isEditing
-                  ? <textarea {...register("about")} className="ci w-full p-3 resize-none text-sm" rows={3} />
-                  : <p className="primary-text text-sm leading-relaxed">{userData.about}</p>}
-              </div>
-
-              {/* Address */}
-              <div className="info-row">
-                <MapPin size={14} className="symbol info-icon" />
-                <div className="flex-1">
-                  <label className="secondary-text text-xs">Address</label>
-                  {isEditing
-                    ? <input {...register("address")}  className="ci w-full mt-1 h-8.5 text-sm" />
-                    : <p className="primary-text text-sm">{userData.address}</p>}
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="info-row">
-                <Phone size={14} className="symbol info-icon" />
-                <div className="flex-1">
-                  <label className="secondary-text text-xs">Phone</label>
-                  {isEditing
-                    ? <input {...register("phone_no")}  className="ci w-full mt-1 h-8.5 text-sm" />
-                    : <p className="primary-text text-sm">{userData.phone_no}</p>}
-                </div>
-              </div>
-
-              {/* Gender — editable */}
-              <div className="info-row">
-                <User size={14} className="symbol info-icon" />
-                <div className="flex-1">
-                  <label className="secondary-text text-xs">Gender</label>
-                  {isEditing
-                    ? (
-                      <Select value={watchedGender} onValueChange={(v) => setValue("gender", v)}>
-                        <SelectTrigger className="sel-trigger mt-1 w-full">
-                          <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
-                        <SelectContent className="sel-content">
-                          {["Male","Female","Non-binary","Prefer not to say"].map((g) => (
-                            <SelectItem key={g} value={g} style={{ color:"var(--pt)", cursor:"pointer" }}>{g}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )
-                    : <p className="primary-text text-sm">{userData.gender}</p>}
-                </div>
-              </div>
-
-              {/* Read-only */}
-              <div className="info-row">
-                <Mail size={14} className="symbol info-icon" />
-                <div className="flex-1">
-                  <label className="secondary-text text-xs">Email</label>
-                  <p className="primary-text text-sm">{userData.email}</p>
-                </div>
-              </div>
-              <div className="info-row">
-                <Calendar size={14} className="symbol info-icon" />
-                <div className="flex-1">
-                  <label className="secondary-text text-xs">Member Since</label>
-                  <p className="primary-text text-sm">{userData.createdAt}</p>
-                </div>
-              </div>
-
-              {/* Available */}
-              <div className="toggle-row mt-1">
-                <span className="primary-text text-sm font-medium">Available for work</span>
-                <Switch checked={userData.available} onCheckedChange={(v) => setUserData((p) => ({ ...p, available: v }))} />
-              </div>
-
-              {/* Edit / Save / Cancel */}
-              {!isEditing
-                ? (
-                  <Button type="button" onClick={() => setIsEditing(true)} className="btn-accent w-full h-10 mt-1 gap-2">
-                    <Pencil size={13} /> Edit Details
-                  </Button>
-                )
-                : (
-                  <div className="flex gap-2 mt-1">
-                    <Button type="submit" className="btn-accent flex-1 h-10 gap-2">
-                      <Check size={13} /> Save
-                    </Button>
-                    <Button type="button" onClick={handleCancel} className="btn-danger flex-1 h-10 gap-2">
-                      <X size={13} /> Cancel
-                    </Button>
+            {userData.trainer ? (
+              /* ── Trainer View ── */
+              <>
+                {/* Owned */}
+                {ownedCards.length > 0 && (
+                  <div className="flex flex-col gap-3">
+                    <p className="sub-label">Created by you</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {ownedCards.map((c) => (
+                        <ChannelCard key={c.id} card={c} isTrainer onUnfollow={handleUnfollow} onDelete={handleDelete} />
+                      ))}
+                      <DiscoverTile
+                        icon={<Plus size={16} />}
+                        title="Create new channel"
+                        description="Start a new community for your athletes."
+                      />
+                    </div>
                   </div>
                 )}
-            </form>
-          </div>
-        </div>
 
-        {/* ══ RIGHT — Channels / Dashboards ══ */}
-        <div className="lg:col-span-3 flex flex-col gap-5">
-
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <LayoutDashboard size={14} className="symbol" />
-              <span className="sec-label">{userData.trainer ? "My Channels" : "Followed Channels"}</span>
-            </div>
-            <div className='flex justify-center items-center gap-3'>
-               <span className="count-pill">{cards.length}</span>
-               {/* <button className="setting-btn text-white flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg cursor-pointer">
-                Setting</button> */}
-                <ShortcutsCommand CommandItems={CommandItems} CustomButton={ <Button className="setting-btn text-white flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg cursor-pointer">
-                Setting</Button>} />  
-
-            </div> 
-          </div>
-
-          {userData.trainer ? (
-            /* ── Trainer View ── */
-            <>
-              {/* Owned */}
-              {ownedCards.length > 0 && (
-                <div className="flex flex-col gap-3">
-                  <p className="sub-label">Created by you</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {ownedCards.map((c) => (
-                      <ChannelCard key={c.id} card={c} isTrainer onUnfollow={handleUnfollow} onDelete={handleDelete} />
-                    ))}
-                    <button className="add-ch-btn">
-                      <Plus size={15} /> Create new channel
-                    </button>
+                {/* Following */}
+                {followingCards.length > 0 && (
+                  <div className="flex flex-col gap-3">
+                    <p className="sub-label">Also following</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {followingCards.map((c) => (
+                        <ChannelCard key={c.id} card={c} isTrainer onUnfollow={handleUnfollow} onDelete={handleDelete} />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Following */}
-              {followingCards.length > 0 && (
-                <div className="flex flex-col gap-3">
-                  <p className="sub-label">Also following</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {followingCards.map((c) => (
-                      <ChannelCard key={c.id} card={c} isTrainer onUnfollow={handleUnfollow} onDelete={handleDelete} />
-                    ))}
-                  </div>
-                </div>
-              )}
+                {ownedCards.length === 0 && followingCards.length === 0 && (
+                  <DiscoverTile
+                    icon={<LayoutDashboard size={20} />}
+                    title="No channels yet"
+                    description="Create your first channel to get started."
+                  />
+                )}
+              </>
+            ) : (
+              /* ── Normal User View ── */
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {cards.map((c) => (
+                  <ChannelCard key={c.id} card={c} isTrainer={false} onUnfollow={handleUnfollow} onDelete={handleDelete} />
+                ))}
+                <DiscoverTile
+                  icon={<Compass size={18} />}
+                  title="Discover more channels"
+                  description="Join communities matched to your goals."
+                />
+              </div>
+            )}
 
-              {ownedCards.length === 0 && followingCards.length === 0 && (
-                <div className="flex flex-col items-center gap-3 py-12 rounded-2xl" style={{ border:"1.5px dashed rgba(86,178,187,.18)" }}>
-                  <LayoutDashboard size={28} className="symbol opacity-35" />
-                  <p className="secondary-text text-sm">No channels yet</p>
-                  <button className="add-ch-btn" style={{ width:"auto", padding:"10px 20px" }}>
-                    <Plus size={14} /> Create your first channel
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            /* ── Normal User View ── */
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {cards.map((c) => (
-                <ChannelCard key={c.id} card={c} isTrainer={false} onUnfollow={handleUnfollow} onDelete={handleDelete} />
-              ))}
-              {cards.length === 0 && (
-                <div className="col-span-2 flex flex-col items-center gap-3 py-14 rounded-2xl" style={{ border:"1.5px dashed rgba(86,178,187,.18)" }}>
-                  <Users size={28} className="symbol opacity-35" />
-                  <p className="secondary-text text-sm">No followed channels yet</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Meta strip */}
-          <div className="meta-strip">
-            <div>
-              <span className="secondary-text text-xs">User ID</span>
-              <p className="primary-text text-xs font-mono mt-0.5 opacity-70">{userData.id}</p>
-            </div>
-            <div>
-              <span className="secondary-text text-xs">Last Updated</span>
-              <p className="primary-text text-xs mt-0.5">{userData.updateDate}</p>
-            </div>
-            <div>
-              <span className="secondary-text text-xs">DOB</span>
-              <p className="primary-text text-xs mt-0.5">{userData.dob}</p>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck size={13} style={{ color: userData.trainer ? "#a78bfa" : "var(--st)" }} />
-              <span className="secondary-text text-xs">{userData.trainer ? "Trainer account" : "Standard account"}</span>
+            {/* Meta strip */}
+            <div className="meta-strip">
+              <div>
+                <span className="secondary-text text-xs">User ID</span>
+                <p className="primary-text text-xs font-mono mt-0.5 opacity-70">{userData.id}</p>
+              </div>
+              <div>
+                <span className="secondary-text text-xs">Last Updated</span>
+                <p className="primary-text text-xs mt-0.5">{userData.updateDate}</p>
+              </div>
+              <div>
+                <span className="secondary-text text-xs">DOB</span>
+                <p className="primary-text text-xs mt-0.5">{userData.dob}</p>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck size={13} style={{ color: userData.trainer ? "#a78bfa" : "var(--sym)" }} />
+                <span className="secondary-text text-xs">{userData.trainer ? "Trainer account" : "Standard account"}</span>
+              </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );

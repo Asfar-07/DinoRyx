@@ -10,7 +10,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
 @Entity
 @Table( name = "qs_options")

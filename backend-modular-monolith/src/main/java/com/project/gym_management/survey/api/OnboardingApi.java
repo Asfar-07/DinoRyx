@@ -3,47 +3,64 @@ package com.project.gym_management.survey.api;
 
 import com.project.gym_management.survey.api.response.QsOptionDTO;
 import com.project.gym_management.survey.api.response.QuestionDTO;
+import com.project.gym_management.survey.application.QuestionService;
 import com.project.gym_management.survey.application.UserSessionService;
 import com.project.gym_management.survey.domain.Question;
 import com.project.gym_management.survey.domain.SurveyVersion;
 import com.project.gym_management.survey.domain.UserSurveySession;
-import com.project.gym_management.survey.infrastructure.QsOptionRepo;
-import com.project.gym_management.survey.infrastructure.QuestionRepo;
 import com.project.gym_management.survey.infrastructure.SurveyVersionRepo;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/survey/onboarding")
 public class OnboardingApi {
+
     final SurveyVersionRepo surveyVersionRepo;
-    final QuestionRepo qsOptionRepo;
 
     @Autowired
     UserSessionService userSessionService;
 
-    public OnboardingApi(SurveyVersionRepo surveyVersionRepo, QuestionRepo qsOptionRepo) {
+    @Autowired
+    QuestionService questionService;
+
+    public OnboardingApi(SurveyVersionRepo surveyVersionRepo) {
         this.surveyVersionRepo = surveyVersionRepo;
-        this.qsOptionRepo = qsOptionRepo;
     }
 
     @GetMapping("/get/questions")
-    public ResponseEntity<List<QuestionDTO>> getOnboarding(){
+    public ResponseEntity<Map<String,Object>> getOnboarding(HttpServletRequest request){
 
+        String userId = (String) request.getAttribute("userId");
         SurveyVersion version = surveyVersionRepo.findById(1L).orElseThrow(() -> new RuntimeException("Version not found"));
-//        UserSurveySession userSession = userSessionService.addUserSession(802798375299L,version);
-        List<QuestionDTO> questionDTO = version.getQuestions().stream()
+        UserSurveySession userSession = userSessionService.addUserSession(Long.parseLong(userId),version);
+        List<QuestionDTO> questionDTO = questionService.activeQuestionAndOptions(version.getId()).stream()
                 .map(this::toDto)
                 .toList();
-        return ResponseEntity.ok(questionDTO);
+        HashMap<String, Long> ids = new HashMap<>();
+        ids.put("sessionId", userSession.getId());
+        ids.put("surveyVersionId", version.getId());
+
+        List<Long> listIds = List.of(1L, 2L, 3L);
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("ids", ids);
+        response.put("questions", questionDTO);
+
+        return ResponseEntity.ok(response);
     }
+
 
     private QuestionDTO toDto(Question q) {
         Set<QsOptionDTO> opts = q.getOption().stream()

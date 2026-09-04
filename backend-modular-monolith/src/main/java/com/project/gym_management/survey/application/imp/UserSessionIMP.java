@@ -31,8 +31,9 @@ public class UserSessionIMP implements UserSessionService {
             return  null;
         }
         if(session != null && session.getStatus().equals("progress")){
-            session.setStartedAt(LocalDateTime.now());
-            return  sessionRepo.save(session);
+//            session.setStartedAt(LocalDateTime.now());
+//            return  sessionRepo.save(session);
+            return session;
         }
         UserSurveySession newSession = UserSurveySession.builder()
                 .userId(userId)

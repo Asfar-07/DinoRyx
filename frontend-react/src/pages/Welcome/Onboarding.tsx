@@ -23,7 +23,8 @@ import TrainerQuestions from "./SubPage/TrainerQuestions";
 import type Questions from "./Onboarding.types";
 import type { Role, diffQsRole, ResponseToBack, Collection, QsType, NormalKey, TrainerKey, StudentKey, ResponseEntry } from "./Onboarding.types";
 import GeneralLoader from "@/components/Loader/GeneralLoader";
-import { demoQuestions } from "./Questions";
+// import { demoQuestions } from "./Questions";
+import { useNavigate } from "react-router-dom";
 
 
 const TOTAL_STEPS = 6;
@@ -34,19 +35,28 @@ function findCollectionOption(collection: Collection[], QuestionKey: NormalKey |
   return collection.find((q) => q.QsKey === QuestionKey && q.role === role)?.option
 }
 
-function roleLabel(collection: Collection[]) {
+function roleLabel(collection: Collection[], questionsList: Questions[]) {
   const questionKey: NormalKey = "user_role";
-  return demoQuestions.find((e) => e.questionKey === questionKey)?.options.find((r) => findCollectionOption(collection, questionKey, "normal")?.includes(r.id))?.optionText ?? "Not set";
+  return questionsList
+    .find((e: Questions) => e.questionKey === questionKey)
+    ?.options.find((r) => findCollectionOption(collection, questionKey, "normal")?.includes(r.id))
+    ?.optionText ?? "Not set";
 }
 
-function experienceLabel(collection: Collection[]) {
+function experienceLabel(collection: Collection[], questionsList: Questions[]) {
   const questionKey: TrainerKey = "experience";
-  return demoQuestions.find((e) => e.questionKey === questionKey)?.options.find((r) => findCollectionOption(collection, questionKey, "trainer")?.includes(r.id))?.optionText ?? "Not set";
+  return questionsList
+    .find((e: Questions) => e.questionKey === questionKey)
+    ?.options.find((r) => findCollectionOption(collection, questionKey, "trainer")?.includes(r.id))
+    ?.optionText ?? "Not set";
 }
 
-function sourceLabel(collection: Collection[]) {
+function sourceLabel(collection: Collection[], questionsList: Questions[]) {
   const questionKey: NormalKey = "hear_about";
-  return demoQuestions.find((e) => e.questionKey === questionKey)?.options.find((r) => findCollectionOption(collection, questionKey, "normal")?.includes(r.id))?.optionText ?? "Not set";
+  return questionsList
+    .find((e: Questions) => e.questionKey === questionKey)
+    ?.options.find((r) => findCollectionOption(collection, questionKey, "normal")?.includes(r.id))
+    ?.optionText ?? "Not set";
 }
 
 function communityLabel(collection: Collection[], role: diffQsRole) {
@@ -81,13 +91,15 @@ export default function DinoRyxOnboarding() {
   const [step, setStep] = React.useState<number>(1);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [finished, setFinished] = React.useState<boolean>(false);
-  // const [questions, setQuestions] = React.useState<Questions[]>([]);
+  const [questions, setQuestions] = React.useState<Questions[]>([]);
   const [collectionRes, setCollectionRes] = React.useState<Collection[]>([]);
+  const hasFetched = React.useRef(false);
 
 
   const [role, setRole] = React.useState<Role | null>("student");
+  const [finalResponse, setFinalResponse] = React.useState<ResponseToBack>({ responses: [] });
 
-  // const [finalResponse, setFinalResponse] = React.useState<ResponseToBack>({ sessionId: 414134, surveyVersionId: 324324, responses: [] });
+  const navigate = useNavigate();
 
   const percentComplete = finished
     ? 100
@@ -118,7 +130,7 @@ export default function DinoRyxOnboarding() {
     const questionCollection: Collection[] = Object.entries(roleKeys)
       .flatMap(([role, keys]) =>
         keys.flatMap((key) => {
-          const question = demoQuestions.find(
+          const question = questions.find(
             (q) => q.questionKey === key
           );
 
@@ -152,7 +164,7 @@ export default function DinoRyxOnboarding() {
       );
     setCollectionRes(questionCollection)
 
-  }, [demoQuestions])
+  }, [questions])
 
   // collected user response and add to collectionRes list
   function addResponse(collection: Collection, qsRole: diffQsRole) {
@@ -214,23 +226,24 @@ export default function DinoRyxOnboarding() {
   }, [collectionRes])
 
   React.useEffect(() => {
-    let cancelled = false;
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    console.log("call");
+    
 
     handleSurvey.getQuestions()
-      .then((data: Questions[]) => {
-        if (cancelled) return;
-        console.log("Survey questions:", data);
-        // setFinalResponse((d) => d?.sessionId: 10)
+      .then((data) => {
+        setQuestions(data.questions);
+        setFinalResponse((r) => ({ ...r, sessionId: data.sessionId, surveyVersionId: data.surveyVersionId }));
         setLoading(false);
       })
       .catch((error) => {
-        if (!cancelled) console.error("Error fetching survey questions:", error);
+        console.error(error);
+        navigate("/");
         setLoading(false);
+        
       });
 
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const findRole = (): diffQsRole => {
@@ -245,8 +258,8 @@ export default function DinoRyxOnboarding() {
   const handleFinishSetup = () => {
     const data = createResponse(
       collectionRes,
-      323252,
-      25453245
+      finalResponse.sessionId!,
+      finalResponse.surveyVersionId!
     );
 
     console.log(data);
@@ -411,15 +424,15 @@ export default function DinoRyxOnboarding() {
             <>
               {/* ---------------- Step content ---------------- */}
               <div className="min-h-[340px]">
-                <NormalQuestions step={step} setRole={setRole} questions={demoQuestions}
+                <NormalQuestions step={step} setRole={setRole} questions={questions}
                   addResponse={addResponse} getSelectedOptionId={getSelectedOptionId}
                 />
 
-                <StudentQuestions role={role} questions={demoQuestions} step={step}
+                <StudentQuestions role={role} questions={questions} step={step}
                   addResponse={addResponse} getSelectedOptionId={getSelectedOptionId}
                 />
 
-                <TrainerQuestions role={role} questions={demoQuestions} step={step}
+                <TrainerQuestions role={role} questions={questions} step={step}
                   addResponse={addResponse} getSelectedOptionId={getSelectedOptionId}
                 />
 
@@ -436,9 +449,9 @@ export default function DinoRyxOnboarding() {
                       <SummaryCard
                         icon={Search}
                         label="Heard about us via"
-                        value={sourceLabel(collectionRes)}
+                        value={sourceLabel(collectionRes, questions)}
                       />
-                      <SummaryCard icon={Users} label="Role" value={roleLabel(collectionRes)} />
+                      <SummaryCard icon={Users} label="Role" value={roleLabel(collectionRes, questions)} />
                       {role === "student" && (
                         <SummaryCard
                           icon={Target}
@@ -450,7 +463,7 @@ export default function DinoRyxOnboarding() {
                         <SummaryCard
                           icon={Trophy}
                           label="Experience"
-                          value={experienceLabel(collectionRes)}
+                          value={experienceLabel(collectionRes, questions)}
                         />
                       )}
 
