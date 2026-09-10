@@ -42,6 +42,32 @@ export const authHandle = {
       throw e;
     }
   },
+  verifyOtpService: async (data) => {
+    try {
+      const res = await axios.post(
+        `${backendUrl}/auth/signup/verify/otp`,
+        data,
+        headerForm,
+      );
+      return res.data;
+    } catch (e) {
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
+  resentOtpService: async (data) => {
+    try {
+      const res = await axios.post(
+        `${backendUrl}/auth/signup/otp/refresh`,
+        data,
+        headerForm
+      );
+      return res.data;
+    } catch (e) {
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
   googleService: async (data) => {
     try {
       const res = await axios.post(

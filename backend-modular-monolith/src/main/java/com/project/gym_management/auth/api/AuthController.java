@@ -35,27 +35,37 @@ public class AuthController {
 
     AuthDTO resAuth = new AuthDTO();
 
+    HashMap<String, Object> apiResponse = new HashMap<>();
+
     @GetMapping(value = "/home")
     public  String Home(){
 
         return "Hello";
     }
     @PostMapping(value = "/login")
-    public ResponseEntity<AuthDTO> Login(@RequestBody ReqAuth data, HttpServletResponse response) {
-        HashMap<String,Object> res= service.loginService(data);
+    public ResponseEntity<HashMap<String, Object>> Login(@RequestBody ReqAuth data, HttpServletResponse response) {
+        HashMap<String,Object> res = service.loginService(data);
         if (res.get("status").equals(true) && res.get("message").equals("Password Matching")){
-            UserTable finalModel= (UserTable) res.get("data");
+            UserTable finalModel = (UserTable) res.get("data");
 
-            String accessToken= JwtTokenManage.generateAccessToken(finalModel.getEmail(),finalModel.getId());
-            String refreshToken= JwtTokenManage.generateRefreshToken(finalModel.getEmail(),finalModel.getId());
-            CookieManage cookie=new CookieManage(response);
+            String accessToken = JwtTokenManage.generateAccessToken(finalModel.getEmail(),finalModel.getId());
+            String refreshToken = JwtTokenManage.generateRefreshToken(finalModel.getEmail(),finalModel.getId());
+            CookieManage cookie = new CookieManage(response);
             cookie.createCookie(accessToken,refreshToken);
             //ResponseModel
             resAuth.setName(finalModel.getUsername());
             resAuth.setEmail(finalModel.getEmail());
-//            resAuth.setPicture(finalModel.getPicture());
-//            resAuth.setTrainer(finalModel.isTrainer());
-            return ResponseEntity.ok(resAuth);
+            apiResponse.put("message", res.get("message"));
+            apiResponse.put("status", true);
+            apiResponse.put("user_details", resAuth);
+
+            return ResponseEntity.ok(apiResponse);
+
+        } else if (res.get("status").equals(false) && res.get("message").equals("Missing Validation")) {
+            apiResponse.put("message", res.get("message"));
+            apiResponse.put("status", false);
+            return ResponseEntity.ok(apiResponse);
+
         } else if (res.get("status").equals(false) && res.get("message").equals("Password Not Match")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -65,28 +75,65 @@ public class AuthController {
     }
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<AuthDTO> SignUp(@RequestBody ReqAuth userData, HttpServletResponse response){System.out.println(userData.getEmail());
+    public ResponseEntity<HashMap<String, Object>> SignUp(@RequestBody ReqAuth userData, HttpServletResponse response){
         HashMap<String,Object> res = service.signupService(userData);
         if (res.get("status").equals(true)){
-            UserTable finalModel= (UserTable) res.get("data");
-
-            String accessToken= JwtTokenManage.generateAccessToken(finalModel.getEmail(),finalModel.getId());
-            String refreshToken= JwtTokenManage.generateRefreshToken(finalModel.getEmail(),finalModel.getId());
-            CookieManage cookie=new CookieManage(response);
-            cookie.createCookie(accessToken,refreshToken);
-            //ResponseModel
-            resAuth.setName(finalModel.getUsername());
-            resAuth.setEmail(finalModel.getEmail());
-//            resAuth.setPicture(finalModel.getPicture());
-//            resAuth.setTrainer(finalModel.isTrainer());
-            return ResponseEntity.ok(resAuth);
+            apiResponse.put("message", res.get("message"));
+            apiResponse.put("status", true);
+            return ResponseEntity.ok(apiResponse);
         }
         else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
-    @PostMapping(value="/facebook/provider")
+    @PostMapping(value = "/signup/otp/refresh")
+    public ResponseEntity<HashMap<String, Object>> RefreshOtp(@RequestBody HashMap<String, String> body){
+        HashMap<String,Object> res = service.resendSignupOtp(body.get("email"));
+        if (res.get("status").equals(true)){
+            apiResponse.put("message", res.get("message"));
+            apiResponse.put("status", true);
+            return ResponseEntity.ok(apiResponse);
+        }
+        else {
+            apiResponse.put("message", res.get("message"));
+            apiResponse.put("status", false);
+            return ResponseEntity.ok(apiResponse);
+        }
+    }
+
+
+    @PostMapping(value = "/signup/verify/otp")
+    public ResponseEntity<HashMap<String, Object>> SignupVerifyOtp(@RequestBody HashMap<String, String> body, HttpServletResponse response){
+
+        HashMap<String,Object> res = service.signupOtpVerify(body);
+        if (res.get("status").equals(true)){
+
+            UserTable finalModel = (UserTable) res.get("data");
+
+            String accessToken = JwtTokenManage.generateAccessToken(finalModel.getEmail(),finalModel.getId());
+            String refreshToken = JwtTokenManage.generateRefreshToken(finalModel.getEmail(),finalModel.getId());
+
+            CookieManage cookie = new CookieManage(response);
+            cookie.createCookie(accessToken,refreshToken);   //ResponseModel
+            resAuth.setName(finalModel.getUsername());
+            resAuth.setEmail(finalModel.getEmail());
+
+            apiResponse.put("message", res.get("message"));
+            apiResponse.put("status", true);
+            apiResponse.put("user_details", resAuth);
+
+            return ResponseEntity.ok(apiResponse);
+        }
+        else {
+            apiResponse.put("message", res.get("message"));
+            apiResponse.put("status", false);
+            return ResponseEntity.ok(apiResponse);
+        }
+
+    }
+
+    @PostMapping(value = "/facebook/provider")
     public ResponseEntity<String> facebookProvider(@RequestBody Map<String, String> body) throws Exception {
         String token = body.get("token");
 

@@ -14,9 +14,12 @@ import { addUser } from "@/features/user/userSlice";
 import { useForm } from "react-hook-form";
 import FloatingCharacters from "@/components/animate-ui/FloatingCharacters";
 import { MagneticButton } from "@/components/magnetic";
-import { ShineButton } from "@/components/shine"; 
+import { ShineButton } from "@/components/shine";
 import { TextHighlight } from "@/components/text-highlight";
 import { TextSplitReveal } from "@/components/split-reveal";
+import OTPVerify from "./OTPVerify";
+import { toast } from "react-toastify";
+import GeneralLoader from "@/components/Loader/GeneralLoader";
 
 export default function Login() {
   interface userForm {
@@ -34,6 +37,8 @@ export default function Login() {
   //for dino animation
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+
+  const [showOtp, setShowOtp] = useState(false);
 
   //useForm
   const loginForm = useForm<userForm>({ defaultValues: { username: "", email: "", password: "" } });
@@ -53,19 +58,20 @@ export default function Login() {
   }
 
   function authenticationSubmit(userData: userForm) {
+
     if (isLoading) return;
     setIsLoading(true);
-    if (isSignup) {
 
+    if (isSignup) {
 
       authHandle
         .signupService(userData)
         .then((data) => {
-          dispatch(addUser(data))
-          dispatch(updateAuth(true));
-          resetDefault()
           setIsLoading(false);
-          navigate("/welcome/home");
+
+          if (data.status && data.message === "Verify Otp Generated") {
+            setShowOtp(true);
+          }
         })
         .catch((err) => {
           setIsLoading(false);
@@ -73,14 +79,21 @@ export default function Login() {
         });
 
     } else {
+
       authHandle
         .loginService(userData)
         .then((data) => {
-          dispatch(addUser(data))
-          dispatch(updateAuth(true));
-          resetDefault()
           setIsLoading(false);
-          navigate("/");
+          
+          if (data.status && data.message === "Password Matching") {
+            dispatch(addUser(data))
+            dispatch(updateAuth(true));
+            resetDefault()
+            navigate("/");
+          }
+          if (!data.status && data.message === "Missing Validation") {
+            setShowOtp(true);
+          }
         })
         .catch((err) => {
           setIsLoading(false);
@@ -100,6 +113,54 @@ export default function Login() {
       console.log(err);
     });
   };
+
+  function resendToken(currentTime: number) {
+    if (isLoading) return;
+    setIsLoading(true);
+
+    if (60 > currentTime) {
+      authHandle.resentOtpService({ email: loginForm.getValues("email") })
+        .then((data) => {
+          setIsLoading(false);
+          if (data.status) {
+            toast.success(data.message)
+          } else {
+            toast.error(data.message)
+          }
+        }).catch((err) => {
+          setIsLoading(false);
+          console.log(err);
+        });
+    } else {
+      setIsLoading(false);
+      toast.error("wait 1 minute")
+    }
+  }
+
+  function verifyOtp(code: string) {
+    if (isLoading) return;
+    setIsLoading(true);
+
+    authHandle.verifyOtpService({ email: loginForm.getValues("email"), otp: code })
+      .then((data) => {
+        setIsLoading(false);
+
+        if (data.status) {
+          toast.success(data.message)
+          dispatch(addUser(data.user_details))
+          dispatch(updateAuth(true));
+          resetDefault()
+          setIsLoading(false);
+          navigate("/welcome/home");
+        } else {
+          toast.error(data.message)
+        }
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        console.error(err);
+      });
+  }
 
   function errorValidation() {
     if (errors.email?.message && errors.password?.message) {
@@ -133,6 +194,21 @@ export default function Login() {
 
   return (
     <div className="min-h-screen w-full bg-(--primary-bg-color) text-(--primary-text-color)">
+      {isLoading && <GeneralLoader />}
+
+      {showOtp && (
+        <OTPVerify
+          email={loginForm.getValues("email")}
+          onClose={() => setShowOtp(false)}
+          onChangeEmail={() => setShowOtp(false)}
+          onVerify={(code) => {
+            verifyOtp(code)
+          }}
+          resendOtp={(time) => {
+            resendToken(time)
+          }}
+        />
+      )}
       {/* Top bar */}
       <header className="flex items-center justify-between px-6 py-6 md:px-10">
         <a href="/" className="flex items-center gap-2.5">
@@ -173,51 +249,51 @@ export default function Login() {
                 training.
               </p>
             </div>
-            
+
             {/* default dino image (if not focus email or password) */}
-            {( !passwordFocused && !emailFocused ) &&
-            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
-              <img
-                src="/images/DinoHome.webp"
-                alt="DinoRyx mascot"
-                className="size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
-              />
-            </div> 
+            {(!passwordFocused && !emailFocused) &&
+              <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+                <img
+                  src="/images/DinoHome.webp"
+                  alt="DinoRyx mascot"
+                  className="size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+                />
+              </div>
             }
 
             {/* dino image for email focus */}
-            {( emailFocused ) &&
-            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
-              <img
-                src="/images/DinoEmail.webp"
-                alt="DinoRyx mascot"
-                className="size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
-              />
-            </div> 
+            {(emailFocused) &&
+              <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+                <img
+                  src="/images/DinoEmail.webp"
+                  alt="DinoRyx mascot"
+                  className="size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+                />
+              </div>
             }
 
             {/* dino image for password with close eyes because not showing password in input */}
             {passwordFocused && !showPassword &&
-            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
-              <FloatingCharacters />
-              <img
-                src="/images/DinoThinkingEyesClose.webp"
-                alt="DinoRyx thinking eyes closed"
-                className="relative z-2 size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
-              />
-            </div> 
+              <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+                <FloatingCharacters />
+                <img
+                  src="/images/DinoThinkingEyesClose.webp"
+                  alt="DinoRyx thinking eyes closed"
+                  className="relative z-2 size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+                />
+              </div>
             }
 
             {/* dino image for password with open eyes because  showing password in input */}
             {passwordFocused && showPassword &&
-            <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
-              <FloatingCharacters />
-              <img
-                src="/images/DinoThinkingEyesOpen.webp"
-                alt="DinoRyx thinking eyes open"
-                className="relative z-2 size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
-              />
-            </div> 
+              <div className=" relative z-10 mx-auto h-64 w-auto sm:h-72">
+                <FloatingCharacters />
+                <img
+                  src="/images/DinoThinkingEyesOpen.webp"
+                  alt="DinoRyx thinking eyes open"
+                  className="relative z-2 size-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+                />
+              </div>
             }
 
             <MagneticButton
@@ -357,10 +433,10 @@ export default function Login() {
                 <a
                   href={"/login/forgot"}
                   className="text-sm font-medium text-[#56b2bb]  hover:text-[#56b2bb]/80"
-                > 
+                >
                   <TextHighlight height={2} pb={.5} color="#56b2bb" delay={.6} duration={2}>
                     Forgot password?
-                  </TextHighlight>  
+                  </TextHighlight>
                 </a>
               </div>
 
@@ -415,7 +491,7 @@ export default function Login() {
                 }}
               >
                 <TextHighlight height={2} pb={.5} color="#56b2bb" delay={1} duration={2}>
-                {isSignup ? "Log In" : "Sign In"}
+                  {isSignup ? "Log In" : "Sign In"}
                 </TextHighlight>
               </Button>
             </p>

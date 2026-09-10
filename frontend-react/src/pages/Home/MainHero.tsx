@@ -219,23 +219,15 @@ export default function MainHero(): React.JSX.Element {
                 </Link>
               </ShineButton>
             )}
-
-            <BorderGradientButton
-            colors={["#10b981", "#06b6d4", "#3b82f6"]}
-            duration={10}
-            borderWidth={1}
-              className="glass flex flex-row items-center gap-1.5 rounded-full border-[#f0f4f8]/15  text-sm font-semibold
-             text-(--primary-text-color) hover:bg-[#1d2233] cursor-pointer"
-            >
               <Link
               to="/nearby-location"
-              className="flex size-full px-7 py-4"
+              className="glass flex flex-row items-center gap-1.5 rounded-full border-[#f0f4f8]/15  text-sm font-semibold
+             text-(--primary-text-color) hover:bg-[#1d2233] cursor-pointer px-7 py-4"
               >
               <MapPin className="h-4 w-4 text-[#56b2bb] mr-2" />
               Explore Nearby Gyms
               </Link>
               
-            </BorderGradientButton>
           </motion.div>
 
           <motion.div

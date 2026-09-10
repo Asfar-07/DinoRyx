@@ -2,6 +2,7 @@ package com.project.gym_management.user.domain;
 
 import com.project.gym_management.auth.domain.AuthProviderTable;
 import com.project.gym_management.auth.domain.ResetPasswordTable;
+import com.project.gym_management.user.domain.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,8 +24,16 @@ public class UserTable {
     @Column(name = "email",nullable = false,updatable = false,unique = true)
     private String email;
 
-    @Column(name = "created",nullable = false,updatable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    @Builder.Default
+    private UserStatus status = UserStatus.PENDING;
+
+    @Column(name = "created_at",nullable = false,updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private UserProfileTable profile;

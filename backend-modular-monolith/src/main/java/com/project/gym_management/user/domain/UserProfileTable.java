@@ -27,12 +27,12 @@ public class UserProfileTable {
     private String avatar;
     @Column(name = "gender")
     private String Gender;
-    @Column(name = "update_date")
-    private LocalDateTime updateDate;
     @Column(name="available")
     private  boolean available;
     @Column(name = "trainer")
     private boolean trainer;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
