@@ -1,12 +1,13 @@
-package com.project.gym_management.user.application;
+package com.project.gym_management.user.application.imp;
 
+import com.project.gym_management.user.application.DefaultAvatarService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-public class DefaultAvatarServiceImp implements DefaultAvatarService{
+public class DefaultAvatarServiceImp implements DefaultAvatarService {
     private static final List<String> DEFAULT_AVATARS = List.of(
             "AGHVDS",
             "BSUEHJ",
