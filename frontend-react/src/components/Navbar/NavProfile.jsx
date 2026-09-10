@@ -14,6 +14,8 @@ export default function NavProfile() {
   const isAuth = useSelector((state) => state.userauth.isAuthenticated);
   const authInfo = useSelector((state) => state.userauth.authInfo);
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   let navigate = useNavigate();
   const dispatch = useDispatch();
   function handleLogout() {
@@ -37,9 +39,9 @@ export default function NavProfile() {
       }}
     >
       <div className="header-user-profile">
-        {isAuth ? (
+        {isAuth && authInfo ? (
           <>
-            <img src="https://i.pravatar.cc/40" alt="user profile" />
+            <img src={backendUrl + authInfo?.picture} alt="user profile" />
             <div className="header-username">
               <strong>{authInfo?.name}</strong>
               {authInfo?.trainer ? <small>Certified Trainer</small> :<small>Normal User</small>}

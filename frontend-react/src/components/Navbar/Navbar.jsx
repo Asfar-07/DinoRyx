@@ -40,8 +40,8 @@ export default function Navbar() {
             </span>
           </Link>
           <ul className="hidden items-center  gap-8 lg:flex">
-            {navLinks.map((nav) => (
-              <li className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color)">
+            {navLinks.map((nav, index) => (
+              <li key={index} className="text-[.9rem] font-medium text-(--secondary-text-color) hover:text-(--primary-text-color)">
                 {nav.text=="Dashboard" ? (isAuth ? <Link to={nav.link}>{nav.text}</Link>: <Link to="/login">{nav.text}</Link>) : <Link to={nav.link}>{nav.text}</Link>}
                 
               </li>
@@ -54,7 +54,7 @@ export default function Navbar() {
             >
               <MapPin className="size-5" /> Nearby
             </Link>
-            {isAuth ? (
+            {true ? (
               <NavProfile />
             ) : (
               <RippleButton

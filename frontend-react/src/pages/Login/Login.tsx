@@ -9,8 +9,7 @@ import { FaFacebookF } from "react-icons/fa";
 import { authHandle } from "../../features/auth/authService";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { updateAuth } from "../../features/auth/authSlice";
-import { addUser } from "@/features/user/userSlice";
+import { updateAuth, setAuth } from "../../features/auth/authSlice";
 import { useForm } from "react-hook-form";
 import FloatingCharacters from "@/components/animate-ui/FloatingCharacters";
 import { MagneticButton } from "@/components/magnetic";
@@ -86,7 +85,8 @@ export default function Login() {
           setIsLoading(false);
           
           if (data.status && data.message === "Password Matching") {
-            dispatch(addUser(data))
+            console.log("login success", data);
+            dispatch(setAuth(data.user_details))
             dispatch(updateAuth(true));
             resetDefault()
             navigate("/");
@@ -105,7 +105,7 @@ export default function Login() {
   const handleGoogleAuth = async (credentialResponse: any) => {
     const googleToken = credentialResponse.credential;
     authHandle.googleService(googleToken).then((data) => {
-      dispatch(addUser(data))
+      dispatch(setAuth(data.user_details))
       dispatch(updateAuth(true));
       resetDefault()
       navigate("/");
@@ -147,7 +147,7 @@ export default function Login() {
 
         if (data.status) {
           toast.success(data.message)
-          dispatch(addUser(data.user_details))
+          dispatch(setAuth(data.user_details))
           dispatch(updateAuth(true));
           resetDefault()
           setIsLoading(false);

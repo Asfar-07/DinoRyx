@@ -9,6 +9,8 @@ import com.project.gym_management.auth.domain.enums.OtpPurpose;
 import com.project.gym_management.auth.infrastructure.OtpVerificationRepository;
 import com.project.gym_management.auth.infrastructure.PasswordResetRepo;
 import com.project.gym_management.auth.infrastructure.ProviderRepository;
+import com.project.gym_management.files.controller.ImageController;
+import com.project.gym_management.user.application.DefaultAvatarService;
 import com.project.gym_management.user.domain.UserProfileTable;
 import com.project.gym_management.user.domain.UserTable;
 import com.project.gym_management.user.domain.enums.UserStatus;
@@ -39,13 +41,18 @@ public class AuthService {
     @Autowired
     ProfileRepository profileRepository;
 
+    ImageController imageController = new ImageController();
+
+    final DefaultAvatarService defaultAvatarService;
+
     final AuthMailVerification authMailVerification;
     final OtpVerificationRepository otpVerificationRepository;
 
     private final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
     HashMap<String, Object> response=new HashMap<>();
 
-    public AuthService(AuthMailVerification authMailVerification, OtpVerificationRepository otpVerificationRepository) {
+    public AuthService(DefaultAvatarService defaultAvatarService, AuthMailVerification authMailVerification, OtpVerificationRepository otpVerificationRepository) {
+        this.defaultAvatarService = defaultAvatarService;
         this.authMailVerification = authMailVerification;
         this.otpVerificationRepository = otpVerificationRepository;
     }
@@ -70,9 +77,11 @@ public class AuthService {
                             .build();
             providerRepository.save(provider);
 
+            String profilePath = "/uploads/default-avatars/" + defaultAvatarService.getRandomAvatarCode() + ".webp";
             UserProfileTable profile = UserProfileTable.builder()
                     .available(false)
                     .trainer(false)
+                    .avatar(profilePath)
                     .user(user)
                     .build();
             profileRepository.save(profile);
@@ -133,7 +142,7 @@ public class AuthService {
     }
 
     public HashMap<String,Object> loginService(ReqAuth request) {
-        final String enterPassword=request.getPassword();
+        final String enterPassword = request.getPassword();
         UserTable user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
         if (user != null ) {
@@ -154,7 +163,6 @@ public class AuthService {
                         return this.response;
                     }
                 } else {
-                    System.out.println("not match");
                     this.response.put("status", false);
                     this.response.put("message", "Password Not Match");
                     this.response.put("data", null);
@@ -189,12 +197,14 @@ public class AuthService {
                     .email(request.get("email"))
                     .build();
             user = userRepository.save(user);
+
             AuthProviderTable provider=AuthProviderTable.builder()
                     .provider(AuthProvider.GOOGLE)
                     .password(null)
                     .user(user)
                     .build();
             providerRepository.save(provider);
+
             UserProfileTable profile=UserProfileTable.builder()
                     .available(false)
                     .trainer(false)

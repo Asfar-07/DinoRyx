@@ -44,6 +44,7 @@ public class AuthController {
     }
     @PostMapping(value = "/login")
     public ResponseEntity<HashMap<String, Object>> Login(@RequestBody ReqAuth data, HttpServletResponse response) {
+
         HashMap<String,Object> res = service.loginService(data);
         if (res.get("status").equals(true) && res.get("message").equals("Password Matching")){
             UserTable finalModel = (UserTable) res.get("data");
@@ -55,6 +56,7 @@ public class AuthController {
             //ResponseModel
             resAuth.setName(finalModel.getUsername());
             resAuth.setEmail(finalModel.getEmail());
+            resAuth.setPicture(finalModel.getProfile().getAvatar());
             apiResponse.put("message", res.get("message"));
             apiResponse.put("status", true);
             apiResponse.put("user_details", resAuth);
@@ -76,6 +78,7 @@ public class AuthController {
 
     @PostMapping(value = "/signup")
     public ResponseEntity<HashMap<String, Object>> SignUp(@RequestBody ReqAuth userData, HttpServletResponse response){
+
         HashMap<String,Object> res = service.signupService(userData);
         if (res.get("status").equals(true)){
             apiResponse.put("message", res.get("message"));
@@ -89,10 +92,12 @@ public class AuthController {
 
     @PostMapping(value = "/signup/otp/refresh")
     public ResponseEntity<HashMap<String, Object>> RefreshOtp(@RequestBody HashMap<String, String> body){
+
         HashMap<String,Object> res = service.resendSignupOtp(body.get("email"));
         if (res.get("status").equals(true)){
             apiResponse.put("message", res.get("message"));
             apiResponse.put("status", true);
+
             return ResponseEntity.ok(apiResponse);
         }
         else {
@@ -118,6 +123,7 @@ public class AuthController {
             cookie.createCookie(accessToken,refreshToken);   //ResponseModel
             resAuth.setName(finalModel.getUsername());
             resAuth.setEmail(finalModel.getEmail());
+            resAuth.setPicture(finalModel.getProfile().getAvatar());
 
             apiResponse.put("message", res.get("message"));
             apiResponse.put("status", true);
@@ -135,13 +141,14 @@ public class AuthController {
 
     @PostMapping(value = "/facebook/provider")
     public ResponseEntity<String> facebookProvider(@RequestBody Map<String, String> body) throws Exception {
-        String token = body.get("token");
 
+        String token = body.get("token");
         return ResponseEntity.ok("ok");
     }
 
     @PostMapping(value="/google/provider")
     public ResponseEntity<AuthDTO> googleProvider(@RequestBody Map<String, String> body, HttpServletResponse response) throws Exception {
+
         String token = body.get("token");
         Map<String,String> userDate = new HashMap<>();
         GoogleIdToken idToken = googleTokenVerifier.verify(token);
@@ -169,8 +176,7 @@ public class AuthController {
             //ResponseModel
             resAuth.setName(finalModel.getUsername());
             resAuth.setEmail(finalModel.getEmail());
-//            resAuth.setPicture(finalModel.getPicture());
-//            resAuth.setTrainer(finalModel.isTrainer());
+            resAuth.setPicture(finalModel.getProfile().getAvatar());
             return ResponseEntity.ok(resAuth);
         }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -201,6 +207,7 @@ public class AuthController {
 
     @PostMapping(value = "/logout")
     public ResponseEntity<String> Logout(HttpServletResponse response){
+
         CookieManage cookie=new CookieManage(response);
         cookie.removeCookie();
         return ResponseEntity.ok("success");
