@@ -36,4 +36,13 @@ public class AvatarServiceImp implements AvatarService {
             throw new IllegalArgumentException("This avatar is already set.");
         }
     }
+
+    @Override
+    public void saveCustomAvatar(String avatarPath, Long userId) {
+        UserProfileTable profile = profileRepository.findByUserId(userId).orElseThrow(
+                () -> new NullPointerException("user not found")
+        );
+        profile.setAvatar(avatarPath);
+        profileRepository.save(profile);
+    }
 }

@@ -82,7 +82,7 @@ export const handleUser = {
   },
   customAvatar: async (formData) => {
     try{
-      const res = await axios.post("/user/data/save/custom/avatar", formData, {
+      const res = await apiConnection.post("/user/data/save/custom/avatar", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -8,7 +8,7 @@ const headerForm = {
   },
   withCredentials: true,
 };
-const apiConnection=axios.create({
+const apiConnection = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true
 })

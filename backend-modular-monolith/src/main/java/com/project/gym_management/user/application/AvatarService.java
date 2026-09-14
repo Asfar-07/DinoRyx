@@ -6,4 +6,5 @@ public interface AvatarService {
 
     List<String> fetchAllDefaultAvatar();
     void changeDefaultAvatar(String avatar, Long userId);
+    void saveCustomAvatar(String avatarPath, Long userId);
 }

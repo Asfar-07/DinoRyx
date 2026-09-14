@@ -15,7 +15,6 @@ export interface ChangeAvatarModalProps {
   onUploadImage?: (file: File) => void;
 }
 
-// ---- Config ----
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
 const MAX_SIZE_MB = 1.5;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -60,8 +59,8 @@ export default function AvatarChanger({
     const formData = new FormData();
     formData.append("file", file);
     
-    handleUser.customAvatar(formData).then((res) => {
-      console.log(res)
+    handleUser.customAvatar(formData).then(() => {
+      toast.success("Avatar uploaded successfully!");
     }).catch((err) => {
        console.error(err);
        toast.error("Upload failed. Please try again.");
@@ -70,8 +69,6 @@ export default function AvatarChanger({
       setPreview(null);
       setAvatarFile(null);
     })
-
-
   };
 
   //read image dimensions before accepting the file

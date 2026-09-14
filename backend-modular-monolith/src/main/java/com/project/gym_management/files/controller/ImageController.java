@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 public class ImageController {
 
@@ -23,13 +24,15 @@ public class ImageController {
             uploadDir.mkdirs();
         }
 
+        String avatarKey = UUID.randomUUID().toString();
+
         // 2️⃣ save file to folder
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String fileName = avatarKey + "-" + System.currentTimeMillis();
         Path filePath = Paths.get(uploadPath, fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         // 3️⃣ image path to store in DB (relative path)
-        String imagePath = "/uploads/" + fileName;
+        String imagePath = "/uploads/avatars/" + fileName;
 
         // save `imagePath` in your database using repository (pseudo example)
         // userRepository.saveImagePath(userId, imagePath);
