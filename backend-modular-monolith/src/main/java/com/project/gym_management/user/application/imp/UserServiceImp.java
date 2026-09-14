@@ -21,8 +21,8 @@ public class UserServiceImp implements UserService {
     ProfileRepository profileRepository;
     
     public Object[] FetchMe(long id){
-        UserTable user=userRepository.findByIdWithProfile(id).orElse(null);
-        AccountDTO responseAccount=new AccountDTO();
+        UserTable user = userRepository.findByIdWithProfile(id).orElse(null);
+        AccountDTO responseAccount = new AccountDTO();
         if(user != null){
             responseAccount.setName((user.getUsername()));
             responseAccount.setEmail(user.getEmail());

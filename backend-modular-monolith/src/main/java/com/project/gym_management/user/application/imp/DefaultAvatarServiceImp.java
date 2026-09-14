@@ -8,12 +8,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class DefaultAvatarServiceImp implements DefaultAvatarService {
+    private static final String DEFAULT_AVATAR_PATH = "/uploads/default-avatars/";
+
     private static final List<String> DEFAULT_AVATARS = List.of(
             "AGHVDS",
             "BSUEHJ",
             "JKHGHK",
             "LSHUDM",
-            "VGFHKD"
+            "VGFHKD",
+            "GMJALT",
+            "XMLRKD",
+            "ZWRTIO",
+            "BHDKIS",
+            "NVDJDI"
     );
 
     @Override
@@ -27,5 +34,12 @@ public class DefaultAvatarServiceImp implements DefaultAvatarService {
     @Override
     public boolean isValidDefaultAvatar(String avatarCode) {
         return DEFAULT_AVATARS.contains(avatarCode);
+    }
+
+    @Override
+    public List<String> structuredDefaultAvatars() {
+        return DEFAULT_AVATARS.stream()
+                .map(name -> DEFAULT_AVATAR_PATH + name + ".webp")
+                .toList();
     }
 }

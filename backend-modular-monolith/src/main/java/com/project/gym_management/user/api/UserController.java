@@ -5,6 +5,7 @@ import com.project.gym_management.user.api.response.AccountDTO;
 import com.project.gym_management.user.api.response.ProfileDTO;
 import com.project.gym_management.user.application.UserService;
 import com.project.gym_management.user.domain.UpdateUserPrint;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,9 @@ public class UserController {
     UserService service;
 
     @GetMapping(value = "/me")
-    public ResponseEntity<?> MeUser(@RequestHeader("User-ID") String id){
-        Object[] response = service.FetchMe(Long.parseLong(id));
+    public ResponseEntity<?> MeUser(HttpServletRequest request){
+        String userId = (String) request.getAttribute("userId");
+        Object[] response = service.FetchMe(Long.parseLong(userId));
         if(response[0].equals(true)){
             AccountDTO res = (AccountDTO)response[1];
             System.out.println(res.getEmail());
@@ -29,8 +31,10 @@ public class UserController {
         }
     }
     @GetMapping(value = "/account")
-    public ResponseEntity<ProfileDTO> CheckUser(@RequestHeader("User-ID") String id){
-        Object[] response=service.FetchUser(Long.parseLong(id));
+    public ResponseEntity<ProfileDTO> CheckUser(HttpServletRequest request){
+
+        String userId = (String) request.getAttribute("userId");
+        Object[] response=service.FetchUser(Long.parseLong(userId));
         if(response[0].equals(true)){
             return ResponseEntity.ok((ProfileDTO) response[2]);
         }else {
@@ -39,14 +43,18 @@ public class UserController {
     }
 
     @PutMapping(value="/update")
-    public ResponseEntity<String> UserUpdate(@RequestHeader("User-ID") String id, @RequestBody UpdateUserPrint new_userdata){
-        boolean response=service.UpdateUser(Long.parseLong(id),new_userdata);
+    public ResponseEntity<String> UserUpdate(HttpServletRequest request, @RequestBody UpdateUserPrint new_userdata){
+
+        String userId = (String) request.getAttribute("userId");
+        boolean response=service.UpdateUser(Long.parseLong(userId),new_userdata);
         if(response) return ResponseEntity.ok("success");
         return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
     @DeleteMapping(value="/delete/account")
-    public  ResponseEntity<String> DeleteAccount( @RequestHeader("User-ID") String id){
-        boolean response=service.DeleteService(Long.parseLong(id));
+    public  ResponseEntity<String> DeleteAccount( HttpServletRequest request){
+
+        String userId = (String) request.getAttribute("userId");
+        boolean response=service.DeleteService(Long.parseLong(userId));
         if(response) return ResponseEntity.ok("success");
         return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

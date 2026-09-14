@@ -1,14 +1,14 @@
-"use client";
 import './profile.css';
 import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from '@/features/user/userSlice';
+import { updateProfilePicture } from '@/features/auth/authSlice';
 import { handleUser } from '@/features/user/userService';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage, AvatarBadge } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import GeneralLoader from '@/components/Loader/GeneralLoader';
 import Navbar from '@/components/Navbar/Navbar';
@@ -22,11 +22,14 @@ import {
 import {
   Pencil, Check, X, MapPin, Calendar, Phone, Mail,
   User, ShieldCheck, LogIn, UserMinus, Trash2,
-  LayoutDashboard, Users, Plus, Trash, SettingsIcon, UserIcon,
-  Sparkles, Compass
+  LayoutDashboard, Users, Plus, SettingsIcon,
+  Sparkles, Compass,
+  Camera
 } from "lucide-react";
 import ShortcutsCommand from '@/components/SmallUI/ShortcutsCommand';
-import { CommandShortcut } from "@/components/ui/command";
+import AvatarChanger from './AvatarChanger';
+import CommandController from './CommandController';
+import { formatDate, getDaysSinceCreated } from '@/utils/TimeHandle';
 
 interface UserData {
   id: string;
@@ -73,10 +76,6 @@ const followedCards: DashboardCard[] = [
   { id: "f3", name: "Typography Club", about: "Font pairing, type scales, and the art of readable text.", logo: "🔤", isOwner: false, memberCount: 430, color: "#f472b6" },
 ];
 
-/* ------------------------------------------------------------------ */
-/* Small decorative dino mascot for the hero card.                     */
-/* Placeholder illustration — swap the SVG below for your own asset.   */
-/* ------------------------------------------------------------------ */
 function DinoMascot() {
   return (
     <svg viewBox="0 0 140 140" width="140" height="140" aria-hidden="true">
@@ -152,8 +151,6 @@ function ChannelCard({ card, isTrainer, onUnfollow, onDelete }: {
   );
 }
 
-/* Reusable dashed "invite" tile — used both for the trainer's
-   "create a channel" slot and the follower's "discover channels" slot. */
 function DiscoverTile({ icon, title, description, onClick }: {
   icon: React.ReactNode;
   title: string;
@@ -187,60 +184,14 @@ export default function ProfileDashboard() {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isChangeAvatarOpen, setIsChangeAvatarOpen] = useState(false);
   const hasFetched = useRef(false);
+  const [avatars, setAvatars] = useState<string[]>([]);
   const [cards, setCards] = useState<DashboardCard[]>(userData?.trainer ? trainerCards : followedCards);
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const CommandItems = [{
-    name: "profile",
-    component: () => {
-      return (<>
-        <UserIcon />
-        <span>Profile</span>
-        <CommandShortcut>⌘P</CommandShortcut></>)
-    },
-    function: () => {
-      navigate("/account");
-    }
-  },
-  {
-    name: "edit",
-    component: () => {
-      return (<>
-        <Pencil />
-        <span>Edit</span>
-        <CommandShortcut>⌘B</CommandShortcut></>)
-    },
-    function: () => {
-      setIsEditing(true);
-    }
-  },
-  {
-    name: "settings",
-    component: () => {
-      return (<>
-        <SettingsIcon />
-        <span>Settings</span>
-        <CommandShortcut>⌘S</CommandShortcut></>)
-    },
-    function: () => {
-      navigate("/settings/general")
-    }
-  },
-  {
-    name: "delete_account",
-    component: () => {
-      return (<>
-        <Trash />
-        <span className=' text-red-600'>Delete Account</span>
-        <CommandShortcut>⌘S</CommandShortcut></>)
-    },
-    function: () => {
-    }
-  },
-
-  ];
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<EditableFields>({
     defaultValues: {
@@ -257,18 +208,27 @@ export default function ProfileDashboard() {
 
   useEffect(() => {
     if (hasFetched.current) return;
+
     hasFetched.current = true;
     setIsLoading(true)
     handleUser.fetchUser().then((data) => {
+
       console.log(data)
       setIsLoading(false)
       dispatch(addUser(data));
       setUserData(data);
-    })
-      .catch(() => {
-        setIsLoading(false);
-        // e.response?.status === 401 && navigate("/login");
-      });
+
+    }).catch(() => {
+      setIsLoading(false);
+      // e.response?.status === 401 && navigate("/login");
+    });
+
+    handleUser.getDefaultAvatars().then((avatars) => {
+      setAvatars(avatars);
+    }).catch(() => {
+      setIsLoading(false);
+    });
+
   }, [navigate, dispatch]);
 
   const watchedGender = watch("gender");
@@ -288,7 +248,7 @@ export default function ProfileDashboard() {
       setIsEditing(false);
       return; // nothing changed
     }
-    console.log("Updated Profile:", updated);
+
     handleUser.updateUser(updated).then(() => {
       setUserData((prev) => ({ ...prev, ...updated }));
       setIsEditing(false);
@@ -313,29 +273,50 @@ export default function ProfileDashboard() {
   const ownedCards = cards.filter((c) => c.isOwner);
   const followingCards = cards.filter((c) => !c.isOwner);
 
-  // NOTE: sessions / streak / badges aren't part of UserData yet — these are
-  // placeholders until the API exposes them. "Channels" is real (cards.length).
   const heroStats = [
-    { label: "Sessions", value: "128" },
-    { label: "Streak", value: "21d" },
-    { label: "Channels", value: String(cards.length) },
-    { label: "Badges", value: "7" },
+    { label: "G Coins", value: "128" },
+    { label: "Streak", value: getDaysSinceCreated(userData.createdAt) + " days" },
+    { label: "Own Community", value: String(cards.length) },
+    { label: "Partners", value: "2" },
   ];
 
+  function SelectDefaultAvatar(src: string){
+    if(!src || src.length <= 0) return;
+    if(src === userData.avatar) return;
+
+    handleUser.ChangeDefaultAvatar(src).then(() => {
+      setUserData({...userData, avatar: src});
+      dispatch(addUser(userData));
+      setIsChangeAvatarOpen(false);
+      dispatch(updateProfilePicture(src));
+
+    }).catch((e) => {
+
+      console.log(e.response.status);
+    })
+  }
+
   return (
-    <div className="root-wrap min-h-screen w-full p-4 md:p-8">
+    <div className="root-wrap relative min-h-screen w-full overflow-hidden p-4 md:p-8">
       {isLoading && <GeneralLoader />}
       <Navbar />
+      <AvatarChanger open={isChangeAvatarOpen} onClose={() => setIsChangeAvatarOpen(false)}
+       backend={backendUrl}  onSelectDefault={(src) => {SelectDefaultAvatar(src)}}
+       avatars={avatars} currentAvatar={userData.avatar}/>
 
-      <div className="max-w-6xl mx-auto pt-8 flex flex-col gap-6">
+      <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-[#5dbcc1]/30 blur-[140px]"></div>
+      <div className="absolute top-1/2 -right-40 h-[520px] w-[520px] rounded-full bg-[#5dbcc1]/30 blur-[160px]"></div>
+      <div className="absolute -bottom-40 -left-40 h-[520px] w-[520px] rounded-full bg-[#5dbcc1]/30 blur-[160px]"></div>
+
+      <div className="max-w-7xl mx-auto pt-8 flex flex-col gap-6">
 
         {/* ══ Account hero ══ */}
-        <div className="account-hero">
+        <div className="account-hero glass-strong-nav md:mt-18">
           <div>
-            <span className="hero-eyebrow">Account</span>
-            <h1 className="hero-title">Your <span>Profile</span></h1>
+            <span className="hero-eyebrow uppercase">Account</span>
+            <h1 className="hero-title">Your <span>Big Community Here</span></h1>
             <p className="hero-desc">
-              Everything about your training identity — details, availability and the communities you follow.
+              Your path is waiting here, make sure your booking.
             </p>
             <div className="stats-row">
               {heroStats.map((s) => (
@@ -349,23 +330,30 @@ export default function ProfileDashboard() {
           <div className="hero-mascot">
             <DinoMascot />
           </div>
+          <div className="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-[#5dbcc1]/50 blur-[80px]"></div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
           {/* LEFT Profile */}
           <div className="lg:col-span-2">
-            <div className="glass p-6 flex flex-col gap-5">
+            <div className="glass-strong-nav rounded-2xl p-6 flex flex-col gap-5">
 
               <div className="flex flex-col items-center gap-3 pt-1">
                 <div className="relative">
-                  <Avatar className="w-24 h-24 glow-ring">
-                    <AvatarImage src={userData.avatar} />
-                    <AvatarFallback style={{ background: "rgba(86,178,187,.13)", color: "var(--sym)", fontSize: 28, fontFamily: "Syne,sans-serif", fontWeight: 700 }}>
-                      {initials}
-                    </AvatarFallback>
+                  <Avatar className=' relative size-30 cursor-pointer hover:scale-[1.05] hover:shadow-2xl 
+                  transition-transform duration-150 delay-100 rounded-full'
+                  onClick={()=> setIsChangeAvatarOpen(true)}>
+                    <div className='absolute flex items-center opacity-0 justify-center inset-0 size-full bg-[#414040a6] backdrop-[100px] hover:opacity-100 transition-opacity duration-150 delay-100 rounded-full'>
+                      <div className='size-1/3 flex items-center justify-center rounded-full bg-(--symbol-color)'>
+                        <Camera className='text-black'/>
+                      </div>
+                    </div>
+                    <AvatarImage src={backendUrl + userData.avatar} alt="avatar" />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                    <AvatarBadge className="bg-green-600 dark:bg-green-800" />
                   </Avatar>
-                  <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                  <span className="absolute bottom-[5%] right-[5%] w-5 h-5 rounded-full border-2 flex items-center justify-center"
                     style={{ background: "#34d399", borderColor: "var(--bg)" }} />
                 </div>
                 <div className="text-center">
@@ -383,6 +371,7 @@ export default function ProfileDashboard() {
               {/* Form */}
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3.5">
                 <span className="sec-label">Profile Info</span>
+                <p className='text-[16px]'>Certified strength coach helping lifters build sustainable, data-driven progress.</p>
 
                 {/* About */}
                 <div className="flex flex-col gap-1">
@@ -448,7 +437,7 @@ export default function ProfileDashboard() {
                   <Calendar size={14} className="symbol info-icon" />
                   <div className="flex-1">
                     <label className="secondary-text text-xs">Member Since</label>
-                    <p className="primary-text text-sm">{userData.createdAt}</p>
+                    <p className="primary-text text-sm">{formatDate(userData.createdAt)}</p>
                   </div>
                 </div>
 
@@ -490,7 +479,7 @@ export default function ProfileDashboard() {
               </div>
               <div className='flex justify-center items-center gap-3'>
                 <span className="count-pill">{cards.length}</span>
-                <ShortcutsCommand CommandItems={CommandItems} CustomButton={
+                <ShortcutsCommand CommandItems={CommandController(setIsEditing)} CustomButton={
                   <Button className="setting-btn text-white flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg cursor-pointer">
                     <SettingsIcon size={13} /> Setting
                   </Button>} />
@@ -552,7 +541,7 @@ export default function ProfileDashboard() {
             )}
 
             {/* Meta strip */}
-            <div className="meta-strip">
+            <div className="meta-strip glass-strong-nav">
               <div>
                 <span className="secondary-text text-xs">User ID</span>
                 <p className="primary-text text-xs font-mono mt-0.5 opacity-70">{userData.id}</p>

@@ -5,7 +5,7 @@ export const authSlice = createSlice({
   initialState: {
     isAuthenticated: false,
     loading: false,
-    authInfo: null,
+    authInfo: {},
   },
   reducers: {
     setAuth: (state, action) => {
@@ -15,10 +15,15 @@ export const authSlice = createSlice({
       state.isAuthenticated = action.payload;
     },
     removeAuth:(state)=>{
-      state.isAuthenticated=false;
-      state.authInfo=null;
-    }
+      state.isAuthenticated = false;
+      state.authInfo = {};
+    },
+    updateProfilePicture: (state, action) => {
+      if (state.authInfo) {
+        state.authInfo = { ...state.authInfo, picture: action.payload };
+      }
+    },
   },
 });
-export const {setAuth,updateAuth,removeAuth}=authSlice.actions
+export const { setAuth, updateAuth, removeAuth, updateProfilePicture } = authSlice.actions
 export default authSlice.reducer;

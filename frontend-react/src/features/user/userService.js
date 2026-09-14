@@ -1,6 +1,7 @@
 //@ts-nocheck
 import { statusHandle } from "../../utils/statusHandle";
 import { apiConnection } from "@/app/api";
+import axios from "axios";
 
 
 export const handleUser = {
@@ -54,4 +55,42 @@ export const handleUser = {
       throw e;
     }
   },
+  getDefaultAvatars: async () => {
+    try {
+      const res = await apiConnection.get(
+        "/user/data/fetch/all/default/avatars",
+      );
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
+  ChangeDefaultAvatar: async (data) => {
+    try{
+      const res = await apiConnection.put(
+        "/user/data/save/changed/default/avatar",
+        { avatar: data }
+      );
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      statusHandle.statusInfo(e.response.status);
+      throw e;
+    }
+  },
+  customAvatar: async (formData) => {
+    try{
+      const res = await axios.post("/user/data/save/custom/avatar", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+      );
+      return res.data;
+    } catch (e) {
+      throw e;
+    }
+  }
 };

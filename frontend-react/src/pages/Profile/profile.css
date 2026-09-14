@@ -1,20 +1,7 @@
-/* ==========================================================================
-   DinoRyx — Profile page
-   Design tokens supplied by the brief
-   ========================================================================== */
-
 :root {
-  --bg: #0a0f22;
-  --bg2: #1d2233;
-  --sym: #7be6df;
-  --pt: #f0f4f8;
-  --st: #bac7cc;
-
-  /* derived, for gradients / states — kept close to --sym so the page reads
-     as one accent family rather than a multi-color kit */
-  --sym-strong: #5eead4;
-  --sym-soft: rgba(123, 230, 223, 0.12);
-  --sym-border: rgba(123, 230, 223, 0.16);
+  --symbol-color-strong: #5eead4;
+  --symbol-color-soft: rgba(123, 230, 223, 0.12);
+  --symbol-color-border: rgba(123, 230, 223, 0.16);
   --online: #34d399;
   --danger: #f87171;
   --danger-soft: rgba(248, 113, 113, 0.1);
@@ -25,29 +12,23 @@
   --radius-sm: 10px;
 }
 
-/* ---------------------------------------------------------------------- */
-/* Page shell                                                             */
-/* ---------------------------------------------------------------------- */
 
 .root-wrap {
   background:
     radial-gradient(circle at 1px 1px, rgba(123, 230, 223, 0.07) 1px, transparent 0) 0 0 / 28px 28px,
-    var(--bg);
-  color: var(--pt);
+    var(--primary-bg-color);
+  color: var(--primary-text-color);
   font-family: "Inter", "Manrope", system-ui, -apple-system, sans-serif;
 }
 
-.primary-text { color: var(--pt); }
-.secondary-text { color: var(--st); }
-.symbol { color: var(--sym); }
+.primary-text { color: var(--primary-text-color); }
+.secondary-text { color: var(--secondary-text-color); }
+.symbol { color: var(--symbol-color); }
 
-/* ---------------------------------------------------------------------- */
-/* Glass card base                                                        */
-/* ---------------------------------------------------------------------- */
 
 .glass {
   background: linear-gradient(180deg, rgba(29, 34, 51, 0.9), rgba(20, 24, 38, 0.9));
-  border: 1px solid var(--sym-border);
+  border: 1px solid var(--symbol-color-border);
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 50px -30px rgba(0, 0, 0, 0.7);
 }
@@ -56,15 +37,10 @@
   background: rgba(186, 199, 204, 0.12) !important;
 }
 
-/* ---------------------------------------------------------------------- */
-/* Hero — "Your Profile" account summary                                  */
-/* ---------------------------------------------------------------------- */
 
 .account-hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(155deg, rgba(29, 34, 51, 0.95), rgba(10, 15, 34, 0.95));
-  border: 1px solid var(--sym-border);
   border-radius: var(--radius-lg);
   padding: 36px 40px;
   display: flex;
@@ -74,29 +50,29 @@
 }
 
 .hero-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--sym);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: var(--symbol-color);
   margin-bottom: 6px;
   display: block;
 }
 
 .hero-title {
-  font-size: 34px;
+  font-size: 45px;
   line-height: 1.1;
   font-weight: 800;
-  color: var(--pt);
+  color: var(--primary-text-color);
   margin-bottom: 10px;
 }
 
 .hero-title span {
-  color: var(--sym);
+  color: var(--symbol-color);
 }
 
 .hero-desc {
-  color: var(--st);
-  font-size: 14px;
+  color: var(--secondary-text-color);
+  font-size: 16px;
   line-height: 1.6;
   max-width: 480px;
   margin-bottom: 22px;
@@ -105,28 +81,28 @@
 .stats-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 15px;
 }
 
 .stat-pill {
   background: rgba(123, 230, 223, 0.06);
-  border: 1px solid var(--sym-border);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  min-width: 92px;
+  border: 1px solid var(--symbol-color-border);
+  border-radius: 30px;
+  padding: 14px 20px;
+  min-width: 150px;
 }
 
 .stat-value {
   font-size: 20px;
   font-weight: 800;
-  color: var(--sym);
+  color: var(--symbol-color);
   line-height: 1.2;
 }
 
 .stat-label {
   font-size: 10px;
   letter-spacing: 0.08em;
-  color: var(--st);
+  color: var(--secondary-text-color);
   text-transform: uppercase;
   margin-top: 2px;
   display: block;
@@ -146,17 +122,13 @@
   .hero-mascot { align-self: center; }
 }
 
-/* ---------------------------------------------------------------------- */
-/* Left profile card                                                      */
-/* ---------------------------------------------------------------------- */
-
 .glow-ring {
-  box-shadow: 0 0 0 3px var(--sym-soft), 0 0 24px -6px var(--sym-strong);
+  box-shadow: 0 0 0 3px var(--symbol-color-soft), 0 0 24px -6px var(--symbol-color-strong);
 }
 
 .user-name {
   font-weight: 800;
-  color: var(--pt);
+  color: var(--primary-text-color);
 }
 
 .online-badge {
@@ -194,17 +166,17 @@
 }
 
 .sec-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--sym);
+  color: var(--symbol-color);
 }
 
 .sub-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--st);
+  color: var(--secondary-text-color);
 }
 
 /* info rows -> pill-style rows in the profile card */
@@ -226,8 +198,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: var(--sym-soft);
-  color: var(--sym);
+  background: var(--symbol-color-soft);
+  color: var(--symbol-color);
   margin-top: 1px;
 }
 
@@ -241,33 +213,33 @@
 /* form controls while editing */
 .ci {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--sym-border);
+  border: 1px solid var(--symbol-color-border);
   border-radius: 8px;
-  color: var(--pt);
+  color: var(--primary-text-color);
   padding: 0 10px;
   outline: none;
   transition: border-color 0.15s ease;
 }
 
 .ci:focus {
-  border-color: var(--sym);
+  border-color: var(--symbol-color);
 }
 
 .sel-trigger {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--sym-border);
+  border: 1px solid var(--symbol-color-border);
   border-radius: 8px;
-  color: var(--pt);
+  color: var(--primary-text-color);
 }
 
 .sel-content {
-  background: var(--bg2);
-  border: 1px solid var(--sym-border);
-  color: var(--pt);
+  background: var(--secondary-bg-color);
+  border: 1px solid var(--symbol-color-border);
+  color: var(--primary-text-color);
 }
 
 .btn-accent {
-  background: linear-gradient(135deg, var(--sym), var(--sym-strong));
+  background: linear-gradient(135deg, var(--symbol-color), var(--symbol-color-strong));
   color: #082a28;
   font-weight: 700;
   border: none;
@@ -287,13 +259,10 @@
   border-radius: var(--radius-sm);
 }
 
-/* ---------------------------------------------------------------------- */
-/* Right column — channels                                                */
-/* ---------------------------------------------------------------------- */
 
 .count-pill {
-  background: var(--sym-soft);
-  color: var(--sym);
+  background: var(--symbol-color-soft);
+  color: var(--symbol-color);
   font-size: 12px;
   font-weight: 700;
   padding: 3px 11px;
@@ -302,12 +271,12 @@
 
 .setting-btn {
   background: transparent !important;
-  border: 1px solid var(--sym-border);
-  color: var(--sym) !important;
+  border: 1px solid var(--symbol-color-border);
+  color: var(--symbol-color) !important;
 }
 
 .setting-btn:hover {
-  background: var(--sym-soft) !important;
+  background: var(--symbol-color-soft) !important;
 }
 
 .ch-card {
@@ -317,7 +286,7 @@
 }
 
 .ch-card:hover {
-  border-color: var(--sym-border);
+  border-color: var(--symbol-color-border);
   transform: translateY(-2px);
 }
 
@@ -343,21 +312,21 @@
   gap: 5px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--sym);
+  color: var(--symbol-color);
 }
 
 .enter-btn {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--sym-border);
-  color: var(--pt);
+  border: 1px solid var(--symbol-color-border);
+  color: var(--primary-text-color);
   border-radius: 999px;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .enter-btn:hover {
-  background: var(--sym-soft);
-  border-color: var(--sym);
-  color: var(--sym);
+  background: var(--symbol-color-soft);
+  border-color: var(--symbol-color);
+  color: var(--symbol-color);
 }
 
 .icon-act {
@@ -383,15 +352,15 @@
   border: 1.5px dashed rgba(123, 230, 223, 0.22);
   border-radius: 16px;
   background: rgba(123, 230, 223, 0.02);
-  color: var(--st);
+  color: var(--secondary-text-color);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .discover-card:hover,
 .add-ch-btn:hover {
-  border-color: var(--sym);
-  background: var(--sym-soft);
+  border-color: var(--symbol-color);
+  background: var(--symbol-color-soft);
 }
 
 .discover-icon {
@@ -402,31 +371,25 @@
   align-items: center;
   justify-content: center;
   background: rgba(123, 230, 223, 0.08);
-  color: var(--sym);
+  color: var(--symbol-color);
 }
 
 .discover-title {
   font-weight: 700;
-  color: var(--pt);
+  color: var(--primary-text-color);
   font-size: 14px;
 }
 
 .discover-desc {
   font-size: 12px;
-  color: var(--st);
+  color: var(--secondary-text-color);
   max-width: 220px;
 }
-
-/* ---------------------------------------------------------------------- */
-/* Meta strip                                                             */
-/* ---------------------------------------------------------------------- */
 
 .meta-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  background: linear-gradient(180deg, rgba(29, 34, 51, 0.9), rgba(20, 24, 38, 0.9));
-  border: 1px solid var(--sym-border);
   border-radius: var(--radius-lg);
   padding: 22px 26px;
 }
