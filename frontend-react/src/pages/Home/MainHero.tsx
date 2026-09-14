@@ -18,7 +18,6 @@ import {
   Cloud,
 } from "lucide-react";
 import { ShineButton } from "@/components/shine";
-import { BorderGradientButton } from "@/components/border-gradient";
 
 interface RootState {
   userauth: {
