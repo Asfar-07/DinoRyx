@@ -77,7 +77,7 @@ public class AuthService {
                             .build();
             providerRepository.save(provider);
 
-            String profilePath = "/uploads/default-avatars/" + defaultAvatarService.getRandomAvatarCode() + ".webp";
+            String profilePath = "/" + defaultAvatarService.getRandomAvatarCode() + ".webp";
             UserProfileTable profile = UserProfileTable.builder()
                     .available(false)
                     .trainer(false)

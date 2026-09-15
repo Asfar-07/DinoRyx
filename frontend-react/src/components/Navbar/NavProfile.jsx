@@ -14,7 +14,7 @@ export default function NavProfile() {
   const isAuth = useSelector((state) => state.userauth.isAuthenticated);
   const authInfo = useSelector((state) => state.userauth.authInfo);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = "https://res.cloudinary.com/is9tsczx/image/upload/v1789498226";
 
   let navigate = useNavigate();
   const dispatch = useDispatch();

@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class DefaultAvatarServiceImp implements DefaultAvatarService {
-    private static final String DEFAULT_AVATAR_PATH = "/uploads/default-avatars/";
+    private static final String DEFAULT_AVATAR_PATH = "/";
 
     private static final List<String> DEFAULT_AVATARS = List.of(
             "AGHVDS",

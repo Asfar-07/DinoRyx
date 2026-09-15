@@ -191,7 +191,7 @@ export default function ProfileDashboard() {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = "https://res.cloudinary.com/is9tsczx/image/upload/v1789498226";
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<EditableFields>({
     defaultValues: {
