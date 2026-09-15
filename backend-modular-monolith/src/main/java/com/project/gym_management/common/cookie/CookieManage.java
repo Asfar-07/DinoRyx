@@ -10,16 +10,19 @@ public class CookieManage {
         this.response=response;
     }
     public void createCookie(String accessToken,String refreshToken){
-        ResponseCookie accessCookie= ResponseCookie.from("SecuredJWT",accessToken).httpOnly(true)
-                .secure(false)
+        ResponseCookie accessCookie = ResponseCookie.from("SecuredJWT", accessToken)
+                .httpOnly(true)
+                .secure(true)              // required on Render (HTTPS)
                 .path("/")
-                .sameSite("Lax")
+                .sameSite("None")          // required for cross-site requests
                 .maxAge(15 * 60)
                 .build();
-        ResponseCookie refreshCookie= ResponseCookie.from("SecuredREFRESH",refreshToken).httpOnly(true)
-                .secure(false)
+
+        ResponseCookie refreshCookie = ResponseCookie.from("SecuredREFRESH", refreshToken)
+                .httpOnly(true)
+                .secure(true)
                 .path("/auth/refresh")
-                .sameSite("Lax")
+                .sameSite("None")
                 .maxAge(7 * 24 * 60 * 60)
                 .build();
         this.response.addHeader(HttpHeaders.SET_COOKIE,accessCookie.toString());

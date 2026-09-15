@@ -30,12 +30,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         String path = request.getRequestURI();
+
+        System.out.println("Incoming request: " + request.getMethod() + " " + request.getRequestURI());
         if (path.startsWith("/auth") || path.startsWith("/uploads")) {  //pass request with no condition
             chain.doFilter(request, response);
             return;
         }
-
-        System.out.println("Incoming request: " + request.getMethod() + " " + request.getRequestURI());
 
         if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
             chain.doFilter(request, response);
