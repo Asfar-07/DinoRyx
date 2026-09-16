@@ -195,10 +195,11 @@ public class AuthController {
         String userId = claims.getSubject();
         String email = claims.get("email", String.class);
         String newAccessToken= JwtTokenManage.generateAccessToken(email, Long.parseLong(userId));
-        ResponseCookie newAccessCookie= ResponseCookie.from("SecuredJWT",newAccessToken).httpOnly(true)
-                .secure(false)
+        ResponseCookie newAccessCookie = ResponseCookie.from("SecuredJWT", newAccessToken)
+                .httpOnly(true)
+                .secure(true)
                 .path("/")
-                .sameSite("Lax")
+                .sameSite("None")
                 .maxAge(15 * 60)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, newAccessCookie.toString());

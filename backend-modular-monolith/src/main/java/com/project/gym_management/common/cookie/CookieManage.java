@@ -28,21 +28,27 @@ public class CookieManage {
         this.response.addHeader(HttpHeaders.SET_COOKIE,accessCookie.toString());
         this.response.addHeader(HttpHeaders.SET_COOKIE,refreshCookie.toString());
     }
-    public void removeCookie(){
-        ResponseCookie accessCookie= ResponseCookie.from("SecuredJWT",null).httpOnly(true)
-                .secure(false)
+
+    public void removeCookie() {
+
+        ResponseCookie accessCookie = ResponseCookie.from("SecuredJWT", "")
+                .httpOnly(true)
+                .secure(true)
                 .path("/")
-                .sameSite("Lax")
+                .sameSite("None")
                 .maxAge(0)
                 .build();
-        ResponseCookie refreshCookie= ResponseCookie.from("SecuredREFRESH",null).httpOnly(true)
-                .secure(false)
+
+        ResponseCookie refreshCookie = ResponseCookie.from("SecuredREFRESH", "")
+                .httpOnly(true)
+                .secure(true)
                 .path("/auth/refresh")
-                .sameSite("Lax")
+                .sameSite("None")
                 .maxAge(0)
                 .build();
-        this.response.addHeader(HttpHeaders.SET_COOKIE,accessCookie.toString());
-        this.response.addHeader(HttpHeaders.SET_COOKIE,refreshCookie.toString());
+
+        this.response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        this.response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
     }
 
 }
