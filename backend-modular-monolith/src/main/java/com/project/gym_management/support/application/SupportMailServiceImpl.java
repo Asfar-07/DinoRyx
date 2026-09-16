@@ -1,41 +1,49 @@
 package com.project.gym_management.support.application;
 
 import com.project.gym_management.support.api.SupportMailService;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.CreateEmailOptions;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
 
 @Service
 public class SupportMailServiceImpl implements SupportMailService {
 
-    private final JavaMailSender mailSender;
-
-    public SupportMailServiceImpl(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+    private final Resend resend;
+    
+    public SupportMailServiceImpl(
+            @Value("${mail.resend.api.key}") String apiKey
+    ) {
+        this.resend = new Resend(apiKey);
     }
 
-
     @Override
-    public void generalMailSender(String email, String subject, String body) throws MailException {
+    public void generalMailSender(
+            String email,
+            String subject,
+            String body
+    ) throws MailException {
 
-            MimeMessage message = mailSender.createMimeMessage();
+        try {
 
-            try {
-                MimeMessageHelper helper =
-                        new MimeMessageHelper(message, true);
+            CreateEmailOptions params = CreateEmailOptions.builder()
+                    .from("DinoRyx <onboarding@resend.dev>")
+                    .to(email)
+                    .subject(subject)
+                    .html(body)
+                    .build();
 
-                helper.setTo(email);
-                helper.setSubject(subject);
-                helper.setText(body,true);
+            resend.emails().send(params);
 
-                mailSender.send(message);
+        } catch (ResendException e) {
 
-            } catch (MessagingException e) {
-                throw new MailSendException("Failed to create reset email", e);
-            }
+            throw new MailSendException(
+                    "Failed to send email",
+                    e
+            );
         }
+    }
 }
