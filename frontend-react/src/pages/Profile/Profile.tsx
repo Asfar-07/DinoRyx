@@ -255,7 +255,7 @@ export default function ProfileDashboard() {
       dispatch(addUser(userData));
       setIsLoading(false);
     })
-      .catch((e) => {
+      .catch(() => {
         setIsLoading(false);
       });
   };

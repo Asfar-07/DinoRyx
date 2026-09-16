@@ -57,7 +57,7 @@ export default function StudentSidebar({ student, setStudent, setOpenIndex, dele
     function saveStudent(index: number) {
         if (isLoading) return;
         setIsLoading(true);
-        handleStudent.updateStudentData(newdata).then((response: any) => {
+        handleStudent.updateStudentData(newdata).then(() => {
             setStudent((prev: any) =>
                 prev.map((s: any, i: number) =>
                     i === index ? changedata : s

@@ -41,7 +41,7 @@ export default function StudentView({ setStudents, setFilteredStudents, organize
 
   function deleteStudet(index: any) {
     setisLoading(true);
-    handleStudent.deleteStudentData(filteredStudents[index]._id, dashboardID).then((response) => {
+    handleStudent.deleteStudentData(filteredStudents[index]._id, dashboardID).then(() => {
       setStudents((student: any) => student.filter((_: any, i: number) => i !== index));
       setFilteredStudents((student: any) => student.filter((_: any, i: number) => i !== index));
       setOpenIndex(null);

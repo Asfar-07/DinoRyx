@@ -261,7 +261,7 @@ export default function DinoRyxOnboarding() {
       finalResponse.sessionId!,
       finalResponse.surveyVersionId!
     );
-
+    console.log("Final Response:", data);
 
     setFinished(true);
   };
