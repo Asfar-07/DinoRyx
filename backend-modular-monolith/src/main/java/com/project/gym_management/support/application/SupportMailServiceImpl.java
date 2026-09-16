@@ -13,7 +13,7 @@ import org.springframework.mail.MailSendException;
 public class SupportMailServiceImpl implements SupportMailService {
 
     private final Resend resend;
-    
+
     public SupportMailServiceImpl(
             @Value("${mail.resend.api.key}") String apiKey
     ) {
@@ -30,7 +30,7 @@ public class SupportMailServiceImpl implements SupportMailService {
         try {
 
             CreateEmailOptions params = CreateEmailOptions.builder()
-                    .from("DinoRyx <onboarding@resend.dev>")
+                    .from("DinoRyx <noreply@asfarmuhammed.space>")
                     .to(email)
                     .subject(subject)
                     .html(body)
