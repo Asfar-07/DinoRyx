@@ -60,7 +60,6 @@ export default function ForgotPassword() {
     authHandle
       .forgotPasswordService(email, captchaToken)
       .then((res: unknown) => {
-        console.log(res);
         setMessage(
           "If the email exists, we have sent a password reset link. The link will expire in 3 minutes."
         );

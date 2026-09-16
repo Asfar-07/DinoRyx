@@ -18,12 +18,8 @@ import {
   Cloud,
 } from "lucide-react";
 import { ShineButton } from "@/components/shine";
+import type { RootState } from "@/app/store";
 
-interface RootState {
-  userauth: {
-    isAuthenticated: boolean;
-  };
-}
 
 interface TrustItem {
   icon: React.ElementType;
@@ -149,9 +145,7 @@ const badgesContainerVariants: Variants = {
 };
 
 export default function MainHero(): React.JSX.Element {
-  const isAuth = useSelector(
-    (state: RootState) => state.userauth.isAuthenticated
-  );
+ const isAuth = useSelector((state: RootState) => state.userAuth.status);
 
   return (
     <section className="w-full bg-(--primary-bg-color) px-6 py-20 text-(--primary-text-color) md:px-10 lg:py-28">
@@ -194,14 +188,13 @@ export default function MainHero(): React.JSX.Element {
             variants={leftItemVariants}
             className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center"
           >
-            {isAuth ? (
-              <ShineButton className=" overflow-hidden">
+            {isAuth == "authenticated" ? (
+              <ShineButton className=" overflow-hidden rounded-full ">
                 <Link
                   to="/account"
-                  className="flex items-center gap-1.5 rounded-full  px-7 py-4 text-sm font-semibold text-[#0a0f22] 
+                  className="flex items-center gap-1.5 rounded-full px-7 py-4 text-sm font-semibold text-[#0a0f22] 
           to-primary-glow shadow-[0_0_40px_-10px_rgba(86,178,187,0.6)] transition-transform hover:scale-[1.03] cursor-pointer"
                 >
-                  ``
                   Get Started
                   <ArrowRight className="h-4 w-4" />
                 </Link>

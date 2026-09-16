@@ -15,3 +15,9 @@
 .theme-mode button:hover{
   background-color: var(--secondary-bg-color);
 }
+
+@media screen and (max-width:650px) {
+  .theme-mode {
+    margin: 0 0px;
+  }
+}

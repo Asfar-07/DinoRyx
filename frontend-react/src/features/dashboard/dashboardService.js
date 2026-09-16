@@ -23,7 +23,6 @@ export const handleDashboard = {
       const res = await apiConnection.get(
         `/dashboard/give/data/client?dashId=${dash_id}`,
       );
-      console.log(res.data);
       return res.data;
     } catch (e) {
       console.error(e);
@@ -66,7 +65,7 @@ export const handleStudent ={
         "/dashboard/student/update",
         updateData,
       );
-      console.log(res.data)
+
       return res.data;
     } catch (e) {
       console.error(e);

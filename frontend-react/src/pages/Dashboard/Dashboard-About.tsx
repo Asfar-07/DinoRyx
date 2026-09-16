@@ -7,7 +7,6 @@ import { milliTOdate } from '@/utils/dateHandle';
 export default function DashboardAbout() {
     const dashboard_Info = useSelector((state) => state.dashController.dashboardInfo)
     const location_Info = useSelector((state) => state.dashController.locationData)
-    console.log(location_Info);
     return (
         <div>
             <h3 className=' font-bold text-2xl my-4'>About</h3>

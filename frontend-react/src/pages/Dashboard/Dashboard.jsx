@@ -1,6 +1,6 @@
 //@ts-nocheck
 import React, { useEffect, useState, useRef } from "react";
-import NavProfile from "@/components/Navbar/NavProfile";
+import NavProfile from "@/components/Navbar/NavProfile.tsx";
 import NotifyIcon from "@/components/SmallUI/NotifyIcon";
 import { CiSettings } from "react-icons/ci";
 import { MdOutlineDashboard, MdAttachMoney } from "react-icons/md";
@@ -70,7 +70,6 @@ export default function Dashboard() {
     })
       // setStudents(finalStudent)
       setFilteredStudents(finalStudent)
-      console.log(finalStudent)
       
   }
   useEffect(() => {

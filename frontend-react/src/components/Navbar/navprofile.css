@@ -1,24 +1,29 @@
-.main-h-ur-p{
+.main-h-ur-p {
   position: relative;
 }
-.header-user-profile{
+
+.header-user-profile {
   display: flex;
   gap: 5px;
-  padding:5px 15px;
+  padding: 5px 15px;
   border-radius: 10px;
   cursor: pointer;
 }
-.header-user-profile:hover{
+
+.header-user-profile:hover {
   background-color: var(--secondary-bg-color);
 }
-.header-user-profile:active{
+
+.header-user-profile:active {
   background-color: var(--secondary-bg-color);
   border: 2px solid var(--primary-text-color);
 }
-.header-username{
+
+.header-username {
   display: flex;
   flex-direction: column;
 }
+
 .header-user-profile strong {
   color: var(--primary-text-color);
 }
@@ -32,7 +37,8 @@
   height: 45px;
   border-radius: 50%;
 }
-.header-s-account{
+
+.header-s-account {
   position: absolute;
   right: 0;
   z-index: 5;
@@ -43,20 +49,23 @@
   border-radius: 10px;
   /* padding: 5px 0 */
 }
-.header-s-account ul{
+
+.header-s-account ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.header-s-account ul li{
+
+.header-s-account ul li {
   display: flex;
   align-items: center;
   width: 100%;
-  padding:5px;
-  
+  padding: 5px;
+
 }
-.header-s-account ul li a{
-   display: flex;
+
+.header-s-account ul li a {
+  display: flex;
   align-items: center;
   width: 100%;
   text-decoration: none;
@@ -64,7 +73,8 @@
   padding: 5px 10px;
   border-radius: 5px;
 }
-.header-s-account ul li button{
+
+.header-s-account ul li button {
   display: flex;
   align-items: center;
   width: 100%;
@@ -75,17 +85,34 @@
   padding: 5px 10px;
   border-radius: 5px;
 }
-.header-s-account ul li button:hover{
+
+.header-s-account ul li button:hover {
   background-color: var(--primary-bg-color);
 }
-.header-s-account ul li a:hover{
+
+.header-s-account ul li a:hover {
   background-color: var(--primary-bg-color);
 }
-.header-s-account ul >:first-child{
+
+.header-s-account ul>:first-child {
   margin: 5px 0;
   border-bottom: 2px solid var(--primary-bg-color);
 }
-.header-s-account ul >:last-child{
-    margin: 5px 0;
+
+.header-s-account ul>:last-child {
+  margin: 5px 0;
   border-top: 2px solid var(--primary-bg-color);
+}
+
+@media screen and (max-width:650px) {
+  .header-s-account {
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .header-user-profile img {
+    width: 35px;
+    height: 35px;
+  }
 }

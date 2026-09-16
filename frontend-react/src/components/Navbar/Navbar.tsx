@@ -1,13 +1,14 @@
 //@ts-nocheck
 import React from "react";
 import "./navbar.css";
-import NavProfile from "./NavProfile";
+import NavProfile from "./NavProfile.tsx";
 import NotifyIcon from "@/components/SmallUI/NotifyIcon";
 import ThemeMode from "@/components/SmallUI/ThemeMode";
 import { MapPin, Menu, X } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RippleButton } from "../ripple";
+import { RippleButton } from "../ripple.tsx";
+import type { RootState } from "@/app/store.ts";
 
 const navLinks = [
   { text:"Home", link: "/"},
@@ -20,7 +21,7 @@ const navLinks = [
 ]
 
 export default function Navbar() {
-  const isAuth = useSelector((state)=>state.userauth.isAuthenticated);
+  const isAuth = useSelector((state: RootState) => state.userAuth.status);
   const [openBox, setOpenBox] = React.useState(false);
 
   return (
@@ -47,7 +48,7 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 max-sm:gap-0">
             <Link
               to="/nearby-location"
               className="bg-(--symbol-color) hidden items-center gap-1.5 rounded-full bg-linear-to-r  px-4 py-2 text-sm font-semibold text-[#0a0f22] transition-transform hover:scale-[1.03] sm:inline-flex"

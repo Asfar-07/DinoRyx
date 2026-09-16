@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
+import type { RootState } from "@/app/store";
 
 const containerVariants = {
   hidden: {},
@@ -23,7 +24,7 @@ const itemVariants = {
 };
 
 export default function HomeStart() {
-  const isAuth = useSelector((state) => state.userauth.isAuthenticated);
+  const isAuth = useSelector((state: RootState) => state.userAuth.status);
 
   return (
     <section className="relative w-full overflow-hidden bg-(--primary-bg-color) px-6 py-28 text-center text-(--primary-text-color) md:px-10">
@@ -54,7 +55,7 @@ export default function HomeStart() {
           variants={itemVariants}
           className="mt-9 flex flex-col items-center gap-4 sm:flex-row"
         >
-          {isAuth ? (
+          {isAuth == "authenticated" ? (
             <Link
               to="/account"
               className="flex items-center gap-1.5 rounded-full px-7 py-4 text-sm font-semibold text-[#0a0f22]

@@ -9,7 +9,7 @@ import { FaFacebookF } from "react-icons/fa";
 import { authHandle } from "../../features/auth/authService";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { updateAuth, setAuth } from "../../features/auth/authSlice";
+import { updateAuth, setAuth, setLoading } from "../../features/auth/authSlice";
 import { useForm } from "react-hook-form";
 import FloatingCharacters from "@/components/animate-ui/FloatingCharacters";
 import { MagneticButton } from "@/components/magnetic";
@@ -67,7 +67,6 @@ export default function Login() {
         .signupService(userData)
         .then((data) => {
           setIsLoading(false);
-
           if (data.status && data.message === "Verify Otp Generated") {
             setShowOtp(true);
           }
@@ -76,7 +75,6 @@ export default function Login() {
           setIsLoading(false);
           console.log(err);
         });
-
     } else {
 
       authHandle
@@ -85,9 +83,9 @@ export default function Login() {
           setIsLoading(false);
           
           if (data.status && data.message === "Password Matching") {
-            console.log("login success", data);
             dispatch(setAuth(data.user_details))
             dispatch(updateAuth(true));
+            
             resetDefault()
             navigate("/");
           }
@@ -96,6 +94,7 @@ export default function Login() {
           }
         })
         .catch((err) => {
+          dispatch(updateAuth(false));
           setIsLoading(false);
           console.log(err);
         });

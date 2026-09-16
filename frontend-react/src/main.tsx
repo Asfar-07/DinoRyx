@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './App.tsx';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {Provider} from "react-redux"
 import { TooltipProvider } from './components/ui/tooltip';
-import store from './app/store';
+import store from './app/store.ts';
 
 
 ReactDOM.createRoot( document.getElementById("root")!).render(

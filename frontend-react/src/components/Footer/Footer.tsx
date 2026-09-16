@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { PawPrint, Github, Linkedin, Instagram, Facebook, Twitter, Gem } from "lucide-react";
+import type { RootState } from "@/app/store";
 
 interface FooterLinkGroup {
   title: string;
@@ -56,7 +57,7 @@ const socialLinks = [
 
 export default function Footer() {
   const [email, setEmail] = React.useState("");
-  const isAuth = useSelector((state) => state.userauth.isAuthenticated);
+  const isAuth = useSelector((state: RootState) => state.userAuth.status);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,7 +129,7 @@ export default function Footer() {
                 <ul className="flex flex-col gap-3">
                   {group.links.map((link) => (
                     <li key={link.label}>
-                      {link.label == "Dashboard" ? (isAuth ? <Link to={link.href} className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]">{link.label}</Link>
+                      {link.label == "Dashboard" ? (isAuth == "authenticated" ? <Link to={link.href} className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]">{link.label}</Link>
                         : <Link to="/login" className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]">{link.label}</Link>)
                         : <Link to={link.href} className="text-sm text-[#bac7cc] transition-colors hover:text-[#56b2bb]">{link.label}</Link>
                         }

@@ -4,14 +4,14 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from '@/features/user/userSlice';
-import { updateProfilePicture } from '@/features/auth/authSlice';
+import { updateProfilePicture } from '@/features/auth/authSlice.ts';
 import { handleUser } from '@/features/user/userService';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage, AvatarBadge } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import GeneralLoader from '@/components/Loader/GeneralLoader';
-import Navbar from '@/components/Navbar/Navbar';
+import Navbar from '@/components/Navbar/Navbar.tsx';
 import {
   Select,
   SelectContent,
@@ -213,7 +213,7 @@ export default function ProfileDashboard() {
     setIsLoading(true)
     handleUser.fetchUser().then((data) => {
 
-      console.log(data)
+
       setIsLoading(false)
       dispatch(addUser(data));
       setUserData(data);
@@ -257,7 +257,6 @@ export default function ProfileDashboard() {
     })
       .catch((e) => {
         setIsLoading(false);
-        console.log(e.response.status);
       });
   };
 
@@ -291,7 +290,6 @@ export default function ProfileDashboard() {
       dispatch(updateProfilePicture(src));
 
     }).catch((e) => {
-
       console.log(e.response.status);
     })
   }

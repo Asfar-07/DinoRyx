@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { useEffect, useRef } from "react";
 import "./App.css";
 import "./styles/theme.css";
@@ -6,15 +5,16 @@ import "./styles/global.css";
 import AppRoutes from "./routes/AppRoutes";
 import { useSelector, useDispatch } from "react-redux";
 import { setThemeFromLocal } from "./features/theme/themeSlice";
-import { setAuth, updateAuth } from "./features/auth/authSlice";
 import { ToastContainer } from "react-toastify";
 import { handleUser } from "./features/user/userService";
+import type { RootState } from "./app/store";
+import { setAuth, setAuthStatus, removeAuth, setLoading } from "./features/auth/authSlice";
 
 function App() {
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
-  const theme = useSelector((state) => state.theme.mode);
-  const isAuth = useSelector((state)=>state.userauth.isAuthenticated);
+  const theme = useSelector((state: RootState) => state.theme.mode);
+  const isAuth = useSelector((state: RootState) => state.userAuth.status);
 
   useEffect(() => {
     dispatch(setThemeFromLocal());
@@ -23,17 +23,23 @@ function App() {
 
   useEffect(()=>{
     if(hasFetched.current) return;
-    hasFetched.current=true;
-    setTimeout(() => {
-      if (!isAuth) {
-        handleUser.isUser().then((response) => {
-          dispatch(updateAuth(true));
-          dispatch(setAuth(response));
+    hasFetched.current = true;
+      if (isAuth !== "authenticated") {
+        dispatch(setLoading(true));
 
-        });
+        handleUser.isUser().then((response) => {
+
+          dispatch(setAuth(response));
+          dispatch(setAuthStatus("authenticated"));
+        }).catch(() => {
+
+          dispatch(removeAuth());
+        }).finally(() => {
+
+          dispatch(setLoading(false));
+        })
       }
-    }, 500);
-  },[])
+  }, [dispatch])
 
   useEffect(() => {
     const root = document.documentElement;

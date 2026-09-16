@@ -3,16 +3,17 @@ import React, { useState } from "react";
 import "./navprofile.css";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { authHandle } from "../../features/auth/authService";
+import { authHandle } from "../../features/auth/authService.js";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { setAuth,removeAuth } from "../../features/auth/authSlice";
-import { removeUser } from "../../features/user/userSlice";
+import { setAuth, removeAuth } from "../../features/auth/authSlice.ts";
+import { removeUser } from "../../features/user/userSlice.js";
+import type { RootState } from "../../app/store.ts"
 
 export default function NavProfile() {
   const [accountDiv, setAccountDiv] = useState(false);
-  const isAuth = useSelector((state) => state.userauth.isAuthenticated);
-  const authInfo = useSelector((state) => state.userauth.authInfo);
+  const isAuth = useSelector((state: RootState) => state.userAuth.status);
+  const authInfo = useSelector((state: RootState) => state.userAuth.authInfo);
 
   const backendUrl = "https://res.cloudinary.com/is9tsczx/image/upload/v1789498226";
 
@@ -39,7 +40,7 @@ export default function NavProfile() {
       }}
     >
       <div className="header-user-profile">
-        {isAuth && authInfo ? (
+        {isAuth === "authenticated" && authInfo ? (
           <>
             <img src={backendUrl + authInfo?.picture} alt="user profile" />
             <div className="header-username">
@@ -61,15 +62,15 @@ export default function NavProfile() {
             <li>
               <Link to="/">My Account</Link>
             </li>
-            {isAuth && (
+            {isAuth === "authenticated" && (
               <li>
                 <Link to="/account">Profile</Link>
               </li>
             )}
             <li>
-              <Link to="/">Settings</Link>
+              <Link to="/settings/general">Settings</Link>
             </li>
-            {isAuth ? (
+            {isAuth === "authenticated" ? (
               <li>
                 <button onClick={handleLogout}>Logout</button>
               </li>

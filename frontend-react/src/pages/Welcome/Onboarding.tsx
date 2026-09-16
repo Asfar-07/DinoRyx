@@ -262,7 +262,7 @@ export default function DinoRyxOnboarding() {
       finalResponse.surveyVersionId!
     );
 
-    console.log(data);
+
     setFinished(true);
   };
 

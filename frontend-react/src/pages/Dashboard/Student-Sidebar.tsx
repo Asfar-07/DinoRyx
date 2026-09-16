@@ -64,7 +64,6 @@ export default function StudentSidebar({ student, setStudent, setOpenIndex, dele
                 ));
             setIsEditing(false)
             setIsLoading(false);
-            console.log(response);
         }).catch((e) => {
             console.log(e)
         })
