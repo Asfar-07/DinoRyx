@@ -68,7 +68,7 @@ export default function Navbar() {
               </RippleButton>
             )}
 
-            {isAuth && <NotifyIcon />}
+            {isAuth === "authenticated" && <NotifyIcon />}
             <ThemeMode />
             <button
               className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 lg:hidden"

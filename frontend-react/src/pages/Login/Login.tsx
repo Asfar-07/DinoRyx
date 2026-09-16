@@ -9,7 +9,7 @@ import { FaFacebookF } from "react-icons/fa";
 import { authHandle } from "../../features/auth/authService";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { updateAuth, setAuth, setLoading } from "../../features/auth/authSlice";
+import { updateAuth, setAuth } from "../../features/auth/authSlice";
 import { useForm } from "react-hook-form";
 import FloatingCharacters from "@/components/animate-ui/FloatingCharacters";
 import { MagneticButton } from "@/components/magnetic";
@@ -19,6 +19,8 @@ import { TextSplitReveal } from "@/components/split-reveal";
 import OTPVerify from "./OTPVerify";
 import { toast } from "react-toastify";
 import GeneralLoader from "@/components/Loader/GeneralLoader";
+import type { RootState } from "@/app/store.ts";
+import { useSelector } from "react-redux";
 
 export default function Login() {
   interface userForm {
@@ -26,6 +28,8 @@ export default function Login() {
     email: string,
     password: string
   }
+
+  const authLoading = useSelector((state: RootState) => state.userAuth.loading);
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
@@ -194,6 +198,7 @@ export default function Login() {
   return (
     <div className="min-h-screen w-full bg-(--primary-bg-color) text-(--primary-text-color)">
       {isLoading && <GeneralLoader />}
+      {authLoading && <GeneralLoader />}
 
       {showOtp && (
         <OTPVerify

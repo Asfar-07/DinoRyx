@@ -9,11 +9,13 @@ import { useDispatch } from "react-redux";
 import { setAuth, removeAuth } from "../../features/auth/authSlice.ts";
 import { removeUser } from "../../features/user/userSlice.js";
 import type { RootState } from "../../app/store.ts"
+import { Skeleton } from "../ui/skeleton.tsx";
 
 export default function NavProfile() {
   const [accountDiv, setAccountDiv] = useState(false);
   const isAuth = useSelector((state: RootState) => state.userAuth.status);
   const authInfo = useSelector((state: RootState) => state.userAuth.authInfo);
+  const loading = useSelector((state: RootState) => state.userAuth.loading);
 
   const backendUrl = "https://res.cloudinary.com/is9tsczx/image/upload/v1789498226";
 
@@ -23,9 +25,9 @@ export default function NavProfile() {
     authHandle
       .logoutService()
       .then((data) => {
-          dispatch(removeAuth());
-          dispatch(removeUser());
-          navigate("/login");
+        dispatch(removeAuth());
+        dispatch(removeUser());
+        navigate("/login");
       })
       .catch((err) => {
         console.log(err);
@@ -45,8 +47,8 @@ export default function NavProfile() {
             <img src={backendUrl + authInfo?.picture} alt="user profile" />
             <div className="header-username">
               <strong>{authInfo?.name}</strong>
-              {authInfo?.trainer ? <small>Certified Trainer</small> :<small>Normal User</small>}
-              
+              {authInfo?.trainer ? <small>Certified Trainer</small> : <small>Normal User</small>}
+
             </div>
           </>
         ) : (
@@ -56,7 +58,7 @@ export default function NavProfile() {
           />
         )}
       </div>
-      {accountDiv && (
+      {accountDiv && !loading && (
         <div className="header-s-account">
           <ul>
             <li>
@@ -79,6 +81,33 @@ export default function NavProfile() {
                 <Link to="/login">Login</Link>
               </li>
             )}
+          </ul>
+        </div>
+      )}
+      {accountDiv && loading &&(
+        <div className="header-s-account">
+          <ul>
+            <li>
+              <Skeleton className=" w-full h-4 bg-gray-500 dark:bg-gray-700 m-1"/>
+            </li>
+            <li>
+              <Skeleton className=" w-full h-4 bg-gray-500 dark:bg-gray-700 m-1"/>
+            </li>
+            <li>
+              <Skeleton className=" w-full h-4 bg-gray-500 dark:bg-gray-700 m-1"/>
+            </li>
+            <li>
+              <Skeleton className=" w-full h-4 bg-gray-500 dark:bg-gray-700 m-1"/>
+            </li>
+            <li>
+              <Skeleton className=" w-full h-4 bg-gray-500 dark:bg-gray-700 m-1"/>
+            </li>
+            <li>
+              <Skeleton className=" w-full h-4 bg-gray-500 dark:bg-gray-700 m-1"/>
+            </li>
+            <li>
+              <Skeleton className=" w-full h-4 bg-gray-500 dark:bg-gray-700 m-1"/>
+            </li>
           </ul>
         </div>
       )}
