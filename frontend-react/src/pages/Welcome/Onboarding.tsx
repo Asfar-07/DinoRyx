@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { StarsBackground } from "@/components/animate-ui/components/backgrounds/stars";
 
-import { handleSurvey } from "@/features/survey/surveyService";
+import { handleSurvey } from "@/features/survey/surveyService.ts";
 import NormalQuestions from "./SubPage/NormalQuestions";
 import StudentQuestions from "./SubPage/StudentQuestions";
 import TrainerQuestions from "./SubPage/TrainerQuestions";
@@ -25,6 +25,7 @@ import type { Role, diffQsRole, ResponseToBack, Collection, QsType, NormalKey, T
 import GeneralLoader from "@/components/Loader/GeneralLoader";
 // import { demoQuestions } from "./Questions";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 const TOTAL_STEPS = 6;
@@ -228,20 +229,18 @@ export default function DinoRyxOnboarding() {
   React.useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
-    console.log("call");
     
 
     handleSurvey.getQuestions()
       .then((data) => {
         setQuestions(data.questions);
-        setFinalResponse((r) => ({ ...r, sessionId: data.sessionId, surveyVersionId: data.surveyVersionId }));
-        setLoading(false);
+        setFinalResponse((r) => ({ ...r, sessionId: data.ids.sessionId, surveyVersionId: data.ids.surveyVersionId }));
       })
       .catch((error) => {
-        console.error(error);
-        navigate("/");
-        setLoading(false);
-        
+        ( error.response.status === 409 )? navigate("/account")  : navigate("/");   
+      })
+      .finally(() => {
+        setLoading(false)
       });
 
   }, []);
@@ -261,10 +260,22 @@ export default function DinoRyxOnboarding() {
       finalResponse.sessionId!,
       finalResponse.surveyVersionId!
     );
-    console.log("Final Response:", data);
-
-    setFinished(true);
+    if ( !data.responses && !data.sessionId && !data.surveyVersionId ) return;
+    responseToBack(data)
   };
+
+  function responseToBack(response: ResponseToBack){
+    if (loading) return;
+    setLoading(true);
+
+    handleSurvey.userResponse(response).then(() => {
+      setFinished(true);
+    }).catch(() => {
+      toast.error("something wrong!")
+    }).finally(() => {
+      setLoading(false);
+    })
+  }
 
   function createResponse(
     collection: Collection[],

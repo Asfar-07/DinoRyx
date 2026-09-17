@@ -38,6 +38,7 @@ export default function TrainerQuestions({ step, questions, role, addResponse, g
     ];
 
   useEffect(() => {
+  
     questions.forEach((qs) => {
       if ((qs.questionKey as TrainerKey) === "experience") {
         const experienceQuestion: Questions<ExperienceKey> = {
@@ -96,7 +97,7 @@ export default function TrainerQuestions({ step, questions, role, addResponse, g
         setCommunity(community)
       }
     });
-  }, []);
+  }, [questions]);
   return (
     <div>
       {/* trainer and gym owner experience step */}
