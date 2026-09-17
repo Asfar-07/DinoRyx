@@ -24,7 +24,6 @@ public class UserController {
         Object[] response = service.FetchMe(Long.parseLong(userId));
         if(response[0].equals(true)){
             AccountDTO res = (AccountDTO)response[1];
-            System.out.println(res.getEmail());
             return ResponseEntity.ok(response[1]);
         }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
