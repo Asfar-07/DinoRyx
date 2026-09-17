@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -30,6 +30,7 @@ export default function Login() {
   }
 
   const authLoading = useSelector((state: RootState) => state.userAuth.loading);
+  const authStatus = useSelector((state: RootState) => state.userAuth.status);
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
@@ -50,6 +51,13 @@ export default function Login() {
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    if (authStatus === "authenticated") {
+      navigate("/account");
+    }
+  }, [authStatus]);
 
   //form resect from useForm
   const resetDefault = () => {
@@ -91,7 +99,7 @@ export default function Login() {
             dispatch(updateAuth(true));
             
             resetDefault()
-            navigate("/");
+            navigate("/account");
           }
           if (!data.status && data.message === "Missing Validation") {
             setShowOtp(true);
@@ -111,7 +119,7 @@ export default function Login() {
       dispatch(setAuth(data.user_details))
       dispatch(updateAuth(true));
       resetDefault()
-      navigate("/");
+      navigate("/account");
     }).catch((err) => {
       console.log(err);
     });

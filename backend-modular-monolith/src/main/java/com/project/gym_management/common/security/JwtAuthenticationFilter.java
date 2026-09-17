@@ -32,7 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         System.out.println("Incoming request: " + request.getMethod() + " " + request.getRequestURI());
-        if (path.startsWith("/auth") || path.startsWith("/uploads")) {  //pass request with no condition
+
+        if (path.startsWith("/auth") || path.startsWith("/uploads") || path.startsWith("/support")) {  //pass request with no condition
             chain.doFilter(request, response);
             return;
         }
