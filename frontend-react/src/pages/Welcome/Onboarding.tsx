@@ -426,6 +426,7 @@ export default function DinoRyxOnboarding() {
               <Button
                 type="button"
                 className="relative cursor-pointer mt-8 h-12 gap-1.5 rounded-full bg-gradient-to-r from-[#56b2bb] to-[#7fd7e0] px-7 font-semibold text-[#0a0f22] hover:opacity-90"
+                onClick={() => navigate("/account")}
               >
                 Go to dashboard
                 <ArrowRight className="h-4 w-4" />

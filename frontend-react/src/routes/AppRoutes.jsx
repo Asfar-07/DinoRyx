@@ -12,6 +12,8 @@ import MainLayout from "@/layouts/MainLayout.jsx";
 import HeaderLayout from "@/layouts/HeaderLayout.jsx";
 import NoLayout from "@/layouts/NoLayout.jsx";
 import OnboardingPage from "@/pages/Welcome/Onboarding.tsx";
+import NotFound from "@/pages/NotFound/NotFound.tsx";
+import Settings from "@/pages/Setting/Settings.tsx";
 
 export default function AppRoutes() {
   return (
@@ -21,7 +23,7 @@ export default function AppRoutes() {
           {/* Header + Footer */}
           <Route element={<MainLayout />}>
             <Route path="/" Component={Home} />
-            <Route path="/settings/general" Component={GeneralSetting} />
+            <Route path="/settings/general" Component={Settings} />
           </Route>
 
           {/* Header Only */}
@@ -39,7 +41,7 @@ export default function AppRoutes() {
             <Route path="/create/company" Component={CreateCompany} />
             <Route path="/welcome/home" Component={OnboardingPage} />
           </Route>
-
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </div>
