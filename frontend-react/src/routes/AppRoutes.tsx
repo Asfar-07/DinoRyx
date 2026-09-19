@@ -1,13 +1,21 @@
-import { BrowserRouter, Routes, Route} from "react-router-dom";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import Home from "../pages/Home/Home";
+import { Routes, Route } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { setAuth, setAuthStatus, removeAuth, setLoading } from "@/features/auth/authSlice.ts";
+import { handleUser } from "@/features/user/userService.js"; 
+
+import type { RootState } from "@/app/store.ts"; 
+
+import Dashboard from "../pages/Dashboard/Dashboard.jsx";
+import Home from "../pages/Home/Home.jsx";
 import Login from "@/pages/Login/Login.tsx";
 import Profile from "../pages/Profile/Profile.tsx";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword.tsx";
-import ResetPassword from "../pages/ForgotPassword/ResetPassword";
+import ResetPassword from "../pages/ForgotPassword/ResetPassword.jsx";
 import CreateCompany from "@/pages/CreateDashboard/CreateCompany.tsx";
 import MainLocation from "@/components/MapUI/MainLocation";
-import GeneralSetting from "@/pages/Setting/GeneralSetting.tsx";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import HeaderLayout from "@/layouts/HeaderLayout.jsx";
 import NoLayout from "@/layouts/NoLayout.jsx";
@@ -16,9 +24,38 @@ import NotFound from "@/pages/NotFound/NotFound.tsx";
 import Settings from "@/pages/Setting/Settings.tsx";
 
 export default function AppRoutes() {
+
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const hasFetched = useRef(false);
+    const isAuth = useSelector((state: RootState) => state.userAuth.status);
+
+      useEffect(()=>{
+        if(hasFetched.current) return;
+        hasFetched.current = true;
+          if (isAuth !== "authenticated") {
+            dispatch(setLoading(true));
+    
+            handleUser.isUser().then((response: any) => {
+    
+              dispatch(setAuth(response));
+              dispatch(setAuthStatus("authenticated"));
+              location.pathname === "/" && navigate("/account")
+              
+            }).catch(() => {
+    
+              dispatch(removeAuth());
+            }).finally(() => {
+    
+              dispatch(setLoading(false));
+            })
+          }
+      }, [dispatch])
+    
   return (
     <div>
-      <BrowserRouter>
         <Routes>
           {/* Header + Footer */}
           <Route element={<MainLayout />}>
@@ -38,12 +75,11 @@ export default function AppRoutes() {
             <Route path="/login" Component={Login} />
             <Route path="/login/forgot" Component={ForgotPassword} />
             <Route path="/reset-password" Component={ResetPassword} />
-            <Route path="/create/company" Component={CreateCompany} />
+            <Route path="/create/community" Component={CreateCompany} />
             <Route path="/welcome/home" Component={OnboardingPage} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
     </div>
   );
 }

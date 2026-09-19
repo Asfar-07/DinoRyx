@@ -76,22 +76,6 @@ const followedCards: DashboardCard[] = [
   { id: "f3", name: "Typography Club", about: "Font pairing, type scales, and the art of readable text.", logo: "🔤", isOwner: false, memberCount: 430, color: "#f472b6" },
 ];
 
-function DinoMascot() {
-  return (
-    <svg viewBox="0 0 140 140" width="140" height="140" aria-hidden="true">
-      <ellipse cx="70" cy="120" rx="34" ry="8" fill="#000" opacity="0.25" />
-      <path d="M40 118 C30 90 32 60 52 44 C58 30 78 26 90 36 C98 30 112 34 114 44 C118 46 118 54 112 56 C114 62 108 68 102 66 C100 76 92 82 84 80 C86 96 80 112 70 118 Z" fill="#56b2bb" />
-      <path d="M52 44 C58 30 78 26 90 36" stroke="#7be6df" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <circle cx="94" cy="42" r="3.2" fill="#0a0f22" />
-      <path d="M46 60 L36 54 L46 68 Z" fill="#3a8b93" />
-      <path d="M56 96 L48 112 L60 108 Z" fill="#3a8b93" />
-      <path d="M82 100 L86 116 L94 106 Z" fill="#3a8b93" />
-      <path d="M60 40 L64 30 L68 40 Z" fill="#fbbf24" />
-      <path d="M70 38 L74 28 L78 38 Z" fill="#fbbf24" />
-    </svg>
-  );
-}
-
 function ChannelCard({ card, isTrainer, onUnfollow, onDelete }: {
   card: DashboardCard;
   isTrainer: boolean;
@@ -326,7 +310,7 @@ export default function ProfileDashboard() {
             </div>
           </div>
           <div className="hero-mascot">
-            <DinoMascot />
+            {/* <DinoMascot /> */}
           </div>
           <div className="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-[#5dbcc1]/50 blur-[80px]"></div>
         </div>
@@ -473,7 +457,7 @@ export default function ProfileDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <LayoutDashboard size={14} className="symbol" />
-                <span className="sec-label">{userData.trainer ? "My Channels" : "Followed Channels"}</span>
+                <span className="sec-label">{true ? "Owned Community" : "Followed Channels"}</span>
               </div>
               <div className='flex justify-center items-center gap-3'>
                 <span className="count-pill">{cards.length}</span>
@@ -484,11 +468,11 @@ export default function ProfileDashboard() {
               </div>
             </div>
 
-            {userData.trainer ? (
+            {true ? (
               /* ── Trainer View ── */
               <>
                 {/* Owned */}
-                {ownedCards.length > 0 && (
+                {true && (
                   <div className="flex flex-col gap-3">
                     <p className="sub-label">Created by you</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -497,15 +481,16 @@ export default function ProfileDashboard() {
                       ))}
                       <DiscoverTile
                         icon={<Plus size={16} />}
-                        title="Create new channel"
+                        title="Create new own community"
                         description="Start a new community for your athletes."
+                        onClick={() => navigate("/create/community")}
                       />
                     </div>
                   </div>
                 )}
 
                 {/* Following */}
-                {followingCards.length > 0 && (
+                {/* {followingCards.length > 0 && (
                   <div className="flex flex-col gap-3">
                     <p className="sub-label">Also following</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -522,7 +507,7 @@ export default function ProfileDashboard() {
                     title="No channels yet"
                     description="Create your first channel to get started."
                   />
-                )}
+                )} */}
               </>
             ) : (
               /* ── Normal User View ── */

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import "./styles/theme.css";
 import "./styles/global.css";
@@ -6,40 +6,18 @@ import AppRoutes from "./routes/AppRoutes";
 import { useSelector, useDispatch } from "react-redux";
 import { setThemeFromLocal } from "./features/theme/themeSlice";
 import { ToastContainer } from "react-toastify";
-import { handleUser } from "./features/user/userService";
 import type { RootState } from "./app/store";
-import { setAuth, setAuthStatus, removeAuth, setLoading } from "./features/auth/authSlice";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
-  const hasFetched = useRef(false);
   const dispatch = useDispatch();
   const theme = useSelector((state: RootState) => state.theme.mode);
-  const isAuth = useSelector((state: RootState) => state.userAuth.status);
+
 
   useEffect(() => {
     dispatch(setThemeFromLocal());
     
   }, [dispatch]);
-
-  useEffect(()=>{
-    if(hasFetched.current) return;
-    hasFetched.current = true;
-      if (isAuth !== "authenticated") {
-        dispatch(setLoading(true));
-
-        handleUser.isUser().then((response) => {
-
-          dispatch(setAuth(response));
-          dispatch(setAuthStatus("authenticated"));
-        }).catch(() => {
-
-          dispatch(removeAuth());
-        }).finally(() => {
-
-          dispatch(setLoading(false));
-        })
-      }
-  }, [dispatch])
 
   useEffect(() => {
     const root = document.documentElement;
@@ -61,8 +39,10 @@ function App() {
 
   return (
     <div className="App">
-      <ToastContainer />
-      <AppRoutes />
+      <BrowserRouter>
+        <ToastContainer />
+        <AppRoutes />
+      </BrowserRouter>
     </div>
   );
 }
