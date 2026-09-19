@@ -1,5 +1,4 @@
 import { Trash } from "lucide-react";
-import { SectionCard } from "./SettingsShared";
 import type { ReactElement } from "react";
 import { CiWarning } from "react-icons/ci";
 

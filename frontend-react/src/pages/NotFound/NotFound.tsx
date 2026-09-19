@@ -22,7 +22,7 @@ export interface NotFoundPageProps {
   brand?: string;
 }
 
-export default function NotFound({ brand = "DinoRyx" }: NotFoundPageProps): ReactElement {
+export default function NotFound(): ReactElement {
     
   const navigate = useNavigate();
   const onGoHome = () => navigate("/");

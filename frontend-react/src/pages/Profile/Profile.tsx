@@ -254,7 +254,7 @@ export default function ProfileDashboard() {
 
   const initials = userData?.username.split(" ").map((n) => n[0]).join("").toUpperCase();
   const ownedCards = cards.filter((c) => c.isOwner);
-  const followingCards = cards.filter((c) => !c.isOwner);
+  // const followingCards = cards.filter((c) => !c.isOwner);
 
   const heroStats = [
     { label: "G Coins", value: "128" },
